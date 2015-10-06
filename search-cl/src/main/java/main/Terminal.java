@@ -20,7 +20,7 @@ public class Terminal {
 
         if(!LuceneIndexReader.getInstance().initializeIndexReader(INDEX_OUT))
         {
-            System.err.println("Initializer Error: Could Not Initialize IndexReaderInterface");
+            System.err.println("Initializer Error: Could Not Initialize IndexReader");
         }
 
         DocumentSearcher searcher = new DocumentSearcher(LuceneIndexReader.getInstance());

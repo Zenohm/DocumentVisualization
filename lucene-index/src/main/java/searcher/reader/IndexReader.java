@@ -27,7 +27,7 @@ package searcher.reader;
 /**
  * Created by Chris on 9/24/2015.
  */
-public interface IndexReaderInterface {
+public interface IndexReader {
     boolean isInitialized();
 
     // Different initialization methods for index readers

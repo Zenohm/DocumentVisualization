@@ -8,7 +8,7 @@ import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TopDocs;
 import searcher.exception.LuceneSearchException;
-import searcher.reader.IndexReaderInterface;
+import searcher.reader.IndexReader;
 import util.IndexerConstants;
 
 import java.io.IOException;
@@ -19,12 +19,12 @@ import java.util.Map;
  * Created by chris on 10/5/15.
  */
 public class DocumentSearcher {
-    private IndexReaderInterface reader;
+    private IndexReader reader;
     private IndexSearcher searcher;
     private QueryParser parser;
     private Analyzer analyzer;
-    public DocumentSearcher(IndexReaderInterface reader) throws LuceneSearchException {
-        if(!reader.isInitialized()) throw new LuceneSearchException("DocumentSearcher: IndexReaderInterface Not Initialized");
+    public DocumentSearcher(IndexReader reader) throws LuceneSearchException {
+        if(!reader.isInitialized()) throw new LuceneSearchException("DocumentSearcher: IndexReader Not Initialized");
         this.reader = reader;
         this.searcher = new IndexSearcher(reader.getReader());
         this.analyzer = new SearchAnalyzer();
@@ -35,6 +35,7 @@ public class DocumentSearcher {
         try {
             Query query = parser.parse(term);
             final TopDocs search = searcher.search(query, 50);
+            // TODO: This should be returning instead of what it is doing now.
             for(ScoreDoc doc : search.scoreDocs) {
                 System.out.println(doc.score + "\t" + doc.doc);
             }

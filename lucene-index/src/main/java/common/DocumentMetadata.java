@@ -42,6 +42,16 @@ public class DocumentMetadata {
         conference = record.get("conference");
     }
 
+    public DocumentMetadata(String filename,
+                            String title,
+                            String author,
+                            String conference) {
+        this.filename = filename;
+        this.title = title;
+        this.author = author;
+        this.conference = conference;
+    }
+
     @Override
     public String toString() {
         String temp = "";

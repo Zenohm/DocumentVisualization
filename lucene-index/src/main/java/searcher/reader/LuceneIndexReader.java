@@ -34,7 +34,7 @@ import java.nio.file.FileSystems;
 /**
  * Created by Chris on 9/24/2015.
  */
-public class LuceneIndexReader implements IndexReaderInterface {
+public class LuceneIndexReader implements IndexReader {
     private static LuceneIndexReader ourInstance = new LuceneIndexReader();
     private org.apache.lucene.index.IndexReader READER;
 
