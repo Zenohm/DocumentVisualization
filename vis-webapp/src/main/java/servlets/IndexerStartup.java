@@ -25,16 +25,20 @@
 package servlets;
 
 import indexer.PDFIndexer;
+import searcher.exception.LuceneSearchException;
+import searcher.reader.LuceneIndexReader;
 import util.IndexerConstants;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import java.io.IOException;
+import java.util.concurrent.Semaphore;
 
 /**
  * Created by Chris on 8/19/2015.
  */
 public class IndexerStartup extends HttpServlet {
+    public static Semaphore lock = new Semaphore(0);
     public void init() throws ServletException {
         System.out.println("-----------------");
         System.out.println("Running Initial Indexing Operation...");
@@ -52,14 +56,17 @@ public class IndexerStartup extends HttpServlet {
 
         // Try to update the index
         // TODO: Configuration option to NOT update the index
-        try {
-            indexer.updateIndex();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            indexer.updateIndex();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
 
         // Complete Updating the index
         System.out.println("DONE!");
         System.out.println("-----------------");
+        lock.release();
+        LuceneIndexReader.getInstance()
+                .initializeIndexReader(getServletContext().getRealPath(IndexerConstants.INDEX_DIRECTORY));
     }
 }
