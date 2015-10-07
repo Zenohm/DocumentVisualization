@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 
-package searcher;
+package common;
 
 /**
  * This class represents a term within a document with a score. This is for finding terms that are related within

@@ -24,6 +24,7 @@
 
 package searcher;
 
+import common.ScoredTerm;
 import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.index.IndexReader;
 import util.IndexerConstants;
