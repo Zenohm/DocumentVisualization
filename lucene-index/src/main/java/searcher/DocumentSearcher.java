@@ -1,5 +1,6 @@
 package searcher;
 
+import com.google.common.collect.Maps;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.queryparser.classic.QueryParser;
@@ -12,8 +13,11 @@ import searcher.reader.IndexReader;
 import util.IndexerConstants;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Created by chris on 10/5/15.
@@ -31,20 +35,21 @@ public class DocumentSearcher {
         this.parser = new QueryParser(IndexerConstants.FIELD_CONTENTS, analyzer);
     }
 
-    public List<Map.Entry<Double, Integer>> searchForTerm(String term){
+    public List<Map.Entry<Double, Integer>> searchForTerm(String term) throws LuceneSearchException{
         try {
             Query query = parser.parse(term);
             final TopDocs search = searcher.search(query, 50);
-            // TODO: This should be returning instead of what it is doing now.
-            for(ScoreDoc doc : search.scoreDocs) {
-                System.out.println(doc.score + "\t" + doc.doc);
-            }
+
+            return Arrays.asList(search.scoreDocs)
+                    .stream()
+                    .map(doc -> Maps.immutableEntry((double)doc.score, doc.doc))
+                    .collect(Collectors.toList());
 
         } catch (ParseException e) {
-            e.printStackTrace();
+            throw new LuceneSearchException("DocumentSearcher: Parse exception while searching for term: "
+                    + e.toString());
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new LuceneSearchException("DocumentSearcher: IO Exception " + e.toString());
         }
-        return null;
     }
 }

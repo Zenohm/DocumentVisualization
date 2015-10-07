@@ -11,10 +11,10 @@ import java.io.IOException;
 /**
  * Created by chris on 10/6/15.
  */
-public class MetadataRetreiver {
+public class MetadataRetriever {
     private IndexReader reader;
-    public MetadataRetreiver(IndexReader reader) throws LuceneSearchException{
-        if(!reader.isInitialized()) throw new LuceneSearchException("MetadataRetreiver: Index Reader is not initialized");
+    public MetadataRetriever(IndexReader reader) throws LuceneSearchException{
+        if(!reader.isInitialized()) throw new LuceneSearchException("MetadataRetriever: Index Reader is not initialized");
         this.reader = reader;
     }
 
