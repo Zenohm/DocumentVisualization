@@ -85,6 +85,15 @@
         <url-pattern>/term_search</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <servlet-name>docServlet</servlet-name>
+        <servlet-class>servlets.DocumentServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>docServlet</servlet-name>
+        <url-pattern>/docs</url-pattern>
+    </servlet-mapping>
+
     <welcome-file-list>
         <welcome-file>index.html</welcome-file>
     </welcome-file-list>

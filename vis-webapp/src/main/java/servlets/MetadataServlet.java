@@ -34,6 +34,8 @@ public class MetadataServlet extends GenericServlet {
             res.getWriter().println((new GsonBuilder()).create().toJson(metadata));
         } catch (LuceneSearchException e) {
             e.printStackTrace();
+        } catch (NullPointerException e) {
+            System.err.println("MetadataServlet: Metadata retriever could not be created");
         }
 
     }

@@ -43,6 +43,13 @@
             <version>2.4</version>
         </dependency>
 
+        <!-- PDF To Retrieve the files -->
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.4</version>
+        </dependency>
+
     </dependencies>
 
     <properties>

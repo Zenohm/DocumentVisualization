@@ -21,6 +21,11 @@
                         author.innerHTML = data.author;
                         author.className = "res-author";
                         result.appendChild(author);
+                        var link = document.createElement('a');
+                        link.innerHTML = "[LINK]";
+                        link.setAttribute("href", "docs?docId="+obj.value);
+                        link.setAttribute("target", "_blank");
+                        result.appendChild(link);
                     });
 
                 });
