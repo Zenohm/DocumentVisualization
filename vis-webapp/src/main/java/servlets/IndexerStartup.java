@@ -56,11 +56,11 @@ public class IndexerStartup extends HttpServlet {
 
         // Try to update the index
         // TODO: Configuration option to NOT update the index
-        try {
-            indexer.updateIndex();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            indexer.updateIndex();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
 
         // Complete Updating the index
         System.out.println("DONE!");

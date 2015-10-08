@@ -7,6 +7,7 @@
     <link rel="stylesheet" type="text/css" href="text_seach.css"/>
     <script language="javascript" type="application/javascript">
         function searchForTerm(){
+            document.getElementById("results").innerHTML = "";
             $.getJSON("term_search?term="+document.getElementById("searchbox").value, function(data) {
                 data.forEach(function(obj){
                     var result = document.createElement("div");

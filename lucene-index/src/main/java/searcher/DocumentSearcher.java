@@ -6,14 +6,13 @@ import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
-import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TopDocs;
+import searcher.analyzer.SearchAnalyzer;
 import searcher.exception.LuceneSearchException;
 import searcher.reader.IndexReader;
 import util.IndexerConstants;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -38,6 +37,7 @@ public class DocumentSearcher {
     public List<Map.Entry<Double, Integer>> searchForTerm(String term) throws LuceneSearchException{
         try {
             Query query = parser.parse(term);
+            System.out.println("Searching for query: " + query.toString());
             final TopDocs search = searcher.search(query, 50);
 
             return Arrays.asList(search.scoreDocs)
