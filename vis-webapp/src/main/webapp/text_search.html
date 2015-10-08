@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Text Based Search</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="text_seach.css"/>
+    <script language="javascript" type="application/javascript">
+        function searchForTerm(){
+            $.getJSON("term_search?term="+document.getElementById("searchbox").value, function(data) {
+                data.forEach(function(obj){
+                    var result = document.createElement("div");
+                    result.className = "result";
+                    document.getElementById("results").appendChild(result);
+                    $.getJSON("metadata?docId="+obj.value, function(data){
+                        var title = document.createElement("p");
+                        title.innerHTML = data.title;
+                        title.className = "res-title";
+                        result.appendChild(title);
+                        var author = document.createElement("p");
+                        author.innerHTML = data.author;
+                        author.className = "res-author";
+                        result.appendChild(author);
+                    });
+
+                });
+            });
+        }
+    </script>
+</head>
+<body>
+    <input id="searchbox" type="search" /><button onclick="searchForTerm()">Search</button>
+    <div id="results"></div>
+</body>
+</html>

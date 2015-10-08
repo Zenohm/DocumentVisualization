@@ -76,6 +76,15 @@
         <url-pattern>/metadata</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <servlet-name>termSearchServlet</servlet-name>
+        <servlet-class>servlets.TermSearchServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>termSearchServlet</servlet-name>
+        <url-pattern>/term_search</url-pattern>
+    </servlet-mapping>
+
     <welcome-file-list>
         <welcome-file>index.html</welcome-file>
     </welcome-file-list>

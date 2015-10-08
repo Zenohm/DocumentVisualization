@@ -1,0 +1,14 @@
+.result {
+    background-color: #999999;
+    margin: 5px;
+    padding: 5px;
+    witdh: 50%;
+}
+
+.res-title {
+    font-size: large;
+}
+
+.res-author {
+    font-size: small;
+}
