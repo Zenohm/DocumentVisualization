@@ -65,6 +65,7 @@
                 <version>2.3</version>
                 <configuration>
                     <failOnMissingWebXml>true</failOnMissingWebXml>
+                    <archiveClasses>true</archiveClasses>
                 </configuration>
             </plugin>
             <plugin>
