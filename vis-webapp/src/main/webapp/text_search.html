@@ -22,6 +22,10 @@
                         author.innerHTML = data.author;
                         author.className = "res-author";
                         result.appendChild(author);
+                        var conference = document.createElement("p");
+                        conference.innerHTML = data.conference;
+                        conference.className = "res-conference";
+                        result.appendChild(conference);
                         var link = document.createElement('a');
                         link.innerHTML = "[LINK]";
                         link.setAttribute("href", "docs?docId="+obj.value);
