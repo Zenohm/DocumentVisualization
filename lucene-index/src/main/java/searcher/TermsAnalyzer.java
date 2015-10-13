@@ -25,8 +25,12 @@
 package searcher;
 
 import common.ScoredTerm;
+import indexer.PDFAnalyzer;
 import org.apache.commons.lang.StringUtils;
+import org.apache.lucene.analysis.TokenStream;
+import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.index.IndexReader;
+import searcher.exception.LuceneSearchException;
 import util.IndexerConstants;
 
 import java.io.File;
@@ -127,9 +131,7 @@ public class TermsAnalyzer {
         }
 
         // Convert this to a list of scores
-        List<ScoredTerm> scores = termScores.entrySet().stream()
-                .map(e -> new ScoredTerm(e.getKey(), (double) e.getValue() / sentences.size()))
-                .collect(Collectors.toList());
+        List<ScoredTerm> scores = convertToScoredTerm(termScores, sentences.size());
 
         // Sort in reverse order
         Collections.sort(scores, Collections.reverseOrder());
@@ -140,6 +142,30 @@ public class TermsAnalyzer {
         return scores;
     }
 
+    public static List<ScoredTerm> getTerms(String fullText) throws LuceneSearchException{
+        // Spin up a PDF analyzer.
+        PDFAnalyzer analyzer = new PDFAnalyzer(System.getenv(IndexerConstants.RESOURCE_FOLDER_VAR) + "/" + IndexerConstants.STOPWORDS_FILE);
+
+        try {
+            TokenStream stream = analyzer.tokenStream(null, fullText);
+            CharTermAttribute attr = stream.addAttribute(CharTermAttribute.class);
+            Map<String, Integer> termScores = new HashMap<>();
+            stream.reset();
+            while(stream.incrementToken()){
+                String term = attr.toString();
+                termScores.put(term, termScores.getOrDefault(term, 0) + 1);
+            }
+            stream.end();
+            stream.close();
+
+            return convertToScoredTerm(termScores);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new LuceneSearchException("TermAnalyzer: Failed to produce terms.");
+        }
+    }
+
     /**
      * Splits a text into an array of sentences.
      * @param text Text to split into individual sentences
@@ -147,5 +173,15 @@ public class TermsAnalyzer {
      */
     private static String[] splitSentences(String text) {
         return text.split("(?<=[.!?])\\s*");
+    }
+
+    public static List<ScoredTerm> convertToScoredTerm(Map<String, Integer> terms){
+        return convertToScoredTerm(terms, 1.0);
+    }
+
+    public static List<ScoredTerm> convertToScoredTerm(Map<String, Integer> terms, double normalizer){
+        return terms.entrySet().stream()
+                .map(e -> new ScoredTerm(e.getKey(), (double) e.getValue() / normalizer))
+                .collect(Collectors.toList());
     }
 }
