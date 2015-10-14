@@ -31,7 +31,11 @@ import util.IndexerConstants;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
 import java.util.concurrent.Semaphore;
 
 /**
@@ -55,12 +59,35 @@ public class IndexerStartup extends HttpServlet {
                 System.getenv(IndexerConstants.RESOURCE_FOLDER_VAR));
 
         // Try to update the index
-        // TODO: Configuration option to NOT update the index
+        // TODO: Make this configuration less ugly with a class of its own
+        boolean updateIndex = true;
         try {
-            indexer.updateIndex();
+
+            Properties props = new Properties();
+            String propFilename = System.getenv(IndexerConstants.RESOURCE_FOLDER_VAR)
+                + "/" + IndexerConstants.INDEX_CONFIG_FILE;
+            InputStream in = new FileInputStream(propFilename);
+            props.load(in);
+            in.close();
+            if(props.getProperty("INDEX_DOCS").equals("false")){
+                updateIndex = false;
+            }
         } catch (IOException e) {
-            e.printStackTrace();
+            System.err.println("IndexerStartup: Could not find configuration file. " +
+                    "Defaulting to update index.\n" +
+                    "Configuration file should be placed in RESOURCE_DIR/config/index-config.cfg");
         }
+
+        if(updateIndex) {
+            try {
+                indexer.updateIndex();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            System.out.println("Skipping Re-indexing.");
+        }
+
 
         // Complete Updating the index
         System.out.println("DONE!");

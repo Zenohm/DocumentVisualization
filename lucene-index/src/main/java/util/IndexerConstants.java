@@ -30,6 +30,7 @@ package util;
 public class IndexerConstants {
     public static final String INDEX_DIRECTORY = "indexes";
     public static final String STOPWORDS_FILE = "db/stopwords.txt";
+    public static final String INDEX_CONFIG_FILE = "config/index-config.cfg";
     public static final String FIELD_PATH = "path";
     public static final String FIELD_CONTENTS = "contents";
     public static final String FIELD_MODIFIED = "modified";
