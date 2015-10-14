@@ -178,6 +178,8 @@ public class TermsAnalyzer {
      * @throws LuceneSearchException
      */
     public static List<ScoredTerm> getTerms(String fullText) throws LuceneSearchException{
+        // TODO: Add a limit to the number of terms (otherwise the terms may not be significant
+
         // Spin up a PDF analyzer.
         PDFAnalyzer analyzer = new PDFAnalyzer(System.getenv(IndexerConstants.RESOURCE_FOLDER_VAR) + "/" + IndexerConstants.STOPWORDS_FILE);
 
