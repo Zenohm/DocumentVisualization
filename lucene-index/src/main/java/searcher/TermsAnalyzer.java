@@ -142,6 +142,12 @@ public class TermsAnalyzer {
         return scores;
     }
 
+    /**
+     * Gets the most common terms within the text
+     * @param fullText The text to extract terms from
+     * @return A list of scored terms
+     * @throws LuceneSearchException
+     */
     public static List<ScoredTerm> getTerms(String fullText) throws LuceneSearchException{
         // Spin up a PDF analyzer.
         PDFAnalyzer analyzer = new PDFAnalyzer(System.getenv(IndexerConstants.RESOURCE_FOLDER_VAR) + "/" + IndexerConstants.STOPWORDS_FILE);
@@ -158,7 +164,11 @@ public class TermsAnalyzer {
             stream.end();
             stream.close();
 
-            return convertToScoredTerm(termScores);
+            // Get scores and sort
+            List<ScoredTerm> scores = convertToScoredTerm(termScores);
+            Collections.sort(scores, Collections.reverseOrder());
+
+            return scores;
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -175,10 +185,22 @@ public class TermsAnalyzer {
         return text.split("(?<=[.!?])\\s*");
     }
 
+
+    /**
+     * Converts the map of terms to a List of scored terms
+     * @param terms Map of terms
+     * @return List of scored terms
+     */
     public static List<ScoredTerm> convertToScoredTerm(Map<String, Integer> terms){
         return convertToScoredTerm(terms, 1.0);
     }
 
+    /**
+     * Converts the map of terms to a list of scored terms, uses the normalizer that is given
+     * @param terms The map of terms to use
+     * @param normalizer a normalizing constant
+     * @return List of scored terms
+     */
     public static List<ScoredTerm> convertToScoredTerm(Map<String, Integer> terms, double normalizer){
         return terms.entrySet().stream()
                 .map(e -> new ScoredTerm(e.getKey(), (double) e.getValue() / normalizer))
