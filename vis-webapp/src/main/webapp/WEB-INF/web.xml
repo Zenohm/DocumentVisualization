@@ -94,6 +94,24 @@
         <url-pattern>/docs</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <servlet-name>commonTermsServlet</servlet-name>
+        <servlet-class>servlets.CommonTermsServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>commonTermsServlet</servlet-name>
+        <url-pattern>/common_terms</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>relatedTermsServlet</servlet-name>
+        <servlet-class>servlets.RelatedTermsServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>relatedTermsServlet</servlet-name>
+        <url-pattern>/related_terms</url-pattern>
+    </servlet-mapping>
+
     <welcome-file-list>
         <welcome-file>index.html</welcome-file>
     </welcome-file-list>

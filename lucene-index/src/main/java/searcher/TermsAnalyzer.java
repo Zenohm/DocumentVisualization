@@ -25,8 +25,13 @@
 package searcher;
 
 import common.ScoredTerm;
+import indexer.PDFAnalyzer;
 import org.apache.commons.lang.StringUtils;
+import org.apache.lucene.analysis.TokenStream;
+import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.index.IndexReader;
+import searcher.exception.LuceneSearchException;
+import util.FullTextExtractor;
 import util.IndexerConstants;
 
 import java.io.File;
@@ -63,19 +68,13 @@ public class TermsAnalyzer {
      * @param term   The term to find related terms to
      * @return Sorted list of related terms
      */
-    public static List<ScoredTerm> getRelatedTermsInDocument(IndexReader reader, int docId, String term) {
-        try {
+    public static List<ScoredTerm> getRelatedTermsInDocument(IndexReader reader, int docId, String term) throws LuceneSearchException {
+        String fullText = FullTextExtractor.extractFullText(reader, docId);
 
-            // Remove all the newlines
-            String fullText = reader.document(docId).get(IndexerConstants.FIELD_CONTENTS)
-                    .replaceAll("\\r\\n|\\r|\\n", " ").toLowerCase();
+        if(fullText.equals(FullTextExtractor.FAILED_TEXT))
+            throw new LuceneSearchException("Failed to extract fulltext");
 
-            return getRelatedTerms(fullText, term);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
+        return getRelatedTerms(fullText, term);
     }
 
     /**
@@ -94,12 +93,7 @@ public class TermsAnalyzer {
         long startTime = System.nanoTime();
 
         // Oh look stopwords
-        String stopwordRegex = StringUtils.join(STOPWORDS.stream().map(s -> {
-            String newRegex = "\\s*\\b";
-            newRegex += s;
-            newRegex += "\\b\\s*";
-            return newRegex;
-        }).collect(Collectors.toList()), "|");
+        String stopwordRegex = getStopwordRegex();
 
         // Get sentences
         List<String> sentences = Arrays.asList(splitSentences(fullText)).stream()
@@ -127,9 +121,7 @@ public class TermsAnalyzer {
         }
 
         // Convert this to a list of scores
-        List<ScoredTerm> scores = termScores.entrySet().stream()
-                .map(e -> new ScoredTerm(e.getKey(), (double) e.getValue() / sentences.size()))
-                .collect(Collectors.toList());
+        List<ScoredTerm> scores = convertToScoredTerm(termScores, sentences.size());
 
         // Sort in reverse order
         Collections.sort(scores, Collections.reverseOrder());
@@ -141,6 +133,82 @@ public class TermsAnalyzer {
     }
 
     /**
+     * Get all the stopwords as a regular expression
+     * @return The stop words as a regular expression
+     */
+    private static String getStopwordRegex() {
+        return StringUtils.join(STOPWORDS.stream().map(s -> {
+            String newRegex = "\\s*\\b";
+            newRegex += s;
+            newRegex += "\\b\\s*";
+            return newRegex;
+        }).collect(Collectors.toList()), "|");
+    }
+
+    /**
+     * Get the most common terms in the document based on the reader and the document id
+     * @param reader The index reader
+     * @param docId The document id
+     * @return A list of the most common terms (With stopwords removed)
+     * @throws LuceneSearchException
+     */
+    public static List<ScoredTerm> getTerms(IndexReader reader, int docId) throws LuceneSearchException{
+        String fullText = FullTextExtractor.extractFullText(reader, docId);
+
+        if (fullText.equals(FullTextExtractor.FAILED_TEXT))
+            throw new LuceneSearchException("Failed to get the full text.");
+
+        // Get the regular expression for the stopwords
+        String stopwordRegex = getStopwordRegex();
+
+        String filteredFulltext = Arrays.asList(fullText.split(" ")).stream() // Split based on spaces
+                .map(s -> s.replaceAll("\\p{Punct}", "")) // Remove punctuation
+                .map(s -> s.replaceAll(stopwordRegex, " ")) // Remove stop words
+                .map(s -> s.replaceAll("\\s+", " ")) // Remove excessive spaces
+                .map(s -> s.replaceAll("^\\s", "")) // Remove starting spaces
+                .collect(Collectors.joining(" "));
+
+        return getTerms(filteredFulltext);
+    }
+
+    /**
+     * Gets the most common terms within the text
+     * @param fullText The text to extract terms from
+     * @return A list of scored terms
+     * @throws LuceneSearchException
+     */
+    public static List<ScoredTerm> getTerms(String fullText) throws LuceneSearchException{
+        // TODO: Add a limit to the number of terms (otherwise the terms may not be significant
+
+        // Spin up a PDF analyzer.
+        PDFAnalyzer analyzer = new PDFAnalyzer(System.getenv(IndexerConstants.RESOURCE_FOLDER_VAR) + "/" + IndexerConstants.STOPWORDS_FILE);
+
+        try {
+            TokenStream stream = analyzer.tokenStream(IndexerConstants.FIELD_CONTENTS, fullText);
+            CharTermAttribute attr = stream.addAttribute(CharTermAttribute.class);
+            Map<String, Integer> termScores = new HashMap<>();
+            stream.reset();
+            while(stream.incrementToken()){
+                String term = attr.toString();
+                termScores.put(term, termScores.getOrDefault(term, 0) + 1);
+            }
+            stream.end();
+            stream.close();
+
+            // Get scores and sort
+            List<ScoredTerm> scores = convertToScoredTerm(termScores);
+            Collections.sort(scores, Collections.reverseOrder());
+
+            return scores;
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new LuceneSearchException("TermAnalyzer: Failed to produce terms " +
+                    "due to an error with the analyzer");
+        }
+    }
+
+    /**
      * Splits a text into an array of sentences.
      * @param text Text to split into individual sentences
      * @return An array of strings that contain sentences
@@ -148,4 +216,29 @@ public class TermsAnalyzer {
     private static String[] splitSentences(String text) {
         return text.split("(?<=[.!?])\\s*");
     }
+
+
+    /**
+     * Converts the map of terms to a List of scored terms
+     * @param terms Map of terms
+     * @return List of scored terms
+     */
+    public static List<ScoredTerm> convertToScoredTerm(Map<String, Integer> terms){
+        return convertToScoredTerm(terms, 1.0);
+    }
+
+    /**
+     * Converts the map of terms to a list of scored terms, uses the normalizer that is given
+     * @param terms The map of terms to use
+     * @param normalizer a normalizing constant
+     * @return List of scored terms
+     */
+    public static List<ScoredTerm> convertToScoredTerm(Map<String, Integer> terms, double normalizer){
+        return terms.entrySet().stream()
+                .map(e -> new ScoredTerm(e.getKey(), (double) e.getValue() / normalizer))
+                .collect(Collectors.toList());
+    }
+
+    // Make the terms analyzer private so that you can't create one (static class)
+    private TermsAnalyzer() {}
 }
