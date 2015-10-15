@@ -39,7 +39,7 @@ public class DocumentSearcher {
             Query query = parser.parse(term);
             System.out.print("Searching for query: " + query.toString());
             final TopDocs search = searcher.search(query, 50);
-            System.out.print(". Found " + search.totalHits + " documents matching your query.");
+            System.out.print(". Found " + search.totalHits + " documents matching your query.\n");
             return Arrays.asList(search.scoreDocs)
                     .stream()
                     .map(doc -> Maps.immutableEntry((double)doc.score, doc.doc))
