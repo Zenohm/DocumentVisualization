@@ -24,9 +24,11 @@
 
 package searcher;
 
+import analyzers.StemmingTermAnalyzer;
 import common.ScoredTerm;
 import analyzers.PDFAnalyzer;
 import org.apache.commons.lang.StringUtils;
+import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.index.IndexReader;
@@ -181,7 +183,7 @@ public class TermsAnalyzer {
         // TODO: Add a limit to the number of terms (otherwise the terms may not be significant
 
         // Spin up a PDF analyzer.
-        PDFAnalyzer analyzer = new PDFAnalyzer(System.getenv(IndexerConstants.RESOURCE_FOLDER_VAR) + "/" + IndexerConstants.STOPWORDS_FILE);
+        Analyzer analyzer = new StemmingTermAnalyzer(System.getenv(IndexerConstants.RESOURCE_FOLDER_VAR) + "/" + IndexerConstants.STOPWORDS_FILE);
 
         try {
             TokenStream stream = analyzer.tokenStream(IndexerConstants.FIELD_CONTENTS, fullText);
