@@ -24,6 +24,7 @@
 
 package indexer;
 
+import analyzers.PDFAnalyzer;
 import common.DocumentMetadata;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;

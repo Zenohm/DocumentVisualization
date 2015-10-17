@@ -1,4 +1,4 @@
-package searcher.analyzer;
+package analyzers;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenFilter;
@@ -8,17 +8,14 @@ import org.apache.lucene.analysis.core.WhitespaceTokenizer;
 import org.apache.lucene.analysis.standard.StandardFilter;
 
 import java.io.IOException;
-import java.io.Reader;
 import java.io.StringReader;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.StringTokenizer;
 
 /**
  * Created by chris on 10/15/15.
- * A flexible Lucene analyzer for when you just want that one feature.
+ * A flexible Lucene analyzer for when you just want that one feature. This probably won't work.
  */
 public class FlexAnalyzerBuilder {
 

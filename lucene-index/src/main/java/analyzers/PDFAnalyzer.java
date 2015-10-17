@@ -22,10 +22,10 @@
  * THE SOFTWARE.
  */
 
-package indexer;
+package analyzers;
 
-import indexer.filters.AlphaNumericFilter;
-import indexer.filters.NumberFilter;
+import analyzers.filters.AlphaNumericFilter;
+import analyzers.filters.NumberFilter;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.Tokenizer;

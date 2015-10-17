@@ -25,13 +25,12 @@
 package searcher;
 
 import common.ScoredTerm;
-import indexer.PDFAnalyzer;
+import analyzers.PDFAnalyzer;
 import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.index.IndexReader;
 import searcher.exception.LuceneSearchException;
-import searcher.reader.LuceneIndexReader;
 import util.FullTextExtractor;
 import util.IndexerConstants;
 
