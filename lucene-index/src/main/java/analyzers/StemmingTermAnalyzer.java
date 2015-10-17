@@ -19,6 +19,7 @@ import java.util.List;
 
 /**
  * Created by chris on 10/16/15.
+ * Stemming Term analyzer, very similar to PDF analyzer.
  */
 public class StemmingTermAnalyzer extends Analyzer{
     private final List<String> stopwords;
