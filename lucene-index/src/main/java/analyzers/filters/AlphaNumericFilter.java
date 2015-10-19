@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 
-package indexer.filters;
+package analyzers.filters;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.analysis.TokenStream;

@@ -1,0 +1,39 @@
+@startuml
+
+package Client {
+    class "Text Client" as tclient
+    class "Level 1 Visualization" as l1vis
+    class "Level 2 Visualization" as l2vis
+}
+
+package Server {
+    class "Text Server" as tserver
+    class "Level 1 Server" as l1server
+    class "Level 2 Server" as l2server
+    class "Metadata Server" as mdserver
+}
+
+package LuceneSystem {
+    class "Index Reader" as ireader
+    class "Lucene Index" as index
+    class "Indexer" as indexer
+
+    ireader -down-> index : Reads
+    index <-up- indexer : Generates
+
+}
+
+ireader -up- tserver
+ireader -up- l1server
+ireader -up- l2server
+ireader -up- mdserver
+
+tclient -down- tserver
+l1vis -down- l1server
+l2vis -down- l2server
+
+tclient -down- mdserver
+l1vis -down- mdserver
+l2vis -down- mdserver
+
+@enduml

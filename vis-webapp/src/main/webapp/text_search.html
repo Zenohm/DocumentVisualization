@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>Text Based Search</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="text_seach.css"/>
+    <link rel="stylesheet" type="text/css" href="text_search.css"/>
     <script language="javascript" type="application/javascript">
         function searchForTerm(){
             document.getElementById("results").innerHTML = "";
@@ -31,6 +31,18 @@
                         link.setAttribute("href", "docs?docId="+obj.value);
                         link.setAttribute("target", "_blank");
                         result.appendChild(link);
+//                        // TODO: Remove this because it is really slow.
+//                        var terms = document.createElement("p");
+//                        result.appendChild(terms);
+//                        var termsString = "Common Terms: ";
+//                        $.getJSON("common_terms?docId="+obj.value+"&limit=10", function(data) {
+//                            data.forEach(function(term) {
+//                                termsString += term.text + ", ";
+//                            });
+//                            // Remove the last comma space
+//                            terms.innerHTML = termsString.slice(0, -2);
+//                        });
+
                     });
 
                 });

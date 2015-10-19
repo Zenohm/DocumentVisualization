@@ -24,9 +24,11 @@
 
 package searcher;
 
+import analyzers.StemmingTermAnalyzer;
 import common.ScoredTerm;
-import indexer.PDFAnalyzer;
+import analyzers.PDFAnalyzer;
 import org.apache.commons.lang.StringUtils;
+import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.index.IndexReader;
@@ -181,7 +183,7 @@ public class TermsAnalyzer {
         // TODO: Add a limit to the number of terms (otherwise the terms may not be significant
 
         // Spin up a PDF analyzer.
-        PDFAnalyzer analyzer = new PDFAnalyzer(System.getenv(IndexerConstants.RESOURCE_FOLDER_VAR) + "/" + IndexerConstants.STOPWORDS_FILE);
+        Analyzer analyzer = new StemmingTermAnalyzer(System.getenv(IndexerConstants.RESOURCE_FOLDER_VAR) + "/" + IndexerConstants.STOPWORDS_FILE);
 
         try {
             TokenStream stream = analyzer.tokenStream(IndexerConstants.FIELD_CONTENTS, fullText);
@@ -207,6 +209,40 @@ public class TermsAnalyzer {
                     "due to an error with the analyzer");
         }
     }
+
+    /**
+     * Extracts up to the given number of most common terms
+     * @param fullText The full text to extract the terms from
+     * @param limit - The maximum number of terms to be returned in the list
+     * @return The top 0-limit terms of the getTerms(fullText) call.
+     * @throws LuceneSearchException
+     */
+    public static List<ScoredTerm> getTopTerms(String fullText, int limit) throws LuceneSearchException {
+        List<ScoredTerm> terms = getTerms(fullText);
+        return limitTermSize(terms, limit);
+    }
+
+    /**
+     * Extracts the top given number of terms from the Lucene index using the given document number
+     * @param reader The index reader
+     * @param docId The document ID
+     * @param limit The maximum number of terms to returm
+     * @return A list of [limit] size of index terms
+     * @throws LuceneSearchException
+     */
+    public static List<ScoredTerm> getTopTerms(IndexReader reader, int docId, int limit) throws LuceneSearchException {
+        List<ScoredTerm> terms = getTerms(reader, docId);
+        return limitTermSize(terms, limit);
+    }
+
+
+    private static List<ScoredTerm> limitTermSize(List<ScoredTerm> terms, int limit) {
+        if(terms.size() < limit) {
+            limit = terms.size();
+        }
+        return new ArrayList<>(terms.subList(0, limit));
+    }
+
 
     /**
      * Splits a text into an array of sentences.
