@@ -31,17 +31,17 @@
                         link.setAttribute("href", "docs?docId="+obj.value);
                         link.setAttribute("target", "_blank");
                         result.appendChild(link);
-                        // TODO: Remove this because it is really slow.
-                        var terms = document.createElement("p");
-                        result.appendChild(terms);
-                        var termsString = "Common Terms: ";
-                        $.getJSON("common_terms?docId="+obj.value+"&limit=10", function(data) {
-                            data.forEach(function(term) {
-                                termsString += term.text + ", ";
-                            });
-                            // Remove the last comma space
-                            terms.innerHTML = termsString.slice(0, -2);
-                        });
+//                        // TODO: Remove this because it is really slow.
+//                        var terms = document.createElement("p");
+//                        result.appendChild(terms);
+//                        var termsString = "Common Terms: ";
+//                        $.getJSON("common_terms?docId="+obj.value+"&limit=10", function(data) {
+//                            data.forEach(function(term) {
+//                                termsString += term.text + ", ";
+//                            });
+//                            // Remove the last comma space
+//                            terms.innerHTML = termsString.slice(0, -2);
+//                        });
 
                     });
 
