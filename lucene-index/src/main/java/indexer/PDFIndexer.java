@@ -57,8 +57,6 @@ import java.util.concurrent.Executors;
  */
 public class PDFIndexer {
 
-    // These are relative to the document resources directory
-    static public final String CSV_LOCATION = "db/pdf-info.csv";
     public final String indexDirectory;
     public final String resourceDirectory;
 
@@ -148,7 +146,7 @@ public class PDFIndexer {
             // Get the index directory
             Directory dir = FSDirectory.open(Paths.get(indexDirectory));
             // Get the directory for resources
-            String resourcesDir = resourceDirectory + "/" + CSV_LOCATION;
+            String resourcesDir = resourceDirectory + "/" + IndexerConstants.CSV_LOCATION;
             // Get PDF Analyzer
             Analyzer pdf_analyzer = new PDFAnalyzer(resourceDirectory + "/" + IndexerConstants.STOPWORDS_FILE);
             // Create an index writer config with the analyzer

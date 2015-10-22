@@ -38,6 +38,8 @@ public class IndexerConstants {
     public static final String FIELD_AUTHOR = "author";
     public static final String FIELD_CONFERENCE = "conference";
     public static final String RESOURCE_FOLDER_VAR = "RESOURCE_FOLDER";
+    // These are relative to the document resources directory
+    static public final String CSV_LOCATION = "db/pdf-info.csv";
 
     // Private constructor so you cant create this class
     private IndexerConstants() {
