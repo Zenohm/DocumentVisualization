@@ -97,9 +97,13 @@ public class TermsAnalyzer {
         // Oh look stopwords
         String stopwordRegex = getStopwordRegex();
 
+        List<String> sentences = Arrays.asList(splitSentences(fullText));
+
+//        sentences.stream().forEach(System.out::println);
+
         // Get sentences
-        List<String> sentences = Arrays.asList(splitSentences(fullText)).stream()
-                .map(s -> s.replaceAll("\\p{Punct}", "")) // Remove punctuation
+        List<String> filteredSentences = sentences.stream()
+                .map(s -> s.replaceAll("\\p{Punct}", " ")) // Remove punctuation
                 .map(s -> s.replaceAll(stopwordRegex, " ")) // Remove stop words
                 .map(s -> s.replaceAll("\\s+", " ")) // Remove excessive spaces
                 .map(s -> s.replaceAll("^\\s", "")) // Remove starting spaces
@@ -108,14 +112,14 @@ public class TermsAnalyzer {
                 .collect(Collectors.toList());
 
         // Remove all the null or empty strings
-        sentences.removeAll(Collections.singletonList(""));
+        filteredSentences.removeAll(Collections.singletonList(""));
 
         // Print all the sentences (for debug)
-        sentences.stream().forEach(System.out::println);
+        filteredSentences.stream().forEach(System.out::println);
 
         // Collect all the scores
         Map<String, Integer> termScores = new HashMap<>();
-        for (String s : sentences) {
+        for (String s : filteredSentences) {
             String[] tokens = s.split("\\s");
             for (String t : tokens) {
                 termScores.put(t, termScores.getOrDefault(t, 0) + 1);
@@ -123,7 +127,7 @@ public class TermsAnalyzer {
         }
 
         // Convert this to a list of scores
-        List<ScoredTerm> scores = convertToScoredTerm(termScores, sentences.size());
+        List<ScoredTerm> scores = convertToScoredTerm(termScores, filteredSentences.size());
 
         // Sort in reverse order
         Collections.sort(scores, Collections.reverseOrder());
