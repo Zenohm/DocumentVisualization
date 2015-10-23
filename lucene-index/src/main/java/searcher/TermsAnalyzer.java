@@ -115,7 +115,7 @@ public class TermsAnalyzer {
         filteredSentences.removeAll(Collections.singletonList(""));
 
         // Print all the sentences (for debug)
-        filteredSentences.stream().forEach(System.out::println);
+//        filteredSentences.stream().forEach(System.out::println);
 
         // Collect all the scores
         Map<String, Integer> termScores = new HashMap<>();
