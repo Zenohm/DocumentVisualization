@@ -41,7 +41,7 @@ public class SynonymAdapter {
     public static void main(String[] args) {
         while(true) {
             Scanner sc = new Scanner(System.in);
-            System.out.println("Enter a damn word");
+            System.out.println("Enter a word");
             String word = sc.nextLine();
             System.out.println(getSynonyms(word));
         }
