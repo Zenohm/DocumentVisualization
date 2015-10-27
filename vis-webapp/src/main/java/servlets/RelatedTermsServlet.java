@@ -38,8 +38,14 @@ public class RelatedTermsServlet extends GenericServlet {
                 throw new LuceneSearchException("No Term");
             }
 
+
             List<ScoredTerm> terms;
-            terms = TermsAnalyzer.getRelatedTermsInDocument(LuceneIndexReader.getInstance().getReader(), docId, term);
+            if(req.getParameterMap().containsKey("limit")){
+                int limit = Integer.parseInt(req.getParameter("limit"));
+                terms = TermsAnalyzer.getRelatedTermsInDocument(LuceneIndexReader.getInstance().getReader(), docId, term, limit);
+            } else {
+                terms = TermsAnalyzer.getRelatedTermsInDocument(LuceneIndexReader.getInstance().getReader(), docId, term);
+            }
 
             res.getWriter().println((new GsonBuilder()).create().toJson(terms));
 

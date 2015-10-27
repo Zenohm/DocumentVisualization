@@ -1,8 +1,12 @@
+#results {
+    width: 800px;
+}
+
 .result {
     background-color: #999999;
     margin: 5px;
     padding: 5px;
-    width: 50%;
+    width: 100%;
 }
 
 .res-title {
@@ -15,4 +19,19 @@
 
 .res-conference {
     font-size: small;
+}
+
+.common-terms {
+    float: right;
+    height: 100%;
+}
+
+.side-box-float {
+    position: fixed;
+    background: #999999;
+    width: 300px;
+    height: 500px;
+    right: 50px;
+    top: 100px;
+    padding: 10px;
 }

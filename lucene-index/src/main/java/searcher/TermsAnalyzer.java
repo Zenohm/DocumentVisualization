@@ -79,6 +79,14 @@ public class TermsAnalyzer {
         return getRelatedTerms(fullText, term);
     }
 
+    public static List<ScoredTerm> getRelatedTermsInDocument(IndexReader reader, int docId, String term, int limit) throws LuceneSearchException {
+        String fullText = FullTextExtractor.extractFullText(reader, docId);
+        if(fullText.equals(FullTextExtractor.FAILED_TEXT))
+            throw new LuceneSearchException("Failed to extract fulltext");
+
+        return limitTermSize(getRelatedTerms(fullText, term), limit);
+    }
+
     /**
      * This method gets the related terms in the fullText string based on the term.
      * The Related terms are determined by first breaking the fullText into sentences. The sentences are filtered
