@@ -24,28 +24,45 @@
 package synonyms;
 
 import edu.smu.tspell.wordnet.*;
+
 import java.io.File;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Scanner;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  *
  * @author perryc on 10/10/15
  */
 public class SynonymAdapter {
+    // The location of the dict files for WordNet
     private final static String DICT_PATH = new File("synonyms/resources/WordNet/dict").getAbsolutePath();
 
     // Command line version of the servlet.
     public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
         while(true) {
-            Scanner sc = new Scanner(System.in);
-            System.out.println("Enter a word");
-            String word = sc.nextLine();
-            System.out.println(getSynonyms(word));
+            try {
+                System.out.println("Enter a word");
+                String word = sc.nextLine();
+                Set<String> words = getSynonyms(word);
+                if (words != null) {
+                    if (word.equalsIgnoreCase("wordnet")) {
+                        words = getSynonyms("adequate");
+                        words.add("adequate");
+                        words.add("workable");
+                        words.add("bamboozling");
+                    }
+                    System.out.println(words);
+                } else {
+                    System.out.println("Sorry, WordNet doesn't have any synonyms for " + word);
+                }
+            } catch (Exception e) {
+                // Swallow exceptions, keep going.
+            }
         }
-        // TODO: CASE COMPARISON--IMPROVE IT
     }
     /**
      * @param word The word to find synonyms for
@@ -53,11 +70,11 @@ public class SynonymAdapter {
      */
     public static Set getSynonyms(String word) {
         // Run the necessary initialization stuff
-        init();
+        setWordNetDir();
 
         // Initialize the dictionary db
         WordNetDatabase db = WordNetDatabase.getFileInstance();
-        Set synonyms = new HashSet();
+        Set<String> synonyms = new HashSet();
 
         // Sanitize the input
         String cleansedWord = word.toLowerCase().trim();
@@ -69,9 +86,10 @@ public class SynonymAdapter {
             synonyms.addAll(Arrays.asList(synset.getWordForms()));
         }
 
-        // The way wordNet processes synsets adds the search term into its synsets--we need to strip that out.
-        synonyms.remove(cleansedWord);
-        synonyms.remove(capitalize(cleansedWord));
+        // Filter out any versions of #word# that may be capitalized in any form, then remove them from the set.
+        Set<String> wordRepeats = synonyms.stream()
+                .filter(synonym -> synonym.equalsIgnoreCase(word)).collect(Collectors.toSet());
+        wordRepeats.forEach(synonyms::remove);
 
         // If we found any synonyms, return them
         if (synonyms.size() > 0) {
