@@ -27,6 +27,7 @@ package servlets;
  *
  * @author perryc on 10/10/15
  */
+import com.google.gson.GsonBuilder;
 import synonyms.SynonymAdapter;
 
 import org.apache.commons.lang.StringUtils;
@@ -49,7 +50,7 @@ public class SynonymsServlet extends GenericServlet {
     public void service(ServletRequest req, ServletResponse res) throws ServletException, IOException {
         String term = StringUtils.trim((String) req.getAttribute("term"));
         Set synonyms = SynonymAdapter.getSynonyms(term);
-        res.getWriter().println(synonyms);
+        res.getWriter().println((new GsonBuilder()).create().toJson(synonyms));
     }
 
 }

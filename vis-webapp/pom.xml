@@ -50,6 +50,13 @@
             <version>2.4</version>
         </dependency>
 
+        <!-- Synonyms -->
+        <dependency>
+            <groupId>edu.ipfw</groupId>
+            <artifactId>synoyms</artifactId>
+            <version>1.0</version>
+        </dependency>
+
     </dependencies>
 
     <properties>
