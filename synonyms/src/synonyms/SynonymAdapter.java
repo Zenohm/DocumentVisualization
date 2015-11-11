@@ -100,18 +100,11 @@ public class SynonymAdapter {
         }
     }
 
-    private static void init() {
+    /**
+     * Helper method to set the System Property for WordNet.
+     */
+    private static void setWordNetDir() {
         // Necessary for wordnet-JAWS interaction
         System.setProperty("wordnet.database.dir", DICT_PATH);
     }
-
-    /**
-     * Convenience method to capitalize the first character of a term
-     * @param term a word or group of words to be capitalized
-     * @return term with the first character capitalized
-     */
-    private static String capitalize(String term) {
-        return term.substring(0, 1).toUpperCase() + term.substring(1);
-    }
-
 }
