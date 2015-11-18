@@ -26,7 +26,6 @@ package searcher;
 
 import analyzers.StemmingTermAnalyzer;
 import common.ScoredTerm;
-import analyzers.PDFAnalyzer;
 import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
@@ -110,7 +109,7 @@ public class TermsAnalyzer {
 //        sentences.stream().forEach(System.out::println);
 
         // Get sentences
-        List<String> filteredSentences = sentences.stream()
+        List<String> filteredSentences = sentences.parallelStream()
                 .map(s -> s.replaceAll("\\p{Punct}", " ")) // Remove punctuation
                 .map(s -> s.replaceAll(stopwordRegex, " ")) // Remove stop words
                 .map(s -> s.replaceAll("\\s+", " ")) // Remove excessive spaces
@@ -151,7 +150,7 @@ public class TermsAnalyzer {
      * @return The stop words as a regular expression
      */
     private static String getStopwordRegex() {
-        return StringUtils.join(STOPWORDS.stream().map(s -> {
+        return StringUtils.join(STOPWORDS.parallelStream().map(s -> {
             String newRegex = "\\s*\\b";
             newRegex += s;
             newRegex += "\\b\\s*";
@@ -175,7 +174,7 @@ public class TermsAnalyzer {
         // Get the regular expression for the stopwords
         String stopwordRegex = getStopwordRegex();
 
-        String filteredFulltext = Arrays.asList(fullText.split(" ")).stream() // Split based on spaces
+        String filteredFulltext = Arrays.asList(fullText.split(" ")).parallelStream() // Split based on spaces
                 .map(s -> s.replaceAll("\\p{Punct}", "")) // Remove punctuation
                 .map(s -> s.replaceAll(stopwordRegex, " ")) // Remove stop words
                 .map(s -> s.replaceAll("\\s+", " ")) // Remove excessive spaces
@@ -282,7 +281,7 @@ public class TermsAnalyzer {
      * @return List of scored terms
      */
     public static List<ScoredTerm> convertToScoredTerm(Map<String, Integer> terms, double normalizer){
-        return terms.entrySet().stream()
+        return terms.entrySet().parallelStream()
                 .map(e -> new ScoredTerm(e.getKey(), (double) e.getValue() / normalizer))
                 .collect(Collectors.toList());
     }
