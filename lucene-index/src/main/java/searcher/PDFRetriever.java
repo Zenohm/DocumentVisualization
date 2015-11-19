@@ -10,11 +10,10 @@ import java.io.IOException;
 /**
  * Created by Chris on 10/8/2015.
  */
-public class PDFRetriever {
+public class PDFRetriever extends Searcher{
     private IndexReader reader;
     public PDFRetriever(IndexReader reader) throws LuceneSearchException{
-        if(!reader.isInitialized()) throw new LuceneSearchException("PDFRetriever: Index Reader is not initialized");
-        this.reader = reader;
+        super(reader);
     }
 
     public File getPDFFile(int docId) throws LuceneSearchException{
