@@ -12,7 +12,6 @@ import java.io.IOException;
  * Created by chris on 10/6/15.
  */
 public class MetadataRetriever extends Searcher {
-    private IndexReader reader;
     public MetadataRetriever(IndexReader reader) throws LuceneSearchException{
         super(reader);
     }
