@@ -5,6 +5,7 @@
     <title>Text Based Search</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <link rel="stylesheet" type="text/css" href="text_search.css"/>
+    <script src="js/searchUtils.js"></script>
     <script language="javascript" type="application/javascript">
         function searchForTerm(){
             document.getElementById("results").innerHTML = "";
@@ -13,72 +14,60 @@
                     var result = document.createElement("div");
                     result.className = "result";
                     document.getElementById("results").appendChild(result);
-                    $.getJSON("metadata?docId="+obj.value, function(data){
-                        var commonTermsDiv = document.createElement("div");
-                        commonTermsDiv.className = "common-terms";
-                        var title = document.createElement("p");
-                        title.innerHTML = data.title;
-                        title.className = "res-title";
-                        result.appendChild(title);
-                        var author = document.createElement("p");
-                        author.innerHTML = data.author;
-                        author.className = "res-author";
-                        result.appendChild(author);
-                        var conference = document.createElement("p");
-                        conference.innerHTML = data.conference;
-                        conference.className = "res-conference";
-                        result.appendChild(conference);
-                        var link = document.createElement('a');
-                        link.innerHTML = "[LINK]";
-                        link.setAttribute("href", "docs?docId="+obj.value);
-                        link.setAttribute("target", "_blank");
-                        result.appendChild(link);
-                        result.appendChild(commonTermsDiv);
-                        var commonTermsBtn = document.createElement("button");
-                        commonTermsBtn.innerHTML = "Get Common Terms";
-                        commonTermsDiv.appendChild(commonTermsBtn);
-                        commonTermsBtn.onclick = function(){
-                            var sidebar = document.getElementById("sidebar");
-                            sidebar.style.display = '';
-                            sidebar.innerHTML = "";
+                    var metadataDiv = document.createElement("div");
+                    metadataDiv.className = "metadata";
+                    result.appendChild(metadataDiv);
+                    appendMetadata(metadataDiv, obj.value);
 
-                            var side_title = document.createElement("p");
-                            side_title.innerHTML = "Common Stems for <br>\"" + data.title + "\"<br>";
-                            sidebar.appendChild(side_title);
-                            $.getJSON("common_terms?docId="+obj.value+"&limit=10", function(data) {
-                                data.forEach(function(term){
-                                    var termP = document.createElement("p");
-                                    termP.innerHTML = term.text;
-                                    sidebar.appendChild(termP);
-                                });
+                    // Append the Common terms stuff.
+                    var commonTermsDiv = document.createElement("div");
+                    commonTermsDiv.className = "common-terms";
+                    result.appendChild(commonTermsDiv);
+                    var commonTermsBtn = document.createElement("button");
+                    commonTermsBtn.innerHTML = "Get Common Terms";
+                    commonTermsDiv.appendChild(commonTermsBtn);
+                    commonTermsBtn.onclick = function(){
+                        var sidebar = document.getElementById("sidebar");
+                        sidebar.style.display = '';
+                        sidebar.innerHTML = "";
+
+                        var side_title = document.createElement("p");
+                        side_title.innerHTML = "Common Stems for <br>\"" + data.title + "\"<br>";
+                        sidebar.appendChild(side_title);
+                        $.getJSON("common_terms?docId="+obj.value+"&limit=10", function(data) {
+                            data.forEach(function(term){
+                                var termP = document.createElement("p");
+                                termP.innerHTML = term.text;
+                                sidebar.appendChild(termP);
                             });
-                        };
+                        });
+                    };
 
-                        var relTermsSearchBtn = document.createElement("button");
-                        relTermsSearchBtn.innerHTML = "Search for Related Terms";
-                        commonTermsDiv.appendChild(relTermsSearchBtn);
-                        var relTermsSearchBar = document.createElement("input");
-                        relTermsSearchBar.type = 'text';
-                        commonTermsDiv.appendChild(relTermsSearchBar);
-                        relTermsSearchBtn.onclick = function(){
-                            var sidebar = document.getElementById("sidebar");
-                            sidebar.style.display = '';
-                            sidebar.innerHTML = "";
+                    // Append the related terms stuff.
+                    var relTermsSearchBtn = document.createElement("button");
+                    relTermsSearchBtn.innerHTML = "Search for Related Terms";
+                    commonTermsDiv.appendChild(relTermsSearchBtn);
+                    var relTermsSearchBar = document.createElement("input");
+                    relTermsSearchBar.type = 'text';
+                    commonTermsDiv.appendChild(relTermsSearchBar);
+                    relTermsSearchBtn.onclick = function(){
+                        var sidebar = document.getElementById("sidebar");
+                        sidebar.style.display = '';
+                        sidebar.innerHTML = "";
 
-                            var side_title = document.createElement("p");
-                            side_title.innerHTML = "Terms Related to \"" + relTermsSearchBar.value + "\" in document<br>\"" + data.title + "\"";
-                            sidebar.appendChild(side_title);
-                            $.getJSON("related_terms?docId="+obj.value+"&term="+relTermsSearchBar.value+"&limit=10", function(data){
-                                data.forEach(function(term){
-                                    console.log(term);
-                                    var termP = document.createElement("p");
-                                    termP.innerHTML = term.text;
-                                    sidebar.appendChild(termP);
-                                });
+                        var side_title = document.createElement("p");
+                        side_title.innerHTML = "Terms Related to \"" + relTermsSearchBar.value + "\" in document<br>\"" + data.title + "\"";
+                        sidebar.appendChild(side_title);
+                        $.getJSON("related_terms?docId="+obj.value+"&term="+relTermsSearchBar.value+"&limit=10", function(data){
+                            data.forEach(function(term){
+                                console.log(term);
+                                var termP = document.createElement("p");
+                                termP.innerHTML = term.text;
+                                sidebar.appendChild(termP);
                             });
-                        }
+                        });
+                    }
 
-                    });
                 });
             });
         }

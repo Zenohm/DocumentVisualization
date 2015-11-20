@@ -4,9 +4,36 @@
     <meta charset="UTF-8">
     <title>Multi Term Search Test</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="js/searchUtils.js"></script>
     <link rel="stylesheet" type="text/css" href="text_search.css"/>
+    <script>
+        function search(){
+            document.getElementById("results").innerHTML = "";
+            $.getJSON("multi_term_search?" +
+             "query1="+document.getElementById("query1").value+"&"+
+             "query2="+document.getElementById("query2").value+"&"+
+             "query3="+document.getElementById("query3").value,
+            function(data){
+                console.log(data);
+                data.forEach(function(obj) {
+                    var result = document.createElement("div");
+                    result.className = "result";
+                    document.getElementById("results").appendChild(result);
+                    var metadataDiv = document.createElement("div");
+                    metadataDiv.className = "metadata";
+                    result.appendChild(metadataDiv);
+                    appendMetadata(metadataDiv, obj.docId);
+                })
+            });
+        }
+    </script>
 </head>
 <body>
-
+<input id="query1" type="search" />Query 1
+<input id="query2" type="search" />Query 2
+<input id="query3" type="search" />Query 3
+<button onclick="search()">Search</button><br>
+<div id="results"></div>
+<div id="sidebar" class="side-box-float" style="display: none;"></div>
 </body>
 </html>
