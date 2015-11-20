@@ -3,19 +3,20 @@ package searcher.results;
 import org.apache.lucene.search.Query;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
  * Created by chris on 11/19/15.
  */
 public class MultiQueryResults {
-    private final List<QueryResults> results;
     public final int docId;
-    public final Query query;
     public final double score;
-    public MultiQueryResults(int docId, Query query, double score){
+    public final List<String> terms;
+    private final List<QueryResults> results;
+    public MultiQueryResults(int docId, double score, List<String> terms){
         this.docId = docId;
-        this.query = query;
+        this.terms = new ArrayList<>(terms);
         this.score = score;
         results = new ArrayList<>();
     }

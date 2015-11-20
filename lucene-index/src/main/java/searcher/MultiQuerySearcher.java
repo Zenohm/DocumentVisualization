@@ -1,5 +1,6 @@
 package searcher;
 
+import com.google.common.collect.Maps;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
@@ -13,6 +14,7 @@ import searcher.results.QueryResults;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -25,16 +27,19 @@ public class MultiQuerySearcher extends Searcher {
 
     public List<MultiQueryResults> searchForResults(String... queries) throws IOException {
         // Create a list of queries
-        List<Query> queryList = Arrays.asList(queries).stream()
+        List<Map.Entry<String, Query>> queryList = Arrays.asList(queries).stream() // This cannot be parallel
                 .map(this::parseQuery)
                 .filter(query -> query != null) // Handle potential nulls.
                 .collect(Collectors.toList());
 
         // Create the boolean query to cover all the cases
         BooleanQuery overallQuery = new BooleanQuery();
-        for(Query query : queryList) {
-            overallQuery.add(query, BooleanClause.Occur.SHOULD); // Add that the query should occur
+
+        for(Map.Entry<String, Query> query : queryList) {
+            overallQuery.add(query.getValue(), BooleanClause.Occur.SHOULD); // Add that the query should occur
         }
+
+        System.out.println(overallQuery);
 
         // Search the index for the documents.
         final TopDocs searchResults = searcher.search(overallQuery, 50); // FIXME: Magic number
@@ -42,12 +47,13 @@ public class MultiQuerySearcher extends Searcher {
         return Arrays.asList(searchResults.scoreDocs).stream()
                 .map(doc -> {
                     MultiQueryResults queryResults =
-                            new MultiQueryResults(doc.doc, overallQuery, (double) doc.score);
+                            new MultiQueryResults(doc.doc, (double) doc.score, Arrays.asList(queries));
 
-                    for (Query query : queryList) {
+                    for (Map.Entry<String, Query> query : queryList) {
                         try {
-                            double score = searcher.explain(query, doc.doc).getValue();
-                            QueryResults results = new QueryResults(doc.doc, query, score);
+                            double score =
+                                    searcher.explain(query.getValue(), doc.doc).getValue();
+                            QueryResults results = new QueryResults(doc.doc, query.getKey(), score);
                             queryResults.addQueryResult(results);
                         } catch (IOException e) {
                             e.printStackTrace();
@@ -58,9 +64,9 @@ public class MultiQuerySearcher extends Searcher {
                 .collect(Collectors.toList());
     }
 
-    private Query parseQuery(String str){
+    private Map.Entry<String, Query> parseQuery(String str){
         try{
-            return parser.parse(str);
+            return Maps.immutableEntry(str, parser.parse(str));
         }catch (ParseException e){
             e.printStackTrace(); // TODO: Introduce better error handling
         }

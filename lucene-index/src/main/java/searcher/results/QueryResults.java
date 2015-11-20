@@ -7,9 +7,9 @@ import org.apache.lucene.search.Query;
  */
 public class QueryResults {
     public final int docId;
-    public final Query query;
+    public final String query;
     public final double score;
-    public QueryResults(int docId, Query query, double score){
+    public QueryResults(int docId, String query, double score){
         this.docId = docId;
         this.query = query;
         this.score = score;
