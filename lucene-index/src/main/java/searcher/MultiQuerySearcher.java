@@ -39,8 +39,6 @@ public class MultiQuerySearcher extends Searcher {
             overallQuery.add(query.getValue(), BooleanClause.Occur.SHOULD); // Add that the query should occur
         }
 
-        System.out.println(overallQuery);
-
         // Search the index for the documents.
         final TopDocs searchResults = searcher.search(overallQuery, 50); // FIXME: Magic number
 

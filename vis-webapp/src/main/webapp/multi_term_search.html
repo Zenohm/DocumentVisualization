@@ -4,9 +4,11 @@
     <meta charset="UTF-8">
     <title>Multi Term Search Test</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
     <script src="js/searchUtils.js"></script>
     <link rel="stylesheet" type="text/css" href="text_search.css"/>
     <script>
+        google.load("visualization", "1", {packages:["corechart"]});
         function search(){
             document.getElementById("results").innerHTML = "";
             $.getJSON("multi_term_search?" +
@@ -23,6 +25,25 @@
                     metadataDiv.className = "metadata";
                     result.appendChild(metadataDiv);
                     appendMetadata(metadataDiv, obj.docId);
+
+                    var chartdiv = document.createElement("div");
+                    chartdiv.id = "chart"+obj.docId;
+                    result.appendChild(chartdiv);
+
+                    var data = new google.visualization.DataTable();
+                    data.addColumn('string', 'Term');
+                    data.addColumn('number', 'Score');
+                    data.addRows([
+                            [obj.results[0].query, obj.results[0].score],
+                            [obj.results[1].query, obj.results[1].score],
+                            [obj.results[2].query, obj.results[2].score]
+                    ]);
+
+                    var options = {'width': 400, 'height': 250};
+
+                    var chart = new google.visualization.PieChart(document.getElementById(chartdiv.id));
+                    chart.draw(data, options);
+
                 })
             });
         }
@@ -31,7 +52,7 @@
 <body>
 <input id="query1" type="search" />Query 1
 <input id="query2" type="search" />Query 2
-<input id="query3" type="search" />Query 3
+<input id="query3" type="search" />Query 3<br>
 <button onclick="search()">Search</button><br>
 <div id="results"></div>
 <div id="sidebar" class="side-box-float" style="display: none;"></div>

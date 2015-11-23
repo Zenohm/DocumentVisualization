@@ -1,6 +1,8 @@
 package servlets;
 
 import com.google.gson.GsonBuilder;
+import data_processing.multi_query_processing.MultiQueryConverter;
+import data_processing.multi_query_processing.multi_query_json_data.MultiQueryJson;
 import searcher.MultiQuerySearcher;
 import searcher.exception.LuceneSearchException;
 import searcher.reader.LuceneIndexReader;
@@ -40,7 +42,14 @@ public class MultiQueryServlet extends GenericServlet {
                     new MultiQuerySearcher(LuceneIndexReader.getInstance());
             List<MultiQueryResults> queryResults =
                     searcher.searchForResults(queryStringArray);
-            res.getWriter().println((new GsonBuilder()).create().toJson(queryResults));
+            if(req.getParameterMap().containsKey("vis")){
+                MultiQueryJson converted = MultiQueryConverter.convertToLinksAndNodes(queryResults);
+                res.getWriter().println((new GsonBuilder().setPrettyPrinting()).create().toJson(converted));
+            }else{
+                res.getWriter().println((new GsonBuilder()).create().toJson(queryResults));
+            }
+
+
         }catch (LuceneSearchException e){
             System.err.println("There was an error with the multi query servlet");
             e.printStackTrace();
