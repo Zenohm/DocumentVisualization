@@ -27,24 +27,46 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="style.css"/>
-    <title>I JUST WANNA TEST IT</title>
+    <title>Tier 1 Visualization</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="js/multiTermGraph.js"></script>
+    <!--<script src="js/forceGraphV2.js"></script>-->
+    <script>
+        $(document).ready(function(){
+            document.getElementById("searchButton").addEventListener("click", createGraph);
+            function createGraph(){
+                var chart = forceChart();
+                var query1 = document.getElementById("query1").value;
+                var query2 = document.getElementById("query2").value;
+                var query3 = document.getElementById("query3").value;
+                // TODO: Handle null queries
+            d3.json("multi_term_search?vis&query1="+query1+"&query2="+query2+"&query3="+query3, function(error, data) {
+                if (error) throw error;
+                console.log(data);
+                d3.select("#main").datum(data).call(chart);
+            });
+//                d3.json("td.json", function(error, data){
+//                    if(error) throw error;
+//                    console.log(data);
+//                    d3.select("#main").datum(data).call(chart);
+//                });
+            }
+        });
+
+    </script>
 </head>
 <body>
 <div class="sidebar" id="content">
-    <input id="iptSearchInput" type="text"/>
-    <button id="btnSearchButton">Search</button>
+    <input id="query1" type="search" value="visualization"/>
+    <input id="query2" type="search" value="virtualization"/>
+    <input id="query3" type="search" value="test"/>
+    <button id="searchButton">Search</button>
     <div id="searchOutput"></div>
 </div>
 <div class="content" id="main"></div>
 <div class="footer">
-    <button id="randomNodes">Create Random Nodes</button>
-    <br>Data Provided by PLOS
+    Data Provided by <a href="http://research.google.com">Google Research</a>
 </div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
-<script src="js/PLoSLib.js"></script>
-<script src="js/PLoSSearch.js"></script>
-<script src="js/forceGraph.js"></script>
-<script src="js/forceGraphV2.js"></script>
-<script src="js/testButtonFire.js"></script>
 </body>
 </html>

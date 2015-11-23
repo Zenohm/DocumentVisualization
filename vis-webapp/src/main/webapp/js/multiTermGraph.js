@@ -53,15 +53,13 @@ function forceChart() {
             height = this.clientHeight;
             width = this.clientWidth;
 
-            console.log(width);
-            console.log(height);
-
             force = d3.layout.force()
                 .charge(-150)
-                .linkDistance(50)
+                .linkDistance(function(d){return d.link_power;})
+                .linkStrength(function(d){return d.link_power;})
                 .size([width, height]);
 
-            svg = d3.select(this).append("svg")
+            svg = d3.select(this).append("svg")// TODO: Probably need to add code to remove this if it already exists
                 .attr("width", width)
                 .attr("height", height);
 
@@ -75,25 +73,33 @@ function forceChart() {
             link = svg.selectAll(".link")
                 .data(d.links);
 
-            link.enter().append("line")
-                .attr("class", "link")
-                .style("stroke-width", function (d) {
-                    return Math.sqrt(d.value);
-                });
-
             link.exit().remove();
 
-            node = svg.selectAll(".node");
+            link.enter().append("line")
+                .attr("class", "link")
+                .style("stroke-width", 3);
 
-            node.data(d.nodes).enter().append("circle")
+            node = svg.selectAll(".node")
+                .data(d.nodes);
+
+            console.log(d.nodes);
+
+            node.enter().append("circle")
                 .attr("class", "node")
-                .attr("r", 5)
-                .style("fill", function (d) {
-                    return color(d.group);
+                .attr("r", function(d){
+                    if(d.fixed){
+                        return 40;
+                    }else{
+                        return d.size;
+                    }
                 })
-                .call(force.drag);
+                .attr("radius", function(d){return d.r;})
+                .style("fill", function (d) {
+                    console.log(d.color);
+                    return d3.rgb(d.color);
+                });
 
-            node.data(d.nodes).exit().remove();
+            node.exit().remove();
 
             svg.selectAll(".node").data(d.nodes).exit().remove();
 
@@ -103,7 +109,6 @@ function forceChart() {
 
             force.on("tick", onTick);
             d3.select(window).on('resize', onResize);
-            console.log(this);
         });
     }
 
@@ -145,9 +150,27 @@ function forceChart() {
      * Function that is called every tick (critical code should run fast)
      */
     function onTick() {
-        link.attr("x1", function (d) {
-            return d.source.x;
+        var r = 5;
+
+        node.each(collide(.5))
+            .attr("cx", function (d) {
+            if(d.fixed){
+                return d.x = width * d.xLoc;
+            }else{
+                return d.x;
+            }
         })
+            .attr("cy", function (d) {
+                if(d.fixed){
+                    return d.y = height * d.yLoc;
+                }else{
+                    return d.y;
+                }
+        });
+
+        link.attr("x1", function (d) {
+                return d.source.x;
+            })
             .attr("y1", function (d) {
                 return d.source.y;
             })
@@ -158,25 +181,25 @@ function forceChart() {
                 return d.target.y;
             });
 
-        node.each(collide(0.5))
-            .attr("cx", function (d) {
-                return d.x = Math.max(r, Math.min(width - r, d.x));
-            })
-            .attr("cy", function (d) {
-                return d.y = Math.max(r, Math.min(height - r, d.y));
-            });
+
+
+
     }
 
 
+    var clusterPadding = 20, // separation between different-color nodes
+        maxRadius = 24,
+        padding = 1.5;
+
     /**
-     * This function is used to collide every node.
+     * This function is used to collide every node. // TODO: I have no idea how this works and I need to figure it out.
      * @param alpha
      * @returns {Function}
      */
     function collide(alpha) {
         var quadtree = d3.geom.quadtree(graph.nodes);
         return function (d) {
-            var r = d.radius + maxRadius + Math.max(padding, clusterPadding),
+            var r = d.size + maxRadius + Math.max(padding, clusterPadding),
                 nx1 = d.x - r,
                 nx2 = d.x + r,
                 ny1 = d.y - r,
