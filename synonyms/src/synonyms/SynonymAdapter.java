@@ -23,16 +23,22 @@
  */
 package synonyms;
 
-import edu.smu.tspell.wordnet.*;
+import edu.smu.tspell.wordnet.Synset;
+import edu.smu.tspell.wordnet.WordNetDatabase;
+import mcUtils.ScoredTerm;
 
 import java.io.File;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
+ * Adapter to communicate with JAWS (which communicates with WordNet db files.)  Usage requires the setting of VM
+ * options with the following:
+ *    -Dwordnet.database.dir={Directory containing the 'dict' folder for wordnet files}
  *
  * @author perryc on 10/10/15
  */
@@ -40,6 +46,7 @@ public class SynonymAdapter {
     // The location of the dict files for WordNet
     private final static String DICT_PATH = new File("synonyms/resources/WordNet/dict").getAbsolutePath();
 
+    // TODO: Remove this
     // Command line version of the servlet.
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
@@ -47,30 +54,37 @@ public class SynonymAdapter {
             try {
                 System.out.println("Enter a word");
                 String word = sc.nextLine();
-                Set<String> words = getSynonyms(word);
-                if (words != null) {
+                Set<String> synonyms = getSynonyms(word);
+                List<ScoredTerm> scoredTerms = SynonymScorer.getRankedSynonymsWithScores(word, synonyms);
+                if (scoredTerms != null) {
                     if (word.equalsIgnoreCase("wordnet")) {
-                        words = getSynonyms("adequate");
-                        words.add("adequate");
-                        words.add("workable");
-                        words.add("bamboozling");
+                        synonyms = getSynonyms("adequate");
+                        synonyms.add("adequate");
+                        synonyms.add("workable");
+                        synonyms.add("bamboozling");
                     }
-                    System.out.println(words);
+                    System.out.println(scoredTerms);
                 } else {
                     System.out.println("Sorry, WordNet doesn't have any synonyms for " + word);
                 }
             } catch (Exception e) {
+                System.out.println(e.getLocalizedMessage());
                 // Swallow exceptions, keep going.
             }
         }
     }
+
     /**
      * @param word The word to find synonyms for
-     * @return A set of synonyms for the given #word# in no particular order
+     * @return A set of synonyms for the given #word# in no particular order or null if you didn't pass a word, jerk.
      */
     public static Set getSynonyms(String word) {
+        if (word == null) {
+            return null;
+        }
+
         // Run the necessary initialization stuff
-        setWordNetDir();
+        // setWordNetDir();
 
         // Initialize the dictionary db
         WordNetDatabase db = WordNetDatabase.getFileInstance();
@@ -98,13 +112,5 @@ public class SynonymAdapter {
             // Otherwise return null
             return null;
         }
-    }
-
-    /**
-     * Helper method to set the System Property for WordNet.
-     */
-    private static void setWordNetDir() {
-        // Necessary for wordnet-JAWS interaction
-        System.setProperty("wordnet.database.dir", DICT_PATH);
     }
 }

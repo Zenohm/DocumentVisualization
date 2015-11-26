@@ -12,9 +12,9 @@
 
     <name>Synonyms</name>
     <groupId>edu.ipfw</groupId>
-    <artifactId>synoyms</artifactId>
-    <version>1.0</version>
-    <packaging>war</packaging>
+    <artifactId>synonyms</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
 
     <dependencies>
 
@@ -25,6 +25,24 @@
             <version>3.0.1</version>
             <scope>provided</scope>
         </dependency>
+
+        <!-- JAWS -->
+        <dependency>
+            <groupId>jaws</groupId>
+            <artifactId>jaws</artifactId>
+            <version>1.2</version>
+        </dependency>
+        <dependency>
+            <groupId>edu.ipfw</groupId>
+            <artifactId>lucene-index</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>edu.ipfw</groupId>
+            <artifactId>lucene-index</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
     </dependencies>
 
     <properties>

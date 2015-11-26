@@ -48,7 +48,8 @@ public class SynonymsServlet extends GenericServlet {
 
     @Override
     public void service(ServletRequest req, ServletResponse res) throws ServletException, IOException {
-        String term = StringUtils.trim((String) req.getAttribute("term"));
+
+        String term = StringUtils.trim(req.getParameter("term"));
         Set synonyms = SynonymAdapter.getSynonyms(term);
         res.getWriter().println((new GsonBuilder()).create().toJson(synonyms));
     }

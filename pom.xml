@@ -19,6 +19,11 @@
             <artifactId>guava</artifactId>
             <version>18.0</version>
         </dependency>
+        <dependency>
+            <groupId>jaws</groupId>
+            <artifactId>jaws</artifactId>
+            <version>1.2</version>
+        </dependency>
 
     </dependencies>
     <packaging>pom</packaging>
