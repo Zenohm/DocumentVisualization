@@ -31,8 +31,15 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script src="js/multiTermGraph.js"></script>
+    <script src="js/searchUtils.js"></script>
     <!--<script src="js/forceGraphV2.js"></script>-->
     <script>
+        function displayDocument(docId){
+            var docInfo = document.getElementById("documentInfo");
+            docInfo.innerHTML = "";
+            appendMetadata(docInfo, docId);
+        }
+
         $(document).ready(function(){
             document.getElementById("searchButton").addEventListener("click", createGraph);
             function createGraph(){
@@ -43,14 +50,8 @@
                 // TODO: Handle null queries
             d3.json("multi_term_search?vis&query1="+query1+"&query2="+query2+"&query3="+query3, function(error, data) {
                 if (error) throw error;
-                console.log(data);
                 d3.select("#main").datum(data).call(chart);
             });
-//                d3.json("td.json", function(error, data){
-//                    if(error) throw error;
-//                    console.log(data);
-//                    d3.select("#main").datum(data).call(chart);
-//                });
             }
         });
 
@@ -58,11 +59,11 @@
 </head>
 <body>
 <div class="sidebar" id="content">
-    <input id="query1" type="search" value="visualization"/>
-    <input id="query2" type="search" value="virtualization"/>
-    <input id="query3" type="search" value="test"/>
-    <button id="searchButton">Search</button>
-    <div id="searchOutput"></div>
+    <input id="query1" type="search" value="visualization"/><br>
+    <input id="query2" type="search" value="virtualization"/><br>
+    <input id="query3" type="search" value="test"/><br><br>
+    <button id="searchButton">Search</button><br>
+    <div id="documentInfo"></div>
 </div>
 <div class="content" id="main"></div>
 <div class="footer">
