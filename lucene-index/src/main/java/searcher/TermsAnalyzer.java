@@ -25,7 +25,6 @@
 package searcher;
 
 import analyzers.StemmingTermAnalyzer;
-import common.ScoredTerm;
 import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
@@ -34,6 +33,7 @@ import org.apache.lucene.index.IndexReader;
 import searcher.exception.LuceneSearchException;
 import util.FullTextExtractor;
 import util.IndexerConstants;
+import common.ScoredTerm;
 
 import java.io.File;
 import java.io.FileNotFoundException;

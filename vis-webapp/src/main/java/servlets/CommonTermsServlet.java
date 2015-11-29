@@ -1,7 +1,6 @@
 package servlets;
 
 import com.google.gson.GsonBuilder;
-import common.ScoredTerm;
 import searcher.TermsAnalyzer;
 import searcher.exception.LuceneSearchException;
 import searcher.reader.LuceneIndexReader;
@@ -13,6 +12,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebServlet;
 import java.io.IOException;
 import java.util.List;
+import common.ScoredTerm;
 
 /**
  * Created by chris on 10/13/15.

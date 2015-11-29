@@ -23,10 +23,10 @@
  */
 package synonyms;
 
-import common.ScoredTerm;
 import searcher.DocumentSearcher;
 import searcher.exception.LuceneSearchException;
 import searcher.reader.LuceneIndexReader;
+import common.ScoredTerm;
 
 import java.util.ArrayList;
 import java.util.Collections;
