@@ -56,16 +56,10 @@ public class SynonymAdapter {
                 String word = sc.nextLine();
                 Set<String> synonyms = getSynonyms(word);
                 List<ScoredTerm> scoredTerms = SynonymScorer.getRankedSynonymsWithScores(word, synonyms);
-                if (scoredTerms != null) {
-                    if (word.equalsIgnoreCase("wordnet")) {
-                        synonyms = getSynonyms("adequate");
-                        synonyms.add("adequate");
-                        synonyms.add("workable");
-                        synonyms.add("bamboozling");
-                    }
-                    System.out.println(scoredTerms);
-                } else {
+                if (scoredTerms == null || scoredTerms.isEmpty()) {
                     System.out.println("Sorry, WordNet doesn't have any synonyms for " + word);
+                } else {
+                    System.out.println(scoredTerms);
                 }
             } catch (Exception e) {
                 System.out.println(e.getLocalizedMessage());

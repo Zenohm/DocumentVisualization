@@ -29,10 +29,12 @@ import searcher.exception.LuceneSearchException;
 import searcher.reader.LuceneIndexReader;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -69,6 +71,10 @@ public class SynonymScorer {
      */
     public static List<ScoredTerm> getRankedSynonymsWithScores(String original, Set<String> synonyms,
                                                                double minRelevanceRatio) {
+        // Handle null/empty cases
+        if (original == null || synonyms == null || synonyms.isEmpty()) {
+            return Collections.EMPTY_LIST;
+        }
         // A HashMap with the word as the key, and its corresponding score
         List<ScoredTerm> scoredSynonyms = new ArrayList<>();
 
@@ -87,7 +93,7 @@ public class SynonymScorer {
 
         // If there were no relevant terms, return null.
         // TODO: throw a NoRelevantTerms exception?
-        return relevantTerms.size() > 0 ? relevantTerms : null;
+        return relevantTerms.size() > 0 ? relevantTerms : Collections.EMPTY_LIST;
     }
 
     /**
@@ -145,16 +151,18 @@ public class SynonymScorer {
         // Attempt a lucene search for #words# to find relevant docs.
         List<Map.Entry<Double, Integer>> searchResults;
         try {
-            DocumentSearcher searcher = new DocumentSearcher(LuceneIndexReader.getInstance());
+            LuceneIndexReader reader = LuceneIndexReader.getInstance();
+            reader.initializeIndexReader();
+            DocumentSearcher searcher = new DocumentSearcher(reader);
 
             // If there was only 1 term, use singleTermSearch.  Greater than one: use multi-term search
             if (words.length == 1) {
                  searchResults = searcher.searchForTerm(words[0]);
             } else {
                 // TODO: Multi-term search goes here
-                searchResults = searcher.searchForTerm(words[9999999]);
+                // searchResults = searcher.multiTermSearch(words);
+                return (new Random()).nextInt(1000);
             }
-
             // The number of documents will be the number of entries in the searchResults.
             return searchResults.size();
         } catch (LuceneSearchException e) {
