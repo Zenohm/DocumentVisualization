@@ -1,3 +1,5 @@
+package common;
+
 /*
  * The MIT License (MIT)
  *
@@ -21,8 +23,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
-package mcUtils;
 
 /**
  * This class represents a term within a document with a score. This is for finding terms that are related within
@@ -58,7 +58,6 @@ public class ScoredTerm implements Comparable<ScoredTerm> {
      * 1 if it is greater than the other term
      * 0 if they are equal
      */
-    @Override
     public int compareTo(ScoredTerm o) {
         if (this.score == o.score) return 0;
         if (this.score > o.score) {

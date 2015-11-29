@@ -23,7 +23,7 @@
  */
 package synonyms;
 
-import mcUtils.ScoredTerm;
+import common.ScoredTerm;
 import searcher.DocumentSearcher;
 import searcher.exception.LuceneSearchException;
 import searcher.reader.LuceneIndexReader;
@@ -86,7 +86,7 @@ public class SynonymScorer {
         // Trim the fat - anything below relevance rank gets the D
         List<ScoredTerm> relevantTerms = getRelevantSynonyms(scoredSynonyms, minRelevanceRatio);
 
-        // Use ScoredTerm's built-in comparator for sorting purposes
+        // Use common.ScoredTerm's built-in comparator for sorting purposes
         relevantTerms.sort(ScoredTerm::compareTo);
         // It is by default in ascending order; we want most relevant first, so reverse it
         relevantTerms.sort(Comparator.reverseOrder());

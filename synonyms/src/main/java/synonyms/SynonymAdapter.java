@@ -25,7 +25,7 @@ package synonyms;
 
 import edu.smu.tspell.wordnet.Synset;
 import edu.smu.tspell.wordnet.WordNetDatabase;
-import mcUtils.ScoredTerm;
+import common.ScoredTerm;
 
 import java.io.File;
 import java.util.Arrays;

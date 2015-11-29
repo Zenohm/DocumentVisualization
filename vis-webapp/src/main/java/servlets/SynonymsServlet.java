@@ -28,9 +28,9 @@ package servlets;
  * @author perryc on 10/10/15
  */
 import com.google.gson.GsonBuilder;
-import synonyms.SynonymAdapter;
 
 import org.apache.commons.lang.StringUtils;
+import synonyms.SynonymAdapter;
 
 import java.io.IOException;
 import java.util.Set;
