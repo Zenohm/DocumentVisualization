@@ -23,6 +23,13 @@
             <version>1.0-SNAPSHOT</version>
         </dependency>
 
+        <!-- Synonyms -->
+        <dependency>
+            <groupId>edu.ipfw</groupId>
+            <artifactId>synonyms</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
         <!-- Servlet 3.0 API -->
         <dependency>
             <groupId>javax.servlet</groupId>
