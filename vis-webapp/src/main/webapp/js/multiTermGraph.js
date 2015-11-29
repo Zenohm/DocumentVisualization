@@ -29,6 +29,9 @@
  */
 
 function forceChart() {
+    // "Constant" Variables
+    var FIXED_NODE_SIZE = 50;
+
     // "Class" Variables
     var width = 400,
         height = 400,
@@ -37,6 +40,7 @@ function forceChart() {
         color = d3.scale.category20(),
         link = 0,
         node = 0,
+        text = 0,
         quadTree = 0,
         graph = 0,
         me = 0;
@@ -53,20 +57,20 @@ function forceChart() {
             height = this.clientHeight;
             width = this.clientWidth;
 
-            console.log(width);
-            console.log(height);
-
             force = d3.layout.force()
                 .charge(-150)
-                .linkDistance(50)
+                .linkStrength(function(d){return d.link_power;})
                 .size([width, height]);
 
-            svg = d3.select(this).append("svg")
-                .attr("width", width)
-                .attr("height", height);
+            // Check if the SVG exists, if it doesn't create it
+            svg = d3.select(this).selectAll("svg");
+            if(svg.empty()){
+                d3.select(this).append("svg").attr("width", width).attr("height", height);
+            }
 
             quadTree = d3.geom.quadtree(d.nodes);
 
+            // Add the data, start the sim.
             force.nodes(d.nodes)
                 .links(d.links)
                 .start();
@@ -75,25 +79,46 @@ function forceChart() {
             link = svg.selectAll(".link")
                 .data(d.links);
 
-            link.enter().append("line")
-                .attr("class", "link")
-                .style("stroke-width", function (d) {
-                    return Math.sqrt(d.value);
-                });
-
             link.exit().remove();
 
-            node = svg.selectAll(".node");
+            link.enter().append("line")
+                .attr("class", "link")
+                .style("stroke-width", 3);
 
-            node.data(d.nodes).enter().append("circle")
+            node = svg.selectAll(".node")
+                .data(d.nodes);
+
+            // Adding the nodes
+            node.enter().append("circle")
                 .attr("class", "node")
-                .attr("r", 5)
-                .style("fill", function (d) {
-                    return color(d.group);
+                .attr("r", function(d){
+                    if(d.fixed){
+                        return FIXED_NODE_SIZE;
+                    }else{
+                        return d.size;
+                    }
                 })
-                .call(force.drag);
+                .attr("radius", function(d){return d.r;})
+                .style("fill", function (d) {
+                    return d3.rgb(d.color);
+                })
+                .on("click", function(d){
+                    displayDocument(d.docId);
+                });
 
-            node.data(d.nodes).exit().remove();
+            text = svg.selectAll("text").data(d.nodes.filter(function(d){return d.fixed;}));
+            text.enter()
+                .append("text").text(function(d){
+                    return d.name;
+                })
+                .attr("font-family", "sans-serif")
+                .attr("font-size", "12px")
+                .attr("fill", "black")
+                .attr("text-anchor", "middle");
+
+
+            // If a node is removed, remove it from the sim.
+            node.exit().remove();
 
             svg.selectAll(".node").data(d.nodes).exit().remove();
 
@@ -103,7 +128,6 @@ function forceChart() {
 
             force.on("tick", onTick);
             d3.select(window).on('resize', onResize);
-            console.log(this);
         });
     }
 
@@ -145,9 +169,33 @@ function forceChart() {
      * Function that is called every tick (critical code should run fast)
      */
     function onTick() {
-        link.attr("x1", function (d) {
-            return d.source.x;
+        var r = 5;
+
+        node.each(collide(.5))
+            .attr("cx", function (d) {
+            if(d.fixed){
+                return d.x = width * d.xLoc;
+            }else{
+                return d.x;
+            }
         })
+            .attr("cy", function (d) {
+                if(d.fixed){
+                    return d.y = height * d.yLoc;
+                }else{
+                    return d.y;
+                }
+        });
+
+        text.attr("x", function(d){
+            return d.x;
+        }).attr("y", function(d){
+            return d.y;
+        })
+
+        link.attr("x1", function (d) {
+                return d.source.x;
+            })
             .attr("y1", function (d) {
                 return d.source.y;
             })
@@ -157,26 +205,22 @@ function forceChart() {
             .attr("y2", function (d) {
                 return d.target.y;
             });
-
-        node.each(collide(0.5))
-            .attr("cx", function (d) {
-                return d.x = Math.max(r, Math.min(width - r, d.x));
-            })
-            .attr("cy", function (d) {
-                return d.y = Math.max(r, Math.min(height - r, d.y));
-            });
     }
 
 
+    var clusterPadding = 20, // separation between different-color nodes
+        maxRadius = 50,
+        padding = 1.5;
+
     /**
-     * This function is used to collide every node.
+     * This function is used to collide every node. // TODO: I have no idea how this works and I need to figure it out.
      * @param alpha
      * @returns {Function}
      */
     function collide(alpha) {
         var quadtree = d3.geom.quadtree(graph.nodes);
         return function (d) {
-            var r = d.radius + maxRadius + Math.max(padding, clusterPadding),
+            var r = d.size + maxRadius + Math.max(padding, clusterPadding),
                 nx1 = d.x - r,
                 nx2 = d.x + r,
                 ny1 = d.y - r,

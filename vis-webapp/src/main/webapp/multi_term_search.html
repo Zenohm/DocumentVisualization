@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Multi Term Search Test</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script src="js/searchUtils.js"></script>
+    <link rel="stylesheet" type="text/css" href="text_search.css"/>
+    <script>
+        google.load("visualization", "1", {packages:["corechart"]});
+        function search(){
+            document.getElementById("results").innerHTML = "";
+            $.getJSON("multi_term_search?" +
+             "query1="+document.getElementById("query1").value+"&"+
+             "query2="+document.getElementById("query2").value+"&"+
+             "query3="+document.getElementById("query3").value,
+            function(data){
+                data.forEach(function(obj) {
+                    var result = document.createElement("div");
+                    result.className = "result";
+                    document.getElementById("results").appendChild(result);
+                    var metadataDiv = document.createElement("div");
+                    metadataDiv.className = "metadata";
+                    result.appendChild(metadataDiv);
+                    appendMetadata(metadataDiv, obj.docId);
+
+                    var chartdiv = document.createElement("div");
+                    chartdiv.id = "chart"+obj.docId;
+                    result.appendChild(chartdiv);
+
+                    var data = new google.visualization.DataTable();
+                    data.addColumn('string', 'Term');
+                    data.addColumn('number', 'Score');
+                    var query1Text  = obj.results[0].query;
+                    var query1Score = obj.results[0].score;
+                    var query2Text  = obj.results[1].query;
+                    var query2Score = obj.results[1].score;
+                    var query3Text  = obj.results[2].query;
+                    var query3Score = obj.results[2].score;
+
+                    data.addRows([
+                            [query1Text, query1Score],
+                            [query2Text, query2Score],
+                            [query3Text, query3Score]
+                    ]);
+
+                    // Option to show scores in the div
+                    if(document.getElementById("showScores").value){
+                        var scoreDiv = document.createElement("div");
+                        result.appendChild(scoreDiv);
+                        var score = document.createElement("p");
+                        var query1 = document.createElement("p");
+                        var query2 = document.createElement("p");
+                        var query3 = document.createElement("p");
+                        scoreDiv.appendChild(score);
+                        scoreDiv.appendChild(query1);
+                        scoreDiv.appendChild(query2);
+                        scoreDiv.appendChild(query3);
+                        score.innerHTML = "Overall Score: " + obj.score;
+                        score.innerHTML += "<br> Average Score:" + ((query1Score + query2Score + query3Score)/3);
+                        query1.innerHTML = query1Text + ": " + query1Score;
+                        query2.innerHTML = query2Text + ": " + query2Score;
+                        query3.innerHTML = query3Text + ": " + query3Score;
+                    }
+                    
+                    var options = {'width': 400, 'height': 250};
+
+                    var chart = new google.visualization.PieChart(document.getElementById(chartdiv.id));
+                    chart.draw(data, options);
+
+                })
+            });
+        }
+    </script>
+</head>
+<body>
+<input id="query1" type="search" />Query 1
+<input id="query2" type="search" />Query 2
+<input id="query3" type="search" />Query 3<br>
+<button onclick="search()">Search</button><input id="showScores" type="checkbox" />Show Scores<br>
+<div id="results"></div>
+<div id="sidebar" class="side-box-float" style="display: none;"></div>
+</body>
+</html>

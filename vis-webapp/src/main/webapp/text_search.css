@@ -22,8 +22,13 @@
 }
 
 .common-terms {
-    float: right;
-    height: 100%;
+    /*float: right;*/
+    height: 20%;
+}
+
+.metadata {
+    /*float: left;*/
+    height: 80%;
 }
 
 .side-box-float {

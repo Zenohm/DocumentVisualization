@@ -113,6 +113,15 @@
     </servlet-mapping>
 
     <servlet>
+        <servlet-name>multiTermSearch</servlet-name>
+        <servlet-class>servlets.MultiQueryServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>multiTermSearch</servlet-name>
+        <url-pattern>/multi_term_search</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
         <servlet-name>SynonymsServlet</servlet-name>
         <servlet-class>servlets.SynonymsServlet</servlet-class>
     </servlet>
