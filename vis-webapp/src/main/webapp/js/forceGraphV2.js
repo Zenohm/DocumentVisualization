@@ -61,7 +61,7 @@ function forceChart() {
                 .linkDistance(50)
                 .size([width, height]);
 
-            svg = d3.select(this).selectAll("svg")
+            svg = d3.select(this).append("svg")
                 .attr("width", width)
                 .attr("height", height);
 
@@ -75,18 +75,17 @@ function forceChart() {
             link = svg.selectAll(".link")
                 .data(d.links);
 
-            link.exit().remove();
-
             link.enter().append("line")
                 .attr("class", "link")
                 .style("stroke-width", function (d) {
                     return Math.sqrt(d.value);
                 });
 
-            node = svg.selectAll(".node")
-                .data(d.nodes);
+            link.exit().remove();
 
-            node.enter().append("circle")
+            node = svg.selectAll(".node");
+
+            node.data(d.nodes).enter().append("circle")
                 .attr("class", "node")
                 .attr("r", 5)
                 .style("fill", function (d) {
@@ -94,7 +93,7 @@ function forceChart() {
                 })
                 .call(force.drag);
 
-            node.exit().remove();
+            node.data(d.nodes).exit().remove();
 
             svg.selectAll(".node").data(d.nodes).exit().remove();
 

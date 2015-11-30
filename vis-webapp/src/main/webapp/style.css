@@ -79,10 +79,10 @@ body {
 
 .node {
     stroke: #fff;
-    stroke-width: 1.5px;
+    stroke-width: 2px;
 }
 
 .link {
-    stroke: #999;
+    stroke: cornflowerblue;
     stroke-opacity: .6;
 }

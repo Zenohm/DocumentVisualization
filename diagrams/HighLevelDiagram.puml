@@ -7,33 +7,85 @@ package Client {
 }
 
 package Server {
-    class "Text Server" as tserver
-    class "Level 1 Server" as l1server
-    class "Level 2 Server" as l2server
-    class "Metadata Server" as mdserver
+
+    class "Tomcat Server" as tserver
+
+    package Servlets {
+        class "Term Search Servlet" as l1server
+        class "Related Terms Servlet" as l2server
+        class "Metadata Servlet" as mdserver
+        class "Synonyms Servlet" as synserver
+        class "Document Servlet" as docserver
+        class "Document Search Servlet" as docsearchserver
+    }
+
+    tserver -down- l1server
+    tserver -down- l2server
+    tserver -down- mdserver
+    tserver -down- synserver
+    tserver -down- docserver
+    tserver -down- docsearchserver
+
+    tserver -up- tclient : various endpoints
+    tserver -up- l1vis : various endpoints
+    tserver -up- l2vis : various endpoints
+
+    package "Data Processing" {
+        class "Multi-term Node Generator" as mtnodegen
+        class "Related Term Node Generator" as rtnodegen
+    }
+
+    mtnodegen -up- l1server
+    rtnodegen -up- l2server
+
+    package "Lucene Abstraction" {
+        package "Lucene System" {
+            class "Index Reader" as ireader
+            class "Lucene Index" as index
+            class "Indexer" as indexer
+
+            ireader -down-> index : Reads
+            index <-up- indexer : Generates
+        }
+
+        package "Lucene Adaptor" {
+            class "Metadata Adaptor" as metasearch
+            class "Document Adaptor" as docadapt
+            class "Document Search" as dsearch
+            class "Multi-Term Search" as mtsearch
+            class "Related Terms Generator" as rtgen
+        }
+
+        metasearch -down- ireader
+        docadapt -down- ireader
+        dsearch -down- ireader
+        mtsearch -down- ireader
+        rtgen -down- ireader
+
+    }
+
+    metasearch -up- mdserver
+    docadapt -up- docserver
+    dsearch -up- docsearchserver
+
+
+    package "Synonyms" {
+        class "Synonyms Adapter" as synadapt
+        class "Synonyms Scorer" as synscore
+        class Wordnet
+
+        synadapt -down- Wordnet
+        synadapt -- synscore
+
+        synscore - ireader
+    }
+
+    synadapt -up- synserver
+    mtsearch -up- mtnodegen
+    rtgen -up- rtnodegen
+
+    rtgen -down- synadapt
+
 }
-
-package LuceneSystem {
-    class "Index Reader" as ireader
-    class "Lucene Index" as index
-    class "Indexer" as indexer
-
-    ireader -down-> index : Reads
-    index <-up- indexer : Generates
-
-}
-
-ireader -up- tserver
-ireader -up- l1server
-ireader -up- l2server
-ireader -up- mdserver
-
-tclient -down- tserver
-l1vis -down- l1server
-l2vis -down- l2server
-
-tclient -down- mdserver
-l1vis -down- mdserver
-l2vis -down- mdserver
 
 @enduml

@@ -18,8 +18,6 @@ public class MultiQueryConverter {
     public static final int SIZE_NORMALIZER = 100;
     public static final int MIN_SIZE = 5;
 
-    // TODO: This class is the messiest thing I have written in a long time, it needs cleanup.
-
     public static final Map<Integer, String> indexColors = ImmutableMap.of(0, "red",
                                                                             1, "blue",
                                                                             2, "green");
