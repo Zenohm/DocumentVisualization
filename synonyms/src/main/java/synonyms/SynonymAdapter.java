@@ -26,7 +26,6 @@ package synonyms;
 import edu.smu.tspell.wordnet.Synset;
 import edu.smu.tspell.wordnet.WordNetDatabase;
 import common.ScoredTerm;
-import java.io.File;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -42,10 +41,8 @@ import java.util.stream.Collectors;
  * @author perryc on 10/10/15
  */
 public class SynonymAdapter {
-    // The location of the dict files for WordNet
-    private final static String DICT_PATH = new File("synonyms/resources/WordNet/dict").getAbsolutePath();
 
-    // TODO: Remove this
+    // TODO: Remove this before shipping
     // Command line version of the servlet.
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
@@ -54,9 +51,9 @@ public class SynonymAdapter {
                 System.out.println("Enter a word");
                 String word = sc.nextLine();
                 Set<String> synonyms = getSynonyms(word);
-                List<ScoredTerm> scoredTerms = SynonymScorer.getRankedSynonymsWithScores(word, synonyms);
+                List<ScoredTerm> scoredTerms = SynonymScorer.getRankedSynonymsWithScores(word, synonyms, 0.00001);
                 if (scoredTerms == null || scoredTerms.isEmpty()) {
-                    System.out.println("Sorry, WordNet doesn't have any synonyms for " + word);
+                    System.out.println("Sorry, our index doesn't contain any relevant synonyms for " + word);
                 } else {
                     System.out.println(scoredTerms);
                 }
@@ -75,9 +72,6 @@ public class SynonymAdapter {
         if (word == null) {
             return null;
         }
-
-        // Run the necessary initialization stuff
-        // setWordNetDir();
 
         // Initialize the dictionary db
         WordNetDatabase db = WordNetDatabase.getFileInstance();
@@ -99,11 +93,6 @@ public class SynonymAdapter {
         wordRepeats.forEach(synonyms::remove);
 
         // If we found any synonyms, return them
-        if (synonyms.size() > 0) {
-            return synonyms;
-        } else {
-            // Otherwise return null
-            return null;
-        }
+        return synonyms.size() > 0 ? synonyms : null;
     }
 }
