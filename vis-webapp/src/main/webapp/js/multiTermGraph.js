@@ -63,9 +63,9 @@ function forceChart() {
                 .size([width, height]);
 
             // Check if the SVG exists, if it doesn't create it
-            svg = d3.select(this).selectAll("svg");
+            svg = d3.select(me).selectAll("svg");
             if(svg.empty()){
-                d3.select(this).append("svg").attr("width", width).attr("height", height);
+                svg = d3.select(me).append("svg").attr("width", width).attr("height", height);
             }
 
             quadTree = d3.geom.quadtree(d.nodes);
