@@ -50,8 +50,7 @@ public class SynonymAdapter {
             try {
                 System.out.println("Enter a word");
                 String word = sc.nextLine();
-                Set<String> synonyms = getSynonyms(word);
-                List<ScoredTerm> scoredTerms = SynonymScorer.getRankedSynonymsWithScores(word, synonyms, 0.00001);
+                List<ScoredTerm> scoredTerms = getScoredSynonymsWithUnrelatedIncluded(word);
                 if (scoredTerms == null || scoredTerms.isEmpty()) {
                     System.out.println("Sorry, our index doesn't contain any relevant synonyms for " + word);
                 } else {
@@ -94,5 +93,15 @@ public class SynonymAdapter {
 
         // If we found any synonyms, return them
         return synonyms.size() > 0 ? synonyms : null;
+    }
+
+    public static List<ScoredTerm> getScoredSynonymsWithUnrelatedIncluded(String word) {
+        Set<String> synonyms = getSynonyms(word);
+        return SynonymScorer.getRankedSynonymsWithScores(word, synonyms, 0);
+    }
+
+    public static List<ScoredTerm> getScoredSynonymsWithMinimalRelation(String word) {
+        Set<String> synonyms = getSynonyms(word);
+        return SynonymScorer.getRankedSynonymsWithScores(word, synonyms, 0.00001);
     }
 }

@@ -18,7 +18,6 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="mcs-utils" />
     <orderEntry type="library" name="Maven: org.apache.pdfbox:pdfbox:1.8.9" level="project" />
     <orderEntry type="library" name="Maven: org.apache.pdfbox:fontbox:1.8.9" level="project" />
     <orderEntry type="library" name="Maven: org.apache.pdfbox:jempbox:1.8.9" level="project" />
@@ -31,7 +30,7 @@
     <orderEntry type="library" name="Maven: org.apache.lucene:lucene-sandbox:5.2.1" level="project" />
     <orderEntry type="library" name="Maven: commons-lang:commons-lang:2.6" level="project" />
     <orderEntry type="library" name="Maven: org.apache.commons:commons-csv:1.1" level="project" />
-    <orderEntry type="module" module-name="mcs-utils" />
+    <orderEntry type="module" module-name="mc-utils" />
     <orderEntry type="library" scope="TEST" name="Maven: junit:junit:4.10" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.hamcrest:hamcrest-core:1.1" level="project" />
     <orderEntry type="library" name="Maven: com.google.guava:guava:18.0" level="project" />

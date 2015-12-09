@@ -27,18 +27,21 @@ package servlets;
  *
  * @author perryc on 10/10/15
  */
-import com.google.gson.GsonBuilder;
 
+import com.google.gson.GsonBuilder;
 import org.apache.commons.lang.StringUtils;
+import common.ScoredTerm;
 import synonyms.SynonymAdapter;
 
-import java.io.IOException;
-import java.util.Set;
 import javax.servlet.GenericServlet;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebServlet;
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Servlet that processes a 'term' and returns a set of synonyms.
@@ -50,8 +53,23 @@ public class SynonymsServlet extends GenericServlet {
     public void service(ServletRequest req, ServletResponse res) throws ServletException, IOException {
 
         String term = StringUtils.trim(req.getParameter("term"));
-        Set synonyms = SynonymAdapter.getSynonyms(term);
-        res.getWriter().println((new GsonBuilder()).create().toJson(synonyms));
+        Map<String, String[]> params = req.getParameterMap();
+
+        if (!params.containsKey("scored")) {
+            // If you just want unscored synonyms.
+            Set synonyms = SynonymAdapter.getSynonyms(term);
+            res.getWriter().println((new GsonBuilder()).create().toJson(synonyms));
+        } else {
+            // If you want minimally related terms
+            if (params.containsKey("related")) {
+                List<ScoredTerm> synonyms = SynonymAdapter.getScoredSynonymsWithMinimalRelation(term);
+                res.getWriter().println((new GsonBuilder()).create().toJson(synonyms));
+            } else {
+                // If you want to include everything with the scores
+                List<ScoredTerm> synonyms = SynonymAdapter.getScoredSynonymsWithUnrelatedIncluded(term);
+                res.getWriter().println((new GsonBuilder()).create().toJson(synonyms));
+            }
+        }
     }
 
 }
