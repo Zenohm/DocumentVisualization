@@ -30,8 +30,8 @@
 
 function forceChart() {
     // "Constant" Variables
-    var FIXED_NODE_SIZE = 50;
-
+    var FIXED_NODE_SIZE = 80,
+        FONT_SIZE = "16px";
     // "Class" Variables
     var width = 400,
         height = 400,
@@ -111,7 +111,7 @@ function forceChart() {
             text.enter()
                 .append("text")
                 .attr("font-family", "sans-serif")
-                .attr("font-size", "12px")
+                .attr("font-size", FONT_SIZE)
                 .attr("fill", "black")
                 .attr("text-anchor", "middle")
                 .attr("font-weight", "bold");
