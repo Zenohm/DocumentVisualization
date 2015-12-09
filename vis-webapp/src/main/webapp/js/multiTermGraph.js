@@ -59,6 +59,7 @@ function forceChart() {
 
             force = d3.layout.force()
                 .charge(-150)
+                .linkDistance(FIXED_NODE_SIZE + 15)
                 .linkStrength(function(d){return d.link_power;})
                 .size([width, height]);
 
@@ -191,7 +192,7 @@ function forceChart() {
             return d.x;
         }).attr("y", function(d){
             return d.y;
-        })
+        });
 
         link.attr("x1", function (d) {
                 return d.source.x;
@@ -220,7 +221,7 @@ function forceChart() {
     function collide(alpha) {
         var quadtree = d3.geom.quadtree(graph.nodes);
         return function (d) {
-            var r = d.size + maxRadius + Math.max(padding, clusterPadding),
+            var r = d.radius + maxRadius + Math.max(padding, clusterPadding),
                 nx1 = d.x - r,
                 nx2 = d.x + r,
                 ny1 = d.y - r,
