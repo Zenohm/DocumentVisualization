@@ -27,14 +27,11 @@ import searcher.DocumentSearcher;
 import searcher.exception.LuceneSearchException;
 import searcher.reader.LuceneIndexReader;
 import common.ScoredTerm;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -126,8 +123,8 @@ public class SynonymScorer {
         // Search for docs containing synonym
         double numContainingSynonym = getNumOfDocuments(synonym);
 
-        // Return containingBoth/containingSynonym
-        return numContainingOriginalAndSynonym / numContainingSynonym;
+        // Return containingBoth/containingSynonym while avoiding division by zero.
+        return numContainingSynonym == 0 ? 0 : (numContainingOriginalAndSynonym / numContainingSynonym);
     }
 
     /**
@@ -142,29 +139,32 @@ public class SynonymScorer {
             return -1;
         }
 
-        // The set of words we need to search for
-        Set<String> searchTerms = new HashSet<>();
-        for(String word : words) {
-            searchTerms.add(word);
-        }
-
         // Attempt a lucene search for #words# to find relevant docs.
-        List<Map.Entry<Double, Integer>> searchResults;
         try {
+            // Initialize Lucene stuff
             LuceneIndexReader reader = LuceneIndexReader.getInstance();
             reader.initializeIndexReader();
             DocumentSearcher searcher = new DocumentSearcher(reader);
 
-            // If there was only 1 term, use singleTermSearch.  Greater than one: use multi-term search
+            // Search for the first term
+            List<Map.Entry<Double, Integer>> originalWordResults = searcher.searchForTerm(words[0]);
             if (words.length == 1) {
-                 searchResults = searcher.searchForTerm(words[0]);
-            } else {
-                // TODO: Multi-term search goes here
-                // searchResults = searcher.multiTermSearch(words);
-                return (new Random()).nextInt(1000);
+                // If there was only 1 term, we're done.  Return the length of the results.
+                return originalWordResults.size();
+            } else { // You've complicated things a bit.
+                // Make a set of all the pdf ids for the original word
+                Set<Integer> docIds = originalWordResults.stream().map(Map.Entry::getValue).collect(Collectors.toSet());
+
+                // Go through each word
+                for (String word : words) {
+                    // Keep only the ids for pdfs that contained all of #words#.
+                    docIds.retainAll(
+                            searcher.searchForTerm(word) // Do the search
+                                    .stream().map(Map.Entry::getValue).collect(Collectors.toSet()));
+                }
+                // Return the number of pdfs that the passed through #words# share
+                return docIds.size();
             }
-            // The number of documents will be the number of entries in the searchResults.
-            return searchResults.size();
         } catch (LuceneSearchException e) {
             // If something weird happens, log an error, and throw an exception
             System.err.println("There was an error with the index searcher.");
