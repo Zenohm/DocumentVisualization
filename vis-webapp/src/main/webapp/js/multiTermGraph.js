@@ -106,19 +106,30 @@ function forceChart() {
                     displayDocument(d.docId);
                 });
 
-            text = svg.selectAll("text").data(d.nodes.filter(function(d){return d.fixed;}));
+            text = svg.selectAll("text")
+                .data(d.nodes.filter(function(d){
+                    return d.fixed;
+                }));
+
+
+
             text.enter()
-                .append("text").text(function(d){
-                    return d.name;
-                })
+                .append("text")
+                //.text(function(d){
+                //    return d.name; // changed how text is set
+                //})
                 .attr("font-family", "sans-serif")
                 .attr("font-size", "12px")
                 .attr("fill", "black")
                 .attr("text-anchor", "middle");
 
+            text.text(function(d){
+                return d.name;
+            });
 
-            // If a node is removed, remove it from the sim.
+            // If a node or text is removed remove it.
             node.exit().remove();
+            text.exit().remove();
 
             svg.selectAll(".node").data(d.nodes).exit().remove();
 

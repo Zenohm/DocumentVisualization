@@ -16,5 +16,14 @@
     <orderEntry type="library" scope="TEST" name="Maven: junit:junit:4.10" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.hamcrest:hamcrest-core:1.1" level="project" />
     <orderEntry type="library" name="Maven: com.google.guava:guava:18.0" level="project" />
+    <orderEntry type="module-library">
+      <library name="Maven: jaws:jaws:1.2">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/synonyms/resources/JAWS/jaws-bin.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
   </component>
 </module>
