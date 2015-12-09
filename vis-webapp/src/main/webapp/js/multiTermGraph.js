@@ -59,7 +59,7 @@ function forceChart() {
 
             force = d3.layout.force()
                 .charge(-150)
-                .linkDistance(FIXED_NODE_SIZE + 15)
+                .linkDistance(FIXED_NODE_SIZE + 15) // Minimum link length
                 .linkStrength(function(d){return d.link_power;})
                 .size([width, height]);
 
