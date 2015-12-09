@@ -109,13 +109,14 @@ function forceChart() {
 
             text = svg.selectAll("text").data(d.nodes.filter(function(d){return d.fixed;}));
             text.enter()
-                .append("text").text(function(d){
-                    return d.name;
-                })
+                .append("text")
                 .attr("font-family", "sans-serif")
                 .attr("font-size", "12px")
                 .attr("fill", "black")
-                .attr("text-anchor", "middle");
+                .attr("text-anchor", "middle")
+                .attr("font-weight", "bold");
+
+            text.text(function(d){return d.name});
 
 
             // If a node is removed, remove it from the sim.
