@@ -54,5 +54,7 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="library" name="d3" level="application" />
+    <orderEntry type="library" name="jquery" level="application" />
   </component>
 </module>

@@ -30,8 +30,8 @@
 
 function forceChart() {
     // "Constant" Variables
-    var FIXED_NODE_SIZE = 50;
-
+    var FIXED_NODE_SIZE = 80,
+        FONT_SIZE = "16px";
     // "Class" Variables
     var width = 400,
         height = 400,
@@ -59,13 +59,14 @@ function forceChart() {
 
             force = d3.layout.force()
                 .charge(-150)
+                .linkDistance(FIXED_NODE_SIZE + 15) // Minimum link length
                 .linkStrength(function(d){return d.link_power;})
                 .size([width, height]);
 
             // Check if the SVG exists, if it doesn't create it
-            svg = d3.select(this).selectAll("svg");
+            svg = d3.select(me).selectAll("svg");
             if(svg.empty()){
-                d3.select(this).append("svg").attr("width", width).attr("height", height);
+                svg = d3.select(me).append("svg").attr("width", width).attr("height", height);
             }
 
             quadTree = d3.geom.quadtree(d.nodes);
@@ -106,30 +107,20 @@ function forceChart() {
                     displayDocument(d.docId);
                 });
 
-            text = svg.selectAll("text")
-                .data(d.nodes.filter(function(d){
-                    return d.fixed;
-                }));
-
-
-
+            text = svg.selectAll("text").data(d.nodes.filter(function(d){return d.fixed;}));
             text.enter()
                 .append("text")
-                //.text(function(d){
-                //    return d.name; // changed how text is set
-                //})
                 .attr("font-family", "sans-serif")
-                .attr("font-size", "12px")
+                .attr("font-size", FONT_SIZE)
                 .attr("fill", "black")
-                .attr("text-anchor", "middle");
+                .attr("text-anchor", "middle")
+                .attr("font-weight", "bold");
 
-            text.text(function(d){
-                return d.name;
-            });
+            text.text(function(d){return d.name});
 
-            // If a node or text is removed remove it.
+
+            // If a node is removed, remove it from the sim.
             node.exit().remove();
-            text.exit().remove();
 
             svg.selectAll(".node").data(d.nodes).exit().remove();
 
@@ -202,7 +193,7 @@ function forceChart() {
             return d.x;
         }).attr("y", function(d){
             return d.y;
-        })
+        });
 
         link.attr("x1", function (d) {
                 return d.source.x;
@@ -231,7 +222,7 @@ function forceChart() {
     function collide(alpha) {
         var quadtree = d3.geom.quadtree(graph.nodes);
         return function (d) {
-            var r = d.size + maxRadius + Math.max(padding, clusterPadding),
+            var r = d.radius + maxRadius + Math.max(padding, clusterPadding),
                 nx1 = d.x - r,
                 nx2 = d.x + r,
                 ny1 = d.y - r,
