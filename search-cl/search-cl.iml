@@ -10,6 +10,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module" module-name="mcs-utils" />
     <orderEntry type="module" module-name="lucene-index" />
     <orderEntry type="library" name="Maven: org.apache.pdfbox:pdfbox:1.8.9" level="project" />
     <orderEntry type="library" name="Maven: org.apache.pdfbox:fontbox:1.8.9" level="project" />
