@@ -44,7 +44,7 @@
         <module>search-cl</module>
         <module>synonyms</module>
         <module>vis-webapp</module>
-        <module>mcs-utils</module>
+        <module>mc-utils</module>
     </modules>
 
     <reporting>
