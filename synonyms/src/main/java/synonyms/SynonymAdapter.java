@@ -23,14 +23,11 @@
  */
 package synonyms;
 
+import common.ScoredTerm;
 import edu.smu.tspell.wordnet.Synset;
 import edu.smu.tspell.wordnet.WordNetDatabase;
-import common.ScoredTerm;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Scanner;
-import java.util.Set;
+
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
