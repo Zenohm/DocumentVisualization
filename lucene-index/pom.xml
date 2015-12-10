@@ -65,7 +65,7 @@
 
         <dependency>
             <groupId>edu.ipfw</groupId>
-            <artifactId>mcs-utils</artifactId>
+            <artifactId>mc-utils</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
 

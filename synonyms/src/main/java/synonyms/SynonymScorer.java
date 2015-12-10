@@ -139,7 +139,6 @@ public class SynonymScorer {
         try {
             // Initialize Lucene stuff
             LuceneIndexReader reader = LuceneIndexReader.getInstance();
-            reader.initializeIndexReader();
             DocumentSearcher searcher = new DocumentSearcher(reader);
 
             // Search for the first term

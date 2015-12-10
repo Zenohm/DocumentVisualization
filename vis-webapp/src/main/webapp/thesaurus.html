@@ -9,16 +9,14 @@
     <script language="javascript" type="application/javascript">
         function searchForSynonyms(){
             document.getElementById("results").innerHTML = "";
-            $.getJSON("synonyms?term="+document.getElementById("searchbox").value, function(data) {
+            $.getJSON("synonyms?term="+document.getElementById("searchbox").value+"&scored=yes", function(data) {
                 data.forEach(function(obj){
                     var result = document.createElement("div");
                     result.className = "result";
+                    var synonyms = document.createElement("p");
+                    synonyms.innerHTML = (obj.text + ": " + obj.score);
+                    result.appendChild(synonyms);
                     document.getElementById("results").appendChild(result);
-                    $.getJSON("metadata?docId="+obj.value, function(data){
-                        var synonyms = document.createElement("p");
-                        synonyms.innerHTML = data.synonyms;
-                    });
-
                 });
             });
         }

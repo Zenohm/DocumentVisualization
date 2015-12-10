@@ -51,6 +51,11 @@ public class LuceneIndexReader implements IndexReader {
         return READER != null;
     }
 
+    /**
+     * This is called as a part of the startup for the indexer. YOU SHOULD NOT NEED TO CALL THIS
+     * @param filename The index directory
+     * @return if the index initialization succeeds return true.
+     */
     @Override
     public boolean initializeIndexReader(String filename) {
         try {
