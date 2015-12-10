@@ -1,16 +1,16 @@
 package data_processing.multi_query_processing;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 import data_processing.multi_query_processing.multi_query_json_data.DocumentNode;
 import data_processing.multi_query_processing.multi_query_json_data.FixedNode;
 import data_processing.multi_query_processing.multi_query_json_data.Link;
 import data_processing.multi_query_processing.multi_query_json_data.MultiQueryJson;
-import data_processing.multi_query_processing.util.Coordinates;
 import searcher.results.MultiQueryResults;
 import searcher.results.QueryResults;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by chris on 11/22/15.
@@ -19,18 +19,11 @@ public class MultiQueryConverter {
     public static final int SIZE_NORMALIZER = 100;
     public static final int MIN_SIZE = 5;
 
-    public static final Map<Integer, String> indexColors = ImmutableMap.of(0, "red",
-                                                                            1, "blue",
-                                                                            2, "green");
-
     public static final String[] colors = {"red", "blue", "green"};
 
-
     public static MultiQueryJson convertToLinksAndNodes(List<MultiQueryResults> results){
-        Map<String, Integer> fixedTermIndexes = new HashMap<>();
+        // Generate the JSON Object
         MultiQueryJson jsonObject = new MultiQueryJson();
-        // Iterate over the set of results (we need the indexes of all search terms)
-        int index = 0;
 
         // Get a list of the unique terms within the results set.
         ArrayList<String> terms = new ArrayList<>();
