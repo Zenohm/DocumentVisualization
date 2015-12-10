@@ -47,6 +47,7 @@ body {
     padding: 10px;
     background-color: darkgrey;
     overflow-y: auto;
+    border: 1px black solid;
 }
 
 .footer {
