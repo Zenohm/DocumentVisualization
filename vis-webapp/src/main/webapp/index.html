@@ -47,16 +47,46 @@
             function createGraph(){
                 var chart = forceChart();
                 var query1 = document.getElementById("query1").value;
+//                var query1Call = $.getJSON("synonyms?term="+query1, function(data){
+//                    if(data == null) return;
+//                    data.forEach(function(syn){
+//                        query1 += " " + syn;
+//                    });
+//                });
                 var query2 = document.getElementById("query2").value;
+//                var query2Call = $.getJSON("synonyms?term="+query2, function(data){
+//                    if(data == null) return;
+//                    data.forEach(function(syn){
+//                        query2 += " " + syn;
+//                    })
+//                })
                 var query3 = document.getElementById("query3").value;
-                // TODO: Handle null queries
-            d3.json("multi_term_search?vis&query1="+query1+"&query2="+query2+"&query3="+query3, function(error, data) {
-                if (error) throw error;
-                d3.select("#main").datum(data).call(chart);
-            });
+//                var query3Call = $.getJSON("synonyms?term="+query3, function(data){
+//                    if(data == null) return;
+//                    data.forEach(function(syn){
+//                        query3 += " " + syn;
+//                    })
+//                });
+
+                d3.json("multi_term_search?vis&query1="+query1+"&query2="+query2+"&query3="+query3, function(error, data) {
+                    if (error) throw error;
+                    d3.select("#main").datum(data).call(chart);
+                });
+
+//                query1Call.done(function(){
+//                    query2Call.done(function(){
+//                        query3Call.done(function(){
+//                            // TODO: Handle null queries
+//                            d3.json("multi_term_search?vis&query1="+query1+"&query2="+query2+"&query3="+query3, function(error, data) {
+//                                if (error) throw error;
+//                                d3.select("#main").datum(data).call(chart);
+//                            });
+//                        });
+//                    });
+//                });
+
             }
         });
-
     </script>
 </head>
 <body>
