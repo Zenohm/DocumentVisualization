@@ -1,5 +1,6 @@
 package data_processing.multi_query_processing;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import data_processing.multi_query_processing.multi_query_json_data.DocumentNode;
 import data_processing.multi_query_processing.multi_query_json_data.FixedNode;
@@ -22,35 +23,52 @@ public class MultiQueryConverter {
                                                                             1, "blue",
                                                                             2, "green");
 
+    public static final String[] colors = {"red", "blue", "green"};
 
-    public static final Map<Integer, Coordinates> indexLocs = ImmutableMap.of(0, Coordinates.of(1.0 / 2.0, 1.0 / 5.0),
-                                                                              1, Coordinates.of(1.0 / 5.0, 4.0 / 5.0),
-                                                                              2, Coordinates.of(4.0 / 5.0, 4.0 / 5.0));
 
     public static MultiQueryJson convertToLinksAndNodes(List<MultiQueryResults> results){
         Map<String, Integer> fixedTermIndexes = new HashMap<>();
         MultiQueryJson jsonObject = new MultiQueryJson();
         // Iterate over the set of results (we need the indexes of all search terms)
         int index = 0;
-        for(MultiQueryResults result : results){
-            for(String term : result.terms){
-                if(!fixedTermIndexes.containsKey(term)) {
-                    fixedTermIndexes.put(term, index);
 
-                    // Need to add the FixedNode
-                    int termId = -1 * index - 1;
-                    String color = indexColors.get(index);
-                    Coordinates coords = indexLocs.get(index);
-                    jsonObject.nodes.add(new FixedNode(term, termId, color, coords.x, coords.y, term.split(" ")));
+        // Get a list of the unique terms within the results set.
+        ArrayList<String> terms = new ArrayList<>();
+        results.stream().forEach(result -> result.terms.stream()
+                                                       .filter(term -> !terms.contains(term))
+                                                       .forEach(terms::add));
 
-                    // Add one to the index and do a bounds check, I don't want to do color math.
-                    index++;
-                    if (index == 3) break;
-                }
+        int numFixedNodes = terms.size();
+        double angleBetweenNodes = (2*Math.PI) / numFixedNodes;
+        double circleCenter = .5;
+        double diameter = .7;
+        double radius = diameter / 2.0;
+
+        Map<String, Integer> termIndexes = new HashMap<>();
+        ArrayList<FixedNode> fixedNodes = new ArrayList<>();
+        // Set positioning information for the fixed nodes
+        for(int i = 0; i < terms.size(); i++){
+            String currentTerm = terms.get(i); // The current term
+
+            // Figure out the node positioning
+            double currentAngle = i * angleBetweenNodes; // first node will be at 0 degrees
+            double x = radius*Math.sin(currentAngle) + circleCenter;
+            double y = -1*radius*Math.cos(currentAngle) + circleCenter;
+
+            // Do node coloring
+            String color = colors[i % colors.length];
+            if(i == terms.size() - 1 && color.equals(fixedNodes.get(0).color)){
+                color = colors[(i + 1) % colors.length];
             }
-            // We don't support more than 3 terms (we could, but I don't want to do the color math at the moment.
-            if(index == 3) break;
+
+            // Give the term a unique id
+            int termId = (-1 * i) - 1;
+
+            termIndexes.put(currentTerm, i);
+            fixedNodes.add(new FixedNode(currentTerm, termId, color, x, y, currentTerm.split(" ")));
         }
+
+        fixedNodes.forEach(jsonObject.nodes::add);
 
         for(MultiQueryResults result : results){
             String documentName = "doc"+result.docId;
@@ -62,7 +80,7 @@ public class MultiQueryConverter {
 
             int myIndex = jsonObject.nodes.size() - 1;
             for(QueryResults qResult : result.getQueryResults()){
-                int sourceIndex = fixedTermIndexes.get(qResult.query);
+                int sourceIndex = termIndexes.get(qResult.query);
                 double linkPower = qResult.score;
                 if(linkPower >= .001){
                     jsonObject.links.add(Link.of(sourceIndex, myIndex, linkPower));
