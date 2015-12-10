@@ -13,6 +13,7 @@
         <rootPath>${project.basedir}/..</rootPath>
     </properties>
 
+    <name>Utilities</name>
     <artifactId>mcs-utils</artifactId>
     <packaging>jar</packaging>
 
