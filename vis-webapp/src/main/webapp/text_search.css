@@ -9,18 +9,6 @@
     width: 100%;
 }
 
-.res-title {
-    font-size: large;
-}
-
-.res-author {
-    font-size: small;
-}
-
-.res-conference {
-    font-size: small;
-}
-
 .common-terms {
     /*float: right;*/
     height: 20%;

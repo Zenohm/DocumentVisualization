@@ -39,8 +39,8 @@ body {
 }
 
 .sidebar {
-    width: 200px;
-    height: 400px;
+    width: 400px;
+    height: 200px;
     position: fixed;
     left: 10px;
     top: 10px;
