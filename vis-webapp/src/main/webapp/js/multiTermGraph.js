@@ -84,7 +84,7 @@ function forceChart() {
 
             link.enter().append("line")
                 .attr("class", "link")
-                .style("stroke-width", 3);
+                .style("stroke-width", 0);
 
             node = svg.selectAll(".node")
                 .data(d.nodes);
