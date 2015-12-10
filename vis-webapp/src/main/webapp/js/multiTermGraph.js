@@ -90,9 +90,11 @@ function forceChart() {
                 .data(d.nodes);
 
             // Adding the nodes
-            node.enter().append("circle")
-                .attr("class", "node")
-                .attr("r", function(d){
+            node.enter()
+                .append("circle")
+                .attr("class", "node");
+
+            node.attr("r", function(d){
                     if(d.fixed){
                         return FIXED_NODE_SIZE;
                     }else{
@@ -136,6 +138,7 @@ function forceChart() {
 
             // If a node is removed, remove it from the sim.
             node.exit().remove();
+            text.exit().remove();
 
             svg.selectAll(".node").data(d.nodes).exit().remove();
 

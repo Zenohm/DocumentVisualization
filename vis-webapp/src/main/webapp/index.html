@@ -54,8 +54,7 @@
                 var query1 = document.getElementById("query1").value;
                 var query2 = document.getElementById("query2").value;
                 var query3 = document.getElementById("query3").value;
-
-                d3.json("multi_term_search?vis&query1="+query1+"&query2="+query2+"&query3="+query3, function(error, data) {
+                d3.json("multi_term_search?vis&query1="+query1+"&query2="+query2+"&query3="+query3+"&query4=winning", function(error, data) {
                     if (error) throw error;
                     d3.select("#main").datum(data).call(chart);
                 });
