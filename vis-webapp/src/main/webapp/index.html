@@ -36,10 +36,14 @@
     <script src="js/searchUtils.js"></script>
     <!--<script src="js/forceGraphV2.js"></script>-->
     <script>
-        function displayDocument(docId){
+        var onHideSidebar = null;
+        function displayDocument(docId, callback){
+            if(onHideSidebar != null) onHideSidebar();
             var docInfo = document.getElementById("documentInfo");
             docInfo.innerHTML = "";
+            displaySidebar();
             appendMetadata(docInfo, docId);
+            onHideSidebar = callback;
         }
 
         $(document).ready(function(){
@@ -47,59 +51,52 @@
             function createGraph(){
                 var chart = forceChart();
                 var query1 = document.getElementById("query1").value;
-//                var query1Call = $.getJSON("synonyms?term="+query1, function(data){
-//                    if(data == null) return;
-//                    data.forEach(function(syn){
-//                        query1 += " " + syn;
-//                    });
-//                });
                 var query2 = document.getElementById("query2").value;
-//                var query2Call = $.getJSON("synonyms?term="+query2, function(data){
-//                    if(data == null) return;
-//                    data.forEach(function(syn){
-//                        query2 += " " + syn;
-//                    })
-//                })
                 var query3 = document.getElementById("query3").value;
-//                var query3Call = $.getJSON("synonyms?term="+query3, function(data){
-//                    if(data == null) return;
-//                    data.forEach(function(syn){
-//                        query3 += " " + syn;
-//                    })
-//                });
 
                 d3.json("multi_term_search?vis&query1="+query1+"&query2="+query2+"&query3="+query3, function(error, data) {
                     if (error) throw error;
                     d3.select("#main").datum(data).call(chart);
                 });
-
-//                query1Call.done(function(){
-//                    query2Call.done(function(){
-//                        query3Call.done(function(){
-//                            // TODO: Handle null queries
-//                            d3.json("multi_term_search?vis&query1="+query1+"&query2="+query2+"&query3="+query3, function(error, data) {
-//                                if (error) throw error;
-//                                d3.select("#main").datum(data).call(chart);
-//                            });
-//                        });
-//                    });
-//                });
-
             }
         });
+
+        function hideSidebar(){
+            document.getElementById("infoBar").style.display = 'none';
+            if(onHideSidebar != null){
+                onHideSidebar();
+            }
+
+        }
+
+        function displaySidebar(){
+            document.getElementById("infoBar").style.display = '';
+        }
+
     </script>
 </head>
 <body>
-<div class="sidebar" id="content">
-    <input id="query1" type="search" value="visualization"/><br>
-    <input id="query2" type="search" value="virtualization"/><br>
-    <input id="query3" type="search" value="test"/><br><br>
-    <button id="searchButton">Search</button><br>
-    <div id="documentInfo"></div>
-</div>
-<div class="content" id="main"></div>
-<div class="footer">
-    Data Provided by <a href="http://research.google.com">Google Research</a>
-</div>
+<!--<div class="container">-->
+    <div class="sidebar" id="infoBar" style="display:none;">
+        <input type="image" src="imgs/closeBtn.png" id="close" onclick="hideSidebar()">
+        <div id="documentInfo"></div>
+    </div>
+    <div class="content" id="main"></div><br>
+    <div class="footer">
+        <!-- TODO: These contain test values -->
+        <div id="search-terms">
+            <div class="term red"><input class="input" id="query1" type="search" value="visualization"/></div>
+            <div class="term blue"><input class="input" id="query2" type="search" value="virtualization"/></div>
+            <div class="term green"><input class="input" id="query3" type="search" value="test"/></div>
+            <button style="width:99%; margin: 0 auto;" id="searchButton">Search</button>
+        </div>
+
+
+        <!--<div id="credit">-->
+        <!--<p>Data Provided by <a href="http://research.google.com">Google Research</a></p>-->
+        <!--</div>-->
+    </div>
+<!--</div>-->
+
 </body>
 </html>

@@ -104,7 +104,22 @@ function forceChart() {
                     return d3.rgb(d.color);
                 })
                 .on("click", function(d){
-                    displayDocument(d.docId);
+                    // Don't run this on the fixed nodes
+                    if(!d.fixed){
+                        // A clever trick to save the node and the original color
+                        var originalColor = d3.select(this).style("fill");
+                        var node = d3.select(this);
+
+                        // change the color of the node to white
+                        node.style("fill", function(){
+                            return d3.rgb(255, 255, 255);
+                        });
+
+                        // Have a callback function to change the color back
+                        displayDocument(d.docId, function(){
+                            node.style("fill", originalColor);
+                        });
+                    }
                 });
 
             text = svg.selectAll("text").data(d.nodes.filter(function(d){return d.fixed;}));
