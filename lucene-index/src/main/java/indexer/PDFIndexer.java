@@ -83,7 +83,8 @@ public class PDFIndexer {
         try {
             pool.invokeAll(tasks);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            System.err.println("Indexing was interrupted: " + e.getMessage());
+//            e.printStackTrace();
         }
     }
 
@@ -162,7 +163,8 @@ public class PDFIndexer {
             System.out.println("Took: " + (endTime - startTime) / Math.pow(10, 6) + " milliseconds to generate the index.");
         } catch (IOException e) {
             // TODO: Implement better error handling
-            e.printStackTrace();
+            System.out.println("IO Exception Thrown while updating index " + e.getMessage() + "\n");
+//            e.printStackTrace();
         }
     }
 

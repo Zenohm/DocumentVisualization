@@ -25,8 +25,9 @@
 package util;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.util.PDFTextStripper;
+import org.apache.pdfbox.text.PDFTextStripper;
 
+import java.io.File;
 import java.io.IOException;
 
 /**
@@ -35,7 +36,9 @@ import java.io.IOException;
  */
 public class PDFTextExtractor {
     public static String extractText(String filename) throws IOException {
-        PDDocument document = PDDocument.load(filename);
+        File file = new File(filename);
+        if(!file.exists()) throw new IOException("ERROR: " + filename + " doesn't exist");
+        PDDocument document = PDDocument.load(file);
         PDFTextStripper stripper = new PDFTextStripper();
         String res = stripper.getText(document);
         document.close();
