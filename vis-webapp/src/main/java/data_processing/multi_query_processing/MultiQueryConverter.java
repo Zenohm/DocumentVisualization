@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * Converts multi-query results to a JSON object
  * Created by chris on 11/22/15.
  */
 public class MultiQueryConverter {

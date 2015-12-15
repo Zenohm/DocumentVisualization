@@ -1,7 +1,7 @@
 package data_processing.multi_query_processing.multi_query_json_data;
 
 /**
- * Generic Node, represents the data
+ * Generic Node, represents data
  * Created by chris on 11/22/15.
  */
 public abstract class Node {
