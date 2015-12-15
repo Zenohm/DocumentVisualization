@@ -4,10 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * JSON representation of the nodes and links in the D3 visualization.
  * Created by chris on 11/22/15.
  */
 public class MultiQueryJson {
-    public final List<GenericNode> nodes;
+    public final List<Node> nodes;
     public final List<Link> links;
     public MultiQueryJson(){
         nodes = new ArrayList<>();

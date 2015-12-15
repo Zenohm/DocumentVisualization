@@ -15,10 +15,22 @@ import java.util.List;
 import common.data.ScoredTerm;
 
 /**
+ * Servlet that is designed to get the most common terms for the document.
  * Created by chris on 10/13/15.
  */
 @WebServlet(value = "/common_terms", name = "commonTermsServlet")
 public class CommonTermsServlet extends GenericServlet{
+    /**
+     * Servlet Service for common terms
+     * @param req
+     * Required parameters:
+     *    docId: The document ID to get the most common terms for
+     * Optional Parameters:
+     *    limit: The limit of the number of common terms to return
+     * @param res The response contains a JSON object with a List of ScoredTerms.
+     * @throws ServletException
+     * @throws IOException
+     */
     @Override
     public void service(ServletRequest req, ServletResponse res) throws ServletException, IOException {
         try {

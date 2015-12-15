@@ -15,10 +15,20 @@ import java.io.IOException;
 import org.apache.commons.io.FileUtils;
 
 /**
+ * Returns PDF documents from the filesystem.
  * Created by Chris on 10/8/2015.
  */
 @WebServlet(value = "/docs", name = "docServlet")
 public class DocumentServlet extends GenericServlet {
+    /**
+     * Servlet Service for getting Documents
+     * @param req
+     *   Required parameters:
+     *    docId: The document ID to get the most common terms for
+     * @param res Response contains a PDF file that can be displayed in the browser
+     * @throws ServletException
+     * @throws IOException
+     */
     @Override
     public void service(ServletRequest req, ServletResponse res) throws ServletException, IOException {
         int docId = Integer.parseInt(req.getParameter("docId"));

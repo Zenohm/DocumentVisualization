@@ -4,9 +4,10 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
+ * Node that does not move, has a set position relative to the total width.
  * Created by chris on 11/22/15.
  */
-public class FixedNode extends GenericNode {
+public class FixedNode extends Node {
     public final double xLoc;
     public final double yLoc;
     public final List<String> text_content;

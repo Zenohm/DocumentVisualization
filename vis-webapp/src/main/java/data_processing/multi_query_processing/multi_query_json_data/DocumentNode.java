@@ -1,9 +1,11 @@
 package data_processing.multi_query_processing.multi_query_json_data;
 
 /**
+ * Document node, this node contains a document.
+ * Position is not set, but determined dynamically by the simulation.
  * Created by chris on 11/22/15.
  */
-public class DocumentNode extends GenericNode {
+public class DocumentNode extends Node {
     public final int docId;
     public final int size;
     public final double score;

@@ -21,6 +21,11 @@ public class MultiQueryConverter {
 
     public static final String[] colors = {"red", "blue", "green"};
 
+    /**
+     * Convert a list of MultiQueryResults to a MultiQueryJson object
+     * @param results The list of results to convert into the view
+     * @return Object that represents the JSON object that can be read by D3.
+     */
     public static MultiQueryJson convertToLinksAndNodes(List<MultiQueryResults> results){
         // Generate the JSON Object
         MultiQueryJson jsonObject = new MultiQueryJson();
@@ -85,6 +90,12 @@ public class MultiQueryConverter {
     }
 
     // TODO: This needs to implement something based on the indexes we assign to the RGB assets
+
+    /**
+     * Determines the colors of the nodes
+     * @param result Result to convert to a color
+     * @return The color of the result
+     */
     public static String determineColor(MultiQueryResults result){
         return "black";
     }

@@ -50,6 +50,8 @@
         $(document).ready(function(){
             document.getElementById("searchButton").addEventListener("click", createGraph);
             function createGraph(){
+                // TODO: Prevent empty queries and allow for a variable number of queries.
+                // TODO: Make the color of the queries deterministic with the color of the nodes.
                 var chart = forceChart();
                 var query1 = document.getElementById("query1").value;
                 var query2 = document.getElementById("query2").value;

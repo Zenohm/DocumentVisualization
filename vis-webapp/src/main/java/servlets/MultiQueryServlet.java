@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Performs a multi-query search. Can be set in vis mode or non-vis mode
  * Created by chris on 11/19/15.
  */
 @WebServlet(value = "/multi_term_search", name = "multiTermSearch")
@@ -25,6 +26,17 @@ public class MultiQueryServlet extends GenericServlet {
     public static final int MAX_QUERIES = 10;
     public static final String QUERY_STRING = "query";
 
+    /**
+     * Servlet Service for doing multi query searches
+     * @param req
+     * Required Parameters:
+     *   query*: Queries to be used. This determines what to search for
+     * Optional Parameters:
+     *   vis: If this parameter is included, then the output will be in visualization format
+     * @param res JSON representation of the query search.
+     * @throws ServletException
+     * @throws IOException
+     */
     @Override
     public void service(ServletRequest req, ServletResponse res) throws ServletException, IOException {
         try{

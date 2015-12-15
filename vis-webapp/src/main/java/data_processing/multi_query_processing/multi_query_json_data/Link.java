@@ -1,6 +1,7 @@
 package data_processing.multi_query_processing.multi_query_json_data;
 
 /**
+ * Representation of the Link for JSON object
  * Created by chris on 11/22/15.
  */
 public class Link {

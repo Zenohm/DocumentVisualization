@@ -41,10 +41,16 @@ import java.util.concurrent.Semaphore;
 
 
 /**
+ * Starts up the servlet. Initializes logging and completes indexing if needed.
  * Created by Chris on 8/19/2015.
  */
 public class IndexerStartup extends HttpServlet {
     public static Semaphore lock = new Semaphore(0);
+
+    /**
+     * Initialization Service, starts up the server
+     * @throws ServletException
+     */
     public void init() throws ServletException {
         System.out.println("Starting Up the Logging System");
         // TODO: Better configuration for loggers
