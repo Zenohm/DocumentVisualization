@@ -1,10 +1,10 @@
 package servlets;
 
 import com.google.gson.GsonBuilder;
-import common.DocumentMetadata;
-import searcher.MetadataRetriever;
+import common.data.DocumentMetadata;
+import access_utils.MetadataRetriever;
 import searcher.exception.LuceneSearchException;
-import searcher.reader.LuceneIndexReader;
+import reader.LuceneIndexReader;
 
 import javax.servlet.GenericServlet;
 import javax.servlet.ServletException;
@@ -12,7 +12,6 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebServlet;
 import java.io.IOException;
-import java.util.Enumeration;
 
 /**
  * Created by chris on 10/6/15.

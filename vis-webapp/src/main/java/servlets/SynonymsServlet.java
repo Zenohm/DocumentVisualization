@@ -30,7 +30,7 @@ package servlets;
 
 import com.google.gson.GsonBuilder;
 import org.apache.commons.lang.StringUtils;
-import common.ScoredTerm;
+import common.data.ScoredTerm;
 import synonyms.SynonymAdapter;
 
 import javax.servlet.GenericServlet;

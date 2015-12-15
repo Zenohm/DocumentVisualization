@@ -24,7 +24,7 @@
 
 package test_utils;
 
-import util.PDFTextExtractor;
+import pdfs.PDFTextExtractor;
 import javax.servlet.GenericServlet;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;

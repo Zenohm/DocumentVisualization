@@ -1,10 +1,8 @@
 package servlets;
 
-import org.apache.commons.lang.ObjectUtils;
-import searcher.MetadataRetriever;
-import searcher.PDFRetriever;
+import access_utils.PDFRetriever;
 import searcher.exception.LuceneSearchException;
-import searcher.reader.LuceneIndexReader;
+import reader.LuceneIndexReader;
 
 import javax.servlet.GenericServlet;
 import javax.servlet.ServletException;
@@ -13,7 +11,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebServlet;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
+
 import org.apache.commons.io.FileUtils;
 
 /**

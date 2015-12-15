@@ -2,10 +2,10 @@ package main;
 
 import indexer.PDFIndexer;
 import searcher.DocumentSearcher;
-import searcher.MetadataRetriever;
+import access_utils.MetadataRetriever;
 import searcher.exception.LuceneSearchException;
-import searcher.reader.LuceneIndexReader;
-import util.IndexerConstants;
+import reader.LuceneIndexReader;
+import common.Constants;
 
 import java.util.List;
 import java.util.Map;
@@ -19,7 +19,7 @@ public class Terminal {
 
     public static void main(String[] args) throws Exception {
         // Initialize the index
-        PDFIndexer indexer = new PDFIndexer(INDEX_OUT, System.getenv(IndexerConstants.RESOURCE_FOLDER_VAR));
+        PDFIndexer indexer = new PDFIndexer(INDEX_OUT, System.getenv(Constants.RESOURCE_FOLDER_VAR));
 //        indexer.updateIndex();
 
         if(!LuceneIndexReader.getInstance().initializeIndexReader(INDEX_OUT))

@@ -7,7 +7,7 @@ import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TopDocs;
 import searcher.exception.LuceneSearchException;
-import searcher.reader.IndexReader;
+import reader.IndexReader;
 import searcher.results.MultiQueryResults;
 import searcher.results.QueryResults;
 
@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
  * Created by chris on 11/19/15.
  */
 public class MultiQuerySearcher extends Searcher {
-    public MultiQuerySearcher(IndexReader reader) throws LuceneSearchException{
+    public MultiQuerySearcher(IndexReader reader) throws LuceneSearchException {
         super(reader);
     }
 
@@ -35,7 +35,7 @@ public class MultiQuerySearcher extends Searcher {
         // Create the boolean query to cover all the cases
         BooleanQuery overallQuery = new BooleanQuery();
 
-        for(Map.Entry<String, Query> query : queryList) {
+        for (Map.Entry<String, Query> query : queryList) {
             overallQuery.add(query.getValue(), BooleanClause.Occur.SHOULD); // Add that the query should occur
         }
 
@@ -62,10 +62,10 @@ public class MultiQuerySearcher extends Searcher {
                 .collect(Collectors.toList());
     }
 
-    private Map.Entry<String, Query> parseQuery(String str){
-        try{
+    private Map.Entry<String, Query> parseQuery(String str) {
+        try {
             return Maps.immutableEntry(str, parser.parse(str));
-        }catch (ParseException e){
+        } catch (ParseException e) {
             e.printStackTrace(); // TODO: Introduce better error handling
         }
         return null;

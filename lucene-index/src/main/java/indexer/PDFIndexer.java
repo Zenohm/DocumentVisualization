@@ -24,8 +24,8 @@
 
 package indexer;
 
-import analyzers.PDFAnalyzer;
-import common.DocumentMetadata;
+import analyzers.indexing.PDFAnalyzer;
+import common.data.DocumentMetadata;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
@@ -37,8 +37,8 @@ import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
-import util.IndexerConstants;
-import util.PDFTextExtractor;
+import common.Constants;
+import pdfs.PDFTextExtractor;
 
 import java.io.FileReader;
 import java.io.IOException;
@@ -93,16 +93,16 @@ public class PDFIndexer {
         try {
             Document doc = new Document();
 
-            Field pathField = new StringField(IndexerConstants.FIELD_PATH, file.toString(), Field.Store.YES);
+            Field pathField = new StringField(Constants.FIELD_PATH, file.toString(), Field.Store.YES);
             doc.add(pathField);
 
             // Add Document metadata //
-            doc.add(new StringField(IndexerConstants.FIELD_AUTHOR, metadata.getAuthor(), Field.Store.YES));
-            doc.add(new StringField(IndexerConstants.FIELD_TITLE, metadata.getTitle(), Field.Store.YES));
-            doc.add(new StringField(IndexerConstants.FIELD_CONFERENCE, metadata.getConference(), Field.Store.YES));
+            doc.add(new StringField(Constants.FIELD_AUTHOR, metadata.getAuthor(), Field.Store.YES));
+            doc.add(new StringField(Constants.FIELD_TITLE, metadata.getTitle(), Field.Store.YES));
+            doc.add(new StringField(Constants.FIELD_CONFERENCE, metadata.getConference(), Field.Store.YES));
             // End of Document Metadata //
 
-            Field modified = new LongField(IndexerConstants.FIELD_MODIFIED,
+            Field modified = new LongField(Constants.FIELD_MODIFIED,
                     Files.getLastModifiedTime(file).toMillis(), Field.Store.YES);
             doc.add(modified);
 
@@ -118,7 +118,7 @@ public class PDFIndexer {
             contentsType.setStoreTermVectorPayloads(true);
             contentsType.setStoreTermVectorOffsets(true);
             contentsType.setIndexOptions(IndexOptions.DOCS_AND_FREQS_AND_POSITIONS_AND_OFFSETS);
-            Field contents = new Field(IndexerConstants.FIELD_CONTENTS, textContents, contentsType);
+            Field contents = new Field(Constants.FIELD_CONTENTS, textContents, contentsType);
             doc.add(contents);
 
             if (writer.getConfig().getOpenMode() == IndexWriterConfig.OpenMode.CREATE) {
@@ -130,7 +130,7 @@ public class PDFIndexer {
                 // we use updateDocument instead to replace the old one matching the exact
                 // path, if present:
                 System.out.println("updating " + file);
-                writer.updateDocument(new Term(IndexerConstants.FIELD_PATH, file.toString()), doc);
+                writer.updateDocument(new Term(Constants.FIELD_PATH, file.toString()), doc);
             }
         } catch (IOException e) {
             System.out.println("Failed to read file " + metadata.getFilename());
@@ -147,9 +147,9 @@ public class PDFIndexer {
             // Get the index directory
             Directory dir = FSDirectory.open(Paths.get(indexDirectory));
             // Get the directory for resources
-            String resourcesDir = resourceDirectory + "/" + IndexerConstants.CSV_LOCATION;
+            String resourcesDir = resourceDirectory + "/" + Constants.CSV_LOCATION;
             // Get PDF Analyzer
-            Analyzer pdf_analyzer = new PDFAnalyzer(resourceDirectory + "/" + IndexerConstants.STOPWORDS_FILE);
+            Analyzer pdf_analyzer = new PDFAnalyzer(resourceDirectory + "/" + Constants.STOPWORDS_FILE);
             // Create an index writer config with the analyzer
             IndexWriterConfig iwc = new IndexWriterConfig(pdf_analyzer);
             // Set the open mode to create or append

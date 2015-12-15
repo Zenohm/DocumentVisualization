@@ -3,7 +3,7 @@ package servlets;
 import com.google.gson.GsonBuilder;
 import searcher.DocumentSearcher;
 import searcher.exception.LuceneSearchException;
-import searcher.reader.LuceneIndexReader;
+import reader.LuceneIndexReader;
 
 import javax.servlet.GenericServlet;
 import javax.servlet.ServletException;

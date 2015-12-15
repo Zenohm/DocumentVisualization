@@ -22,17 +22,26 @@
  * THE SOFTWARE.
  */
 
-package searcher.reader;
+package common;
 
 /**
- * Created by Chris on 9/24/2015.
+ * Created by Chris on 8/19/2015.
  */
-public interface IndexReader {
-    boolean isInitialized();
+public class Constants {
+    public static final String INDEX_DIRECTORY = "indexes";
+    public static final String STOPWORDS_FILE = "db/stopwords.txt";
+    public static final String INDEX_CONFIG_FILE = "config/index-config.cfg";
+    public static final String FIELD_PATH = "path";
+    public static final String FIELD_CONTENTS = "contents";
+    public static final String FIELD_MODIFIED = "modified";
+    public static final String FIELD_TITLE = "title";
+    public static final String FIELD_AUTHOR = "author";
+    public static final String FIELD_CONFERENCE = "conference";
+    public static final String RESOURCE_FOLDER_VAR = "RESOURCE_FOLDER";
+    // These are relative to the document resources directory
+    static public final String CSV_LOCATION = "db/pdf-info.csv";
 
-    // Different initialization methods for index readers
-    boolean initializeIndexReader();
-    boolean initializeIndexReader(String filename);
-
-    org.apache.lucene.index.IndexReader getReader();
+    // Private constructor so you cant create this class
+    private Constants() {
+    }
 }

@@ -1,4 +1,4 @@
-package common;
+package common.data;
 
 /*
  * The MIT License (MIT)

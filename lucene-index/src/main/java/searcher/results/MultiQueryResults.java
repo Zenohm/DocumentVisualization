@@ -14,14 +14,15 @@ public class MultiQueryResults {
     public final double score;
     public final List<String> terms;
     private final List<QueryResults> results;
-    public MultiQueryResults(int docId, double score, List<String> terms){
+
+    public MultiQueryResults(int docId, double score, List<String> terms) {
         this.docId = docId;
         this.terms = new ArrayList<>(terms);
         this.score = score;
         results = new ArrayList<>();
     }
 
-    public void addQueryResult(QueryResults res){
+    public void addQueryResult(QueryResults res) {
         results.add(res);
     }
 

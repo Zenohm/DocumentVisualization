@@ -22,26 +22,26 @@
  * THE SOFTWARE.
  */
 
-package util;
+package pdfs;
+
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.text.PDFTextStripper;
+
+import java.io.File;
+import java.io.IOException;
 
 /**
  * Created by Chris on 8/19/2015.
+ * Simple utility class for extracting text from a PDF
  */
-public class IndexerConstants {
-    public static final String INDEX_DIRECTORY = "indexes";
-    public static final String STOPWORDS_FILE = "db/stopwords.txt";
-    public static final String INDEX_CONFIG_FILE = "config/index-config.cfg";
-    public static final String FIELD_PATH = "path";
-    public static final String FIELD_CONTENTS = "contents";
-    public static final String FIELD_MODIFIED = "modified";
-    public static final String FIELD_TITLE = "title";
-    public static final String FIELD_AUTHOR = "author";
-    public static final String FIELD_CONFERENCE = "conference";
-    public static final String RESOURCE_FOLDER_VAR = "RESOURCE_FOLDER";
-    // These are relative to the document resources directory
-    static public final String CSV_LOCATION = "db/pdf-info.csv";
-
-    // Private constructor so you cant create this class
-    private IndexerConstants() {
+public class PDFTextExtractor {
+    public static String extractText(String filename) throws IOException {
+        File file = new File(filename);
+        if(!file.exists()) throw new IOException("ERROR: " + filename + " doesn't exist");
+        PDDocument document = PDDocument.load(file);
+        PDFTextStripper stripper = new PDFTextStripper();
+        String res = stripper.getText(document);
+        document.close();
+        return res;
     }
 }

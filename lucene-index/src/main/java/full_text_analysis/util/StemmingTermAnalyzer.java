@@ -1,4 +1,4 @@
-package analyzers;
+package full_text_analysis.util;
 
 import analyzers.filters.AlphaNumericFilter;
 import analyzers.filters.NumberFilter;

@@ -5,7 +5,7 @@ import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TopDocs;
 import searcher.exception.LuceneSearchException;
-import searcher.reader.IndexReader;
+import reader.IndexReader;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -21,7 +21,7 @@ public class DocumentSearcher extends Searcher {
         super(reader);
     }
 
-    public List<Map.Entry<Double, Integer>> searchForTerm(String term) throws LuceneSearchException{
+    public List<Map.Entry<Double, Integer>> searchForTerm(String term) throws LuceneSearchException {
         try {
             Query query = parser.parse(term);
             System.out.print("Searching for query: " + query.toString());
@@ -30,7 +30,7 @@ public class DocumentSearcher extends Searcher {
 
             return Arrays.asList(search.scoreDocs)
                     .stream()
-                    .map(doc -> Maps.immutableEntry((double)doc.score, doc.doc))
+                    .map(doc -> Maps.immutableEntry((double) doc.score, doc.doc))
                     .collect(Collectors.toList());
         } catch (ParseException e) {
             throw new LuceneSearchException("DocumentSearcher: Parse exception while searching for term: "

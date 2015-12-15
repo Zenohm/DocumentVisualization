@@ -22,8 +22,7 @@
  * THE SOFTWARE.
  */
 
-package common;
-
+package common.data;
 import org.apache.commons.csv.CSVRecord;
 
 /**

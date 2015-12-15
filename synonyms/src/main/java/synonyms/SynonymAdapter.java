@@ -23,7 +23,7 @@
  */
 package synonyms;
 
-import common.ScoredTerm;
+import common.data.ScoredTerm;
 import edu.smu.tspell.wordnet.Synset;
 import edu.smu.tspell.wordnet.WordNetDatabase;
 

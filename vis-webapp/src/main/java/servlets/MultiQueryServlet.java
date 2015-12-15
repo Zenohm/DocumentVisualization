@@ -5,7 +5,7 @@ import data_processing.multi_query_processing.MultiQueryConverter;
 import data_processing.multi_query_processing.multi_query_json_data.MultiQueryJson;
 import searcher.MultiQuerySearcher;
 import searcher.exception.LuceneSearchException;
-import searcher.reader.LuceneIndexReader;
+import reader.LuceneIndexReader;
 import searcher.results.MultiQueryResults;
 
 import javax.servlet.GenericServlet;

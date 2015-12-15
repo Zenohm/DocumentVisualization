@@ -22,11 +22,11 @@
  * THE SOFTWARE.
  */
 
-package searcher.reader;
+package reader;
 
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.store.FSDirectory;
-import util.IndexerConstants;
+import common.Constants;
 
 import java.io.IOException;
 import java.nio.file.FileSystems;
@@ -53,6 +53,7 @@ public class LuceneIndexReader implements IndexReader {
 
     /**
      * This is called as a part of the startup for the indexer. YOU SHOULD NOT NEED TO CALL THIS
+     *
      * @param filename The index directory
      * @return if the index initialization succeeds return true.
      */
@@ -69,7 +70,7 @@ public class LuceneIndexReader implements IndexReader {
     }
 
     public boolean initializeIndexReader() {
-        return initializeIndexReader(IndexerConstants.INDEX_DIRECTORY);
+        return initializeIndexReader(Constants.INDEX_DIRECTORY);
     }
 
     @Override
