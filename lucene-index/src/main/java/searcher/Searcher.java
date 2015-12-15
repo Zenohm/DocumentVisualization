@@ -1,9 +1,9 @@
 package searcher;
 
+import access_utils.LuceneReader;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.IndexSearcher;
-import analyzers.search.SearchAnalyzer;
 import searcher.exception.LuceneSearchException;
 import reader.IndexReader;
 import common.Constants;
@@ -11,18 +11,15 @@ import common.Constants;
 /**
  * Created by chris on 11/19/15.
  */
-public abstract class Searcher {
-    protected IndexReader reader;
+public abstract class Searcher extends LuceneReader {
     protected IndexSearcher searcher;
     protected QueryParser parser;
     protected Analyzer analyzer;
 
-    public Searcher(IndexReader reader) throws LuceneSearchException {
-        if (!reader.isInitialized())
-            throw new LuceneSearchException(getClass().getName() + ": IndexReader Not Initialized");
-        this.reader = reader;
+    public Searcher(IndexReader reader, Analyzer analyzer) throws LuceneSearchException {
+        super(reader);
         this.searcher = new IndexSearcher(reader.getReader());
-        this.analyzer = new SearchAnalyzer();
+        this.analyzer = analyzer;
         this.parser = new QueryParser(Constants.FIELD_CONTENTS, analyzer);
     }
 }

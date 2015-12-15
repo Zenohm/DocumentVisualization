@@ -25,6 +25,8 @@ package synonyms;
 
 import common.data.ScoredTerm;
 import searcher.DocumentSearcher;
+import searcher.DocumentSearcherFactory;
+import searcher.TokenizerType;
 import searcher.exception.LuceneSearchException;
 import reader.LuceneIndexReader;
 
@@ -138,8 +140,8 @@ public class SynonymScorer {
         // Attempt a lucene search for #words# to find relevant docs.
         try {
             // Initialize Lucene stuff
-            LuceneIndexReader reader = LuceneIndexReader.getInstance();
-            DocumentSearcher searcher = new DocumentSearcher(reader);
+            DocumentSearcher searcher = DocumentSearcherFactory
+                            .getDocumentSearcher(LuceneIndexReader.getInstance(), TokenizerType.KEYWORD_TOKENIZER);
 
             // Search for the first term
             List<Map.Entry<Double, Integer>> originalWordResults = searcher.searchForTerm(words[0]);

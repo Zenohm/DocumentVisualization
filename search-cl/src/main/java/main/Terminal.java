@@ -3,6 +3,8 @@ package main;
 import indexer.PDFIndexer;
 import searcher.DocumentSearcher;
 import access_utils.MetadataRetriever;
+import searcher.DocumentSearcherFactory;
+import searcher.TokenizerType;
 import searcher.exception.LuceneSearchException;
 import reader.LuceneIndexReader;
 import common.Constants;
@@ -27,7 +29,8 @@ public class Terminal {
             System.err.println("Initializer Error: Could Not Initialize IndexReader");
         }
 
-        DocumentSearcher searcher = new DocumentSearcher(LuceneIndexReader.getInstance());
+        DocumentSearcher searcher = DocumentSearcherFactory
+                .getDocumentSearcher(LuceneIndexReader.getInstance(), TokenizerType.WHITESPACE_TOKENIZER);
         MetadataRetriever retriever = new MetadataRetriever(LuceneIndexReader.getInstance());
 
         Scanner kb = new Scanner(System.in);

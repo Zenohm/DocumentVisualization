@@ -2,6 +2,8 @@ package servlets;
 
 import com.google.gson.GsonBuilder;
 import searcher.DocumentSearcher;
+import searcher.DocumentSearcherFactory;
+import searcher.TokenizerType;
 import searcher.exception.LuceneSearchException;
 import reader.LuceneIndexReader;
 
@@ -22,7 +24,8 @@ public class TermSearchServlet extends GenericServlet {
     public void service(ServletRequest req, ServletResponse res) throws ServletException, IOException {
         String term = req.getParameter("term");
         try {
-            DocumentSearcher searcher = new DocumentSearcher(LuceneIndexReader.getInstance());
+            DocumentSearcher searcher = DocumentSearcherFactory
+                    .getDocumentSearcher(LuceneIndexReader.getInstance(), TokenizerType.WHITESPACE_TOKENIZER);
             res.getWriter().println((new GsonBuilder()).create().toJson(searcher.searchForTerm(term)));
         } catch (LuceneSearchException e) {
             System.err.println("There was an error with the index searcher.");

@@ -1,6 +1,7 @@
 package searcher;
 
 import com.google.common.collect.Maps;
+import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TopDocs;
@@ -17,8 +18,8 @@ import java.util.stream.Collectors;
  * Created by chris on 10/5/15.
  */
 public class DocumentSearcher extends Searcher {
-    public DocumentSearcher(IndexReader reader) throws LuceneSearchException {
-        super(reader);
+    public DocumentSearcher(IndexReader reader, Analyzer analyzer) throws LuceneSearchException {
+        super(reader, analyzer);
     }
 
     public List<Map.Entry<Double, Integer>> searchForTerm(String term) throws LuceneSearchException {

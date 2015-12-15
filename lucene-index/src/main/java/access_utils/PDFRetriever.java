@@ -11,7 +11,7 @@ import java.io.IOException;
 /**
  * Created by Chris on 10/8/2015.
  */
-public class PDFRetriever extends Searcher {
+public class PDFRetriever extends LuceneReader {
     public PDFRetriever(IndexReader reader) throws LuceneSearchException {
         super(reader);
     }

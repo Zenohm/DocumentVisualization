@@ -1,6 +1,8 @@
 package searcher;
 
+import analyzers.search.SearchAnalyzer;
 import com.google.common.collect.Maps;
+import org.apache.lucene.analysis.core.WhitespaceTokenizer;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
@@ -22,7 +24,7 @@ import java.util.stream.Collectors;
  */
 public class MultiQuerySearcher extends Searcher {
     public MultiQuerySearcher(IndexReader reader) throws LuceneSearchException {
-        super(reader);
+        super(reader, new SearchAnalyzer(WhitespaceTokenizer.class));
     }
 
     public List<MultiQueryResults> searchForResults(String... queries) throws IOException {
