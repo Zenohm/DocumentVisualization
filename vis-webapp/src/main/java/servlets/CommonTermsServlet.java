@@ -35,10 +35,9 @@ public class CommonTermsServlet extends GenericServlet{
     public void service(ServletRequest req, ServletResponse res) throws ServletException, IOException {
         try {
             int docId = Integer.parseInt(req.getParameter("docId"));
-            int limit = -1;
             List<ScoredTerm> terms;
             if(req.getParameterMap().containsKey("limit")) {
-                limit = Integer.parseInt(req.getParameter("limit"));
+                int limit = Integer.parseInt(req.getParameter("limit"));
                 terms = TermsAnalyzer.getTopTerms(LuceneIndexReader.getInstance().getReader(), docId, limit);
             } else {
                 terms = TermsAnalyzer.getTerms(LuceneIndexReader.getInstance().getReader(), docId);
