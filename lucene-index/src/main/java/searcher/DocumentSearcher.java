@@ -1,17 +1,16 @@
 package searcher;
 
-import com.google.common.collect.Maps;
+import common.data.ScoredDocument;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TopDocs;
-import searcher.exception.LuceneSearchException;
 import reader.IndexReader;
+import searcher.exception.LuceneSearchException;
 
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -22,7 +21,7 @@ public class DocumentSearcher extends Searcher {
         super(reader, analyzer);
     }
 
-    public List<Map.Entry<Double, Integer>> searchForTerm(String term) throws LuceneSearchException {
+    public List<ScoredDocument> searchForTerm(String term) throws LuceneSearchException {
         try {
             Query query = parser.parse(term);
             System.out.print("Searching for query: " + query.toString());
@@ -31,7 +30,7 @@ public class DocumentSearcher extends Searcher {
 
             return Arrays.asList(search.scoreDocs)
                     .stream()
-                    .map(doc -> Maps.immutableEntry((double) doc.score, doc.doc))
+                    .map(doc -> ScoredDocument.of(doc.doc, (double) doc.score))
                     .collect(Collectors.toList());
         } catch (ParseException e) {
             throw new LuceneSearchException("DocumentSearcher: Parse exception while searching for term: "

@@ -18,7 +18,7 @@
                     var metadataDiv = document.createElement("div");
                     metadataDiv.className = "metadata";
                     result.appendChild(metadataDiv);
-                    appendMetadata(metadataDiv, obj.value);
+                    appendMetadata(metadataDiv, obj.docId);
 
                     // Append the Common terms stuff.
                     var commonTermsDiv = document.createElement("div");
@@ -35,7 +35,7 @@
                         var side_title = document.createElement("p");
                         side_title.innerHTML = "Common Stems for <br>\"" + data.title + "\"<br>";
                         sidebar.appendChild(side_title);
-                        $.getJSON("common_terms?docId="+obj.value+"&limit=10", function(data) {
+                        $.getJSON("common_terms?docId="+obj.docId+"&limit=10", function(data) {
                             data.forEach(function(term){
                                 var termP = document.createElement("p");
                                 termP.innerHTML = term.text;
@@ -59,7 +59,7 @@
                         var side_title = document.createElement("p");
                         side_title.innerHTML = "Terms Related to \"" + relTermsSearchBar.value + "\" in document<br>\"" + data.title + "\"";
                         sidebar.appendChild(side_title);
-                        $.getJSON("related_terms?docId="+obj.value+"&term="+relTermsSearchBar.value+"&limit=10", function(data){
+                        $.getJSON("related_terms?docId="+obj.docId+"&term="+relTermsSearchBar.value+"&limit=10", function(data){
                             data.forEach(function(term){
                                 console.log(term);
                                 var termP = document.createElement("p");
