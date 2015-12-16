@@ -1,9 +1,11 @@
 package searcher;
 
+import common.Constants;
 import common.data.ScoredDocument;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.search.Query;
+import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TopDocs;
 import reader.IndexReader;
 import searcher.exception.LuceneSearchException;
@@ -37,6 +39,15 @@ public class DocumentSearcher extends Searcher {
             // Searches and returns the max number of documents
             final TopDocs search = searcher.search(query, reader.getReader().numDocs());
             System.out.print(". Found " + search.totalHits + " documents matching your query.\n");
+
+            // Prints the contents of the document
+//            for(ScoreDoc doc : search.scoreDocs){
+//                System.out.print("Doc ID: ");
+//                for(String content : reader.getReader().document(doc.doc).getValues(Constants.FIELD_CONTENTS)){
+//                    System.out.print(content + ", ");
+//                }
+//                System.out.println();
+//            }
 
             return Arrays.asList(search.scoreDocs)
                     .stream()

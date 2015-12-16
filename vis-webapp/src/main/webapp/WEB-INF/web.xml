@@ -130,6 +130,15 @@
         <url-pattern>/synonyms</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <servlet-name>TermLocationsServlet</servlet-name>
+        <servlet-class>servlets.TermLocationsServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>TermLocationsServlet</servlet-name>
+        <url-pattern>/term_locs</url-pattern>
+    </servlet-mapping>
+
     <welcome-file-list>
         <welcome-file>index.html</welcome-file>
     </welcome-file-list>
