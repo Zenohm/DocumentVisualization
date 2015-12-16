@@ -7,6 +7,7 @@ import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TopDocs;
 import reader.IndexReader;
 import searcher.exception.LuceneSearchException;
+import util.ListUtils;
 import util.Searcher;
 
 import java.io.IOException;
@@ -15,6 +16,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
+ * Searches the index for documents
  * Created by chris on 10/5/15.
  */
 public class DocumentSearcher extends Searcher {
@@ -22,11 +24,18 @@ public class DocumentSearcher extends Searcher {
         super(reader, analyzer);
     }
 
+    /**
+     * Returns a list of scored documents given a term
+     * @param term Term to search for
+     * @return List of scored documents for the search term
+     * @throws LuceneSearchException
+     */
     public List<ScoredDocument> searchForTerm(String term) throws LuceneSearchException {
         try {
             Query query = parser.parse(term);
             System.out.print("Searching for query: " + query.toString());
-            final TopDocs search = searcher.search(query, 50);
+            // Searches and returns the max number of documents
+            final TopDocs search = searcher.search(query, reader.getReader().numDocs());
             System.out.print(". Found " + search.totalHits + " documents matching your query.\n");
 
             return Arrays.asList(search.scoreDocs)
@@ -39,6 +48,17 @@ public class DocumentSearcher extends Searcher {
         } catch (IOException e) {
             throw new LuceneSearchException("DocumentSearcher: IO Exception " + e.toString());
         }
+    }
+
+    /**
+     * Searches for a set of terms, only returns the first N
+     * @param term The term to search for documents that contain it
+     * @param limit Limit for the number of documents
+     * @return A list of scored documents of size limit or smaller.
+     * @throws LuceneSearchException
+     */
+    public List<ScoredDocument> searchForTerm(String term, int limit) throws LuceneSearchException{
+        return ListUtils.getSublist(searchForTerm(term), limit);
     }
 
 

@@ -24,6 +24,9 @@
 
 package full_text_analysis;
 
+import common.Constants;
+import common.data.ScoredTerm;
+import full_text_analysis.util.FullTextExtractor;
 import full_text_analysis.util.StemmingTermAnalyzer;
 import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.analysis.Analyzer;
@@ -31,9 +34,7 @@ import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.index.IndexReader;
 import searcher.exception.LuceneSearchException;
-import full_text_analysis.util.FullTextExtractor;
-import common.Constants;
-import common.data.ScoredTerm;
+import util.ListUtils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -71,7 +72,7 @@ public class TermsAnalyzer {
      * @return Sorted list of related terms
      */
     public static List<ScoredTerm> getRelatedTermsInDocument(IndexReader reader, int docId, String term) throws LuceneSearchException {
-        String fullText = FullTextExtractor.extractFullText(reader, docId);
+        String fullText = FullTextExtractor.extractText(reader, docId);
 
         if (fullText.equals(FullTextExtractor.FAILED_TEXT))
             throw new LuceneSearchException("Failed to extract fulltext");
@@ -79,12 +80,21 @@ public class TermsAnalyzer {
         return getRelatedTerms(fullText, term);
     }
 
+    /**
+     * This method uses the getRelatedTerms but uses FullText that is obtained from Lucene.
+     *
+     * @param reader Use this index reader to get the document
+     * @param docId  The document ID to get the text from
+     * @param term   The term to find related terms to
+     * @param limit  Limits the number of terms that can be returned
+     * @return Sorted list of related terms
+     */
     public static List<ScoredTerm> getRelatedTermsInDocument(IndexReader reader, int docId, String term, int limit) throws LuceneSearchException {
-        String fullText = FullTextExtractor.extractFullText(reader, docId);
+        String fullText = FullTextExtractor.extractText(reader, docId);
         if (fullText.equals(FullTextExtractor.FAILED_TEXT))
             throw new LuceneSearchException("Failed to extract fulltext");
 
-        return limitTermSize(getRelatedTerms(fullText, term), limit);
+        return ListUtils.getSublist(getRelatedTerms(fullText, term), limit);
     }
 
     /**
@@ -169,7 +179,7 @@ public class TermsAnalyzer {
      * @throws LuceneSearchException
      */
     public static List<ScoredTerm> getTerms(IndexReader reader, int docId) throws LuceneSearchException {
-        String fullText = FullTextExtractor.extractFullText(reader, docId);
+        String fullText = FullTextExtractor.extractText(reader, docId);
 
         if (fullText.equals(FullTextExtractor.FAILED_TEXT))
             throw new LuceneSearchException("Failed to get the full text.");
@@ -235,7 +245,7 @@ public class TermsAnalyzer {
      */
     public static List<ScoredTerm> getTopTerms(String fullText, int limit) throws LuceneSearchException {
         List<ScoredTerm> terms = getTerms(fullText);
-        return limitTermSize(terms, limit);
+        return ListUtils.getSublist(terms, limit);
     }
 
     /**
@@ -249,15 +259,7 @@ public class TermsAnalyzer {
      */
     public static List<ScoredTerm> getTopTerms(IndexReader reader, int docId, int limit) throws LuceneSearchException {
         List<ScoredTerm> terms = getTerms(reader, docId);
-        return limitTermSize(terms, limit);
-    }
-
-
-    private static List<ScoredTerm> limitTermSize(List<ScoredTerm> terms, int limit) {
-        if (terms.size() < limit) {
-            limit = terms.size();
-        }
-        return new ArrayList<>(terms.subList(0, limit));
+        return ListUtils.getSublist(terms, limit);
     }
 
 

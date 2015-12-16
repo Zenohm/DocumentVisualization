@@ -18,12 +18,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Stemming Term analyzer, very similar to PDF analyzer. Used to stem terms before they are searched for.
  * Created by chris on 10/16/15.
- * Stemming Term analyzer, very similar to PDF analyzer.
  */
 public class StemmingTermAnalyzer extends Analyzer{
     private final List<String> stopwords;
 
+    /**
+     * Intialize the StemmingTermAnalyzer with a stopwordFile
+     * @param stopwordFile The stopword file
+     */
     public StemmingTermAnalyzer(String stopwordFile) {
         stopwords = new ArrayList<>();
         try {
