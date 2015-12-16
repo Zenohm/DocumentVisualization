@@ -1,12 +1,11 @@
-package searcher;
+package util;
 
-import access_utils.LuceneReader;
+import common.Constants;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.IndexSearcher;
-import searcher.exception.LuceneSearchException;
 import reader.IndexReader;
-import common.Constants;
+import searcher.exception.LuceneSearchException;
 
 /**
  * Created by chris on 11/19/15.

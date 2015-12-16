@@ -7,6 +7,7 @@ import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TopDocs;
 import reader.IndexReader;
 import searcher.exception.LuceneSearchException;
+import util.Searcher;
 
 import java.io.IOException;
 import java.util.Arrays;

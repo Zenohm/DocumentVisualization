@@ -1,15 +1,16 @@
 package access_utils;
 
+import common.Constants;
 import common.data.DocumentMetadata;
 import org.apache.lucene.document.Document;
-import searcher.Searcher;
-import searcher.exception.LuceneSearchException;
 import reader.IndexReader;
-import common.Constants;
+import searcher.exception.LuceneSearchException;
+import util.LuceneReader;
 
 import java.io.IOException;
 
 /**
+ * Class for getting metadata from the document database
  * Created by chris on 10/6/15.
  */
 public class MetadataRetriever extends LuceneReader {
@@ -17,6 +18,12 @@ public class MetadataRetriever extends LuceneReader {
         super(reader);
     }
 
+    /**
+     * Gets metadata for the document id
+     * @param documentId The document id to get metadata for
+     * @return Metadata for the document
+     * @throws LuceneSearchException
+     */
     public DocumentMetadata getMetadata(int documentId) throws LuceneSearchException {
         Document document = null;
         try {
@@ -35,14 +42,32 @@ public class MetadataRetriever extends LuceneReader {
         return metadata;
     }
 
+    /**
+     * Gets the title for a given document
+     * @param documentId The document id
+     * @return The title of the document
+     * @throws LuceneSearchException
+     */
     public String getTitle(int documentId) throws LuceneSearchException {
         return getMetadata(documentId).getTitle();
     }
 
+    /**
+     * Gets the author for a given document
+     * @param documentId The document id
+     * @return The author of the document
+     * @throws LuceneSearchException
+     */
     public String getAuthor(int documentId) throws LuceneSearchException {
         return getMetadata(documentId).getAuthor();
     }
 
+    /**
+     * Gets the conference for a given document
+     * @param documentId The document id
+     * @return The conference that the document was published in
+     * @throws LuceneSearchException
+     */
     public String getConference(int documentId) throws LuceneSearchException {
         return getMetadata(documentId).getConference();
     }

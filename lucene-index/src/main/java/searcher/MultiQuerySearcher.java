@@ -8,10 +8,11 @@ import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TopDocs;
-import searcher.exception.LuceneSearchException;
 import reader.IndexReader;
+import searcher.exception.LuceneSearchException;
 import searcher.results.MultiQueryResults;
 import searcher.results.QueryResults;
+import util.Searcher;
 
 import java.io.IOException;
 import java.util.Arrays;
