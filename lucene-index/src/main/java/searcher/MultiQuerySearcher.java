@@ -1,15 +1,18 @@
 package searcher;
 
+import analyzers.search.SearchAnalyzer;
 import com.google.common.collect.Maps;
+import org.apache.lucene.analysis.core.WhitespaceTokenizer;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TopDocs;
+import reader.IndexReader;
 import searcher.exception.LuceneSearchException;
-import searcher.reader.IndexReader;
 import searcher.results.MultiQueryResults;
 import searcher.results.QueryResults;
+import util.Searcher;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -21,10 +24,17 @@ import java.util.stream.Collectors;
  * Created by chris on 11/19/15.
  */
 public class MultiQuerySearcher extends Searcher {
-    public MultiQuerySearcher(IndexReader reader) throws LuceneSearchException{
-        super(reader);
+    public MultiQuerySearcher(IndexReader reader) throws LuceneSearchException {
+        super(reader, new SearchAnalyzer(WhitespaceTokenizer.class));
     }
 
+    /**
+     * Searches for multiple queries
+     *
+     * @param queries The query terms to search for
+     * @return A list of results for the multiple queries
+     * @throws IOException
+     */
     public List<MultiQueryResults> searchForResults(String... queries) throws IOException {
         // Create a list of queries
         List<Map.Entry<String, Query>> queryList = Arrays.asList(queries).stream() // This cannot be parallel
@@ -35,7 +45,7 @@ public class MultiQuerySearcher extends Searcher {
         // Create the boolean query to cover all the cases
         BooleanQuery overallQuery = new BooleanQuery();
 
-        for(Map.Entry<String, Query> query : queryList) {
+        for (Map.Entry<String, Query> query : queryList) {
             overallQuery.add(query.getValue(), BooleanClause.Occur.SHOULD); // Add that the query should occur
         }
 
@@ -62,10 +72,16 @@ public class MultiQuerySearcher extends Searcher {
                 .collect(Collectors.toList());
     }
 
-    private Map.Entry<String, Query> parseQuery(String str){
-        try{
+    /**
+     * Parses the query and relates it to a string
+     *
+     * @param str String to parse the query for
+     * @return A Pair with the String and the query
+     */
+    private Map.Entry<String, Query> parseQuery(String str) {
+        try {
             return Maps.immutableEntry(str, parser.parse(str));
-        }catch (ParseException e){
+        } catch (ParseException e) {
             e.printStackTrace(); // TODO: Introduce better error handling
         }
         return null;

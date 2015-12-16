@@ -8,17 +8,17 @@
     <link rel="stylesheet" type="text/css" href="style/results-style.css"/>
     <script src="js/searchUtils.js"></script>
     <script language="javascript" type="application/javascript">
-        function searchForTerm(){
+        function searchForTerm() {
             document.getElementById("results").innerHTML = "";
-            $.getJSON("term_search?term="+document.getElementById("searchbox").value, function(data) {
-                data.forEach(function(obj){
+            $.getJSON("term_search?term=" + document.getElementById("searchbox").value, function (data) {
+                data.forEach(function (obj) {
                     var result = document.createElement("div");
                     result.className = "result";
                     document.getElementById("results").appendChild(result);
                     var metadataDiv = document.createElement("div");
                     metadataDiv.className = "metadata";
                     result.appendChild(metadataDiv);
-                    appendMetadata(metadataDiv, obj.value);
+                    appendMetadata(metadataDiv, obj.docId);
 
                     // Append the Common terms stuff.
                     var commonTermsDiv = document.createElement("div");
@@ -27,7 +27,7 @@
                     var commonTermsBtn = document.createElement("button");
                     commonTermsBtn.innerHTML = "Get Common Terms";
                     commonTermsDiv.appendChild(commonTermsBtn);
-                    commonTermsBtn.onclick = function(){
+                    commonTermsBtn.onclick = function () {
                         var sidebar = document.getElementById("sidebar");
                         sidebar.style.display = '';
                         sidebar.innerHTML = "";
@@ -35,8 +35,8 @@
                         var side_title = document.createElement("p");
                         side_title.innerHTML = "Common Stems for <br>\"" + data.title + "\"<br>";
                         sidebar.appendChild(side_title);
-                        $.getJSON("common_terms?docId="+obj.value+"&limit=10", function(data) {
-                            data.forEach(function(term){
+                        $.getJSON("common_terms?docId=" + obj.docId + "&limit=10", function (data) {
+                            data.forEach(function (term) {
                                 var termP = document.createElement("p");
                                 termP.innerHTML = term.text;
                                 sidebar.appendChild(termP);
@@ -51,7 +51,7 @@
                     var relTermsSearchBar = document.createElement("input");
                     relTermsSearchBar.type = 'text';
                     commonTermsDiv.appendChild(relTermsSearchBar);
-                    relTermsSearchBtn.onclick = function(){
+                    relTermsSearchBtn.onclick = function () {
                         var sidebar = document.getElementById("sidebar");
                         sidebar.style.display = '';
                         sidebar.innerHTML = "";
@@ -59,8 +59,8 @@
                         var side_title = document.createElement("p");
                         side_title.innerHTML = "Terms Related to \"" + relTermsSearchBar.value + "\" in document<br>\"" + data.title + "\"";
                         sidebar.appendChild(side_title);
-                        $.getJSON("related_terms?docId="+obj.value+"&term="+relTermsSearchBar.value+"&limit=10", function(data){
-                            data.forEach(function(term){
+                        $.getJSON("related_terms?docId=" + obj.docId + "&term=" + relTermsSearchBar.value + "&limit=10", function (data) {
+                            data.forEach(function (term) {
                                 console.log(term);
                                 var termP = document.createElement("p");
                                 termP.innerHTML = term.text;
@@ -76,8 +76,9 @@
     </script>
 </head>
 <body>
-    <input id="searchbox" type="search" /><button onclick="searchForTerm()">Search</button>
-    <div id="results"></div>
-    <div id="sidebar" class="side-box-float" style="display: none;"></div>
+<input id="searchbox" type="search"/>
+<button onclick="searchForTerm()">Search</button>
+<div id="results"></div>
+<div id="sidebar" class="side-box-float" style="display: none;"></div>
 </body>
 </html>

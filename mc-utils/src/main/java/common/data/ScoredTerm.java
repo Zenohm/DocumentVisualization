@@ -1,4 +1,4 @@
-package common;
+package common.data;
 
 /*
  * The MIT License (MIT)
@@ -53,6 +53,7 @@ public class ScoredTerm implements Comparable<ScoredTerm> {
 
     /**
      * Compare to method. Compares a scored term to another score term
+     *
      * @param o The other scored term.
      * @return -1 if this term is less than the other term
      * 1 if it is greater than the other term

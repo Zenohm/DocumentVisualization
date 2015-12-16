@@ -22,23 +22,18 @@
  * THE SOFTWARE.
  */
 
-package util;
-
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.util.PDFTextStripper;
-
-import java.io.IOException;
+package reader;
 
 /**
- * Created by Chris on 8/19/2015.
- * Simple utility class for extracting text from a PDF
+ * Created by Chris on 9/24/2015.
  */
-public class PDFTextExtractor {
-    public static String extractText(String filename) throws IOException {
-        PDDocument document = PDDocument.load(filename);
-        PDFTextStripper stripper = new PDFTextStripper();
-        String res = stripper.getText(document);
-        document.close();
-        return res;
-    }
+public interface IndexReader {
+    boolean isInitialized();
+
+    // Different initialization methods for index readers
+    boolean initializeIndexReader();
+
+    boolean initializeIndexReader(String filename);
+
+    org.apache.lucene.index.IndexReader getReader();
 }

@@ -24,7 +24,7 @@ for my $link (@links)
 		print "Downloading ".$resource_url."...";
 		my $ff = File::Fetch->new(uri => $resource_url);
 		$ff->fetch(to => $directory);
-		print "DONE\n"
+		print "DONE\n";
 		
 	}
 	

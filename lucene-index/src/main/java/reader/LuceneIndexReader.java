@@ -22,16 +22,19 @@
  * THE SOFTWARE.
  */
 
-package searcher.reader;
+package reader;
 
+import common.Constants;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.store.FSDirectory;
-import util.IndexerConstants;
 
 import java.io.IOException;
 import java.nio.file.FileSystems;
 
 /**
+ * Specific implementation of index reader for Lucene.
+ * SINGLETON that stores the version of the reader from Lucene
+ * TODO: Abstract the methods and things that are specific to lucene so we aren't locked into it.
  * Created by Chris on 9/24/2015.
  */
 public class LuceneIndexReader implements IndexReader {
@@ -46,13 +49,18 @@ public class LuceneIndexReader implements IndexReader {
         return ourInstance;
     }
 
+    /**
+     * @return True if the index is initialized
+     */
     @Override
     public boolean isInitialized() {
         return READER != null;
     }
 
     /**
-     * This is called as a part of the startup for the indexer. YOU SHOULD NOT NEED TO CALL THIS
+     * This is called as a part of the startup for the indexer.
+     * When running an application that is on the web application, the reader is started by the startup script.
+     *
      * @param filename The index directory
      * @return if the index initialization succeeds return true.
      */
@@ -68,8 +76,13 @@ public class LuceneIndexReader implements IndexReader {
         return isInitialized();
     }
 
+    /**
+     * Default initializer for the index reader. Initializes the index to the default index directory.
+     *
+     * @return if the initialization is successful, returns true
+     */
     public boolean initializeIndexReader() {
-        return initializeIndexReader(IndexerConstants.INDEX_DIRECTORY);
+        return initializeIndexReader(Constants.INDEX_DIRECTORY);
     }
 
     @Override

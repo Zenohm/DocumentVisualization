@@ -60,12 +60,14 @@ function forceChart() {
             force = d3.layout.force()
                 .charge(-150)
                 .linkDistance(FIXED_NODE_SIZE + 15) // Minimum link length
-                .linkStrength(function(d){return d.link_power;})
+                .linkStrength(function (d) {
+                    return d.link_power;
+                })
                 .size([width, height]);
 
             // Check if the SVG exists, if it doesn't create it
             svg = d3.select(me).selectAll("svg");
-            if(svg.empty()){
+            if (svg.empty()) {
                 svg = d3.select(me).append("svg").attr("width", width).attr("height", height);
             }
 
@@ -94,37 +96,41 @@ function forceChart() {
                 .append("circle")
                 .attr("class", "node");
 
-            node.attr("r", function(d){
-                    if(d.fixed){
+            node.attr("r", function (d) {
+                    if (d.fixed) {
                         return FIXED_NODE_SIZE;
-                    }else{
+                    } else {
                         return d.size;
                     }
                 })
-                .attr("radius", function(d){return d.r;})
+                .attr("radius", function (d) {
+                    return d.r;
+                })
                 .style("fill", function (d) {
                     return d3.rgb(d.color);
                 })
-                .on("click", function(d){
+                .on("click", function (d) {
                     // Don't run this on the fixed nodes
-                    if(!d.fixed){
+                    if (!d.fixed) {
                         // A clever trick to save the node and the original color
                         var originalColor = d3.select(this).style("fill");
                         var node = d3.select(this);
 
                         // change the color of the node to white
-                        node.style("fill", function(){
+                        node.style("fill", function () {
                             return d3.rgb(255, 255, 255);
                         });
 
                         // Have a callback function to change the color back
-                        displayDocument(d.docId, function(){
+                        displayDocument(d.docId, function () {
                             node.style("fill", originalColor);
                         });
                     }
                 });
 
-            text = svg.selectAll("text").data(d.nodes.filter(function(d){return d.fixed;}));
+            text = svg.selectAll("text").data(d.nodes.filter(function (d) {
+                return d.fixed;
+            }));
             text.enter()
                 .append("text")
                 .attr("font-family", "sans-serif")
@@ -133,7 +139,9 @@ function forceChart() {
                 .attr("text-anchor", "middle")
                 .attr("font-weight", "bold");
 
-            text.text(function(d){return d.name});
+            text.text(function (d) {
+                return d.name
+            });
 
 
             // If a node is removed, remove it from the sim.
@@ -193,23 +201,23 @@ function forceChart() {
 
         node.each(collide(.5))
             .attr("cx", function (d) {
-            if(d.fixed){
-                return d.x = width * d.xLoc;
-            }else{
-                return d.x;
-            }
-        })
+                if (d.fixed) {
+                    return d.x = width * d.xLoc;
+                } else {
+                    return d.x;
+                }
+            })
             .attr("cy", function (d) {
-                if(d.fixed){
+                if (d.fixed) {
                     return d.y = height * d.yLoc;
-                }else{
+                } else {
                     return d.y;
                 }
-        });
+            });
 
-        text.attr("x", function(d){
+        text.attr("x", function (d) {
             return d.x;
-        }).attr("y", function(d){
+        }).attr("y", function (d) {
             return d.y;
         });
 

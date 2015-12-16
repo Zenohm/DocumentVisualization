@@ -23,10 +23,13 @@
  */
 package synonyms;
 
-import common.ScoredTerm;
+import common.data.ScoredDocument;
+import common.data.ScoredTerm;
+import reader.LuceneIndexReader;
 import searcher.DocumentSearcher;
+import searcher.DocumentSearcherFactory;
+import searcher.TokenizerType;
 import searcher.exception.LuceneSearchException;
-import searcher.reader.LuceneIndexReader;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -56,8 +59,8 @@ public class SynonymScorer {
     /**
      * Given a word and a set of its synonym, returns an ordered list of synonyms ranked from most relevant to least.
      *
-     * @param original The word you want to find ranked synonyms for
-     * @param synonyms The set of synonyms for the original word
+     * @param original          The word you want to find ranked synonyms for
+     * @param synonyms          The set of synonyms for the original word
      * @param minRelevanceRatio An optional parameter for the minimum a synonym must score to be returned. If none
      *                          given, .50 is assumed.
      * @return A list of scoredTerms, in descending order of their scores.
@@ -79,7 +82,7 @@ public class SynonymScorer {
         // Trim the fat - anything below relevance rank gets the D
         List<ScoredTerm> relevantTerms = getRelevantSynonyms(scoredSynonyms, minRelevanceRatio);
 
-        // Use common.ScoredTerm's built-in comparator for sorting purposes
+        // Use common.data.ScoredTerm's built-in comparator for sorting purposes
         relevantTerms.sort(ScoredTerm::compareTo);
         // It is by default in ascending order; we want most relevant first, so reverse it
         relevantTerms.sort(Comparator.reverseOrder());
@@ -92,7 +95,7 @@ public class SynonymScorer {
     /**
      * Helper method to run ScoredTerms through a filter and give the axe to ones that fall below the cutoff point.
      *
-     * @param scoredTerms A list of terms that have scores.
+     * @param scoredTerms       A list of terms that have scores.
      * @param minRelevanceRatio The minimum score a term must have to avoid being cut.  If none is given,
      *                          #DEFAULT_CUTOFF_RATIO# is assumed.
      * @return A trimmed list of scored terms, containing only synonyms who scored greater than #minRelevanceRatio#
@@ -109,7 +112,7 @@ public class SynonymScorer {
      * Gets the ratio of documents containing original AND synonym / documents containing the synonym
      *
      * @param original The original word
-     * @param synonym A synonym of #original#
+     * @param synonym  A synonym of #original#
      * @return A double representing #docs(BOTH original AND synonym)/#docs(synonym)
      */
     private static double score(String original, String synonym) {
@@ -129,7 +132,7 @@ public class SynonymScorer {
      * @param words The word(s) to do a documentSearch for.
      * @return The number of documents containing (all of) #words#
      */
-    private static int getNumOfDocuments(String ... words) {
+    private static int getNumOfDocuments(String... words) {
         // Handle idiot cases
         if (words == null || words.length == 0) {
             return -1;
@@ -138,24 +141,24 @@ public class SynonymScorer {
         // Attempt a lucene search for #words# to find relevant docs.
         try {
             // Initialize Lucene stuff
-            LuceneIndexReader reader = LuceneIndexReader.getInstance();
-            DocumentSearcher searcher = new DocumentSearcher(reader);
+            DocumentSearcher searcher = DocumentSearcherFactory
+                    .getDocumentSearcher(LuceneIndexReader.getInstance(), TokenizerType.KEYWORD_TOKENIZER);
 
             // Search for the first term
-            List<Map.Entry<Double, Integer>> originalWordResults = searcher.searchForTerm(words[0]);
+            List<ScoredDocument> originalWordResults = searcher.searchForTerm(words[0]);
             if (words.length == 1) {
                 // If there was only 1 term, we're done.  Return the length of the results.
                 return originalWordResults.size();
             } else { // You've complicated things a bit.
                 // Make a set of all the pdf ids for the original word
-                Set<Integer> docIds = originalWordResults.stream().map(Map.Entry::getValue).collect(Collectors.toSet());
+                Set<Integer> docIds = originalWordResults.stream().map(ScoredDocument::getDocId).collect(Collectors.toSet());
 
                 // Go through each word
                 for (String word : words) {
                     // Keep only the ids for pdfs that contained all of #words#.
                     docIds.retainAll(
                             searcher.searchForTerm(word) // Do the search
-                                    .stream().map(Map.Entry::getValue).collect(Collectors.toSet()));
+                                    .stream().map(ScoredDocument::getDocId).collect(Collectors.toSet()));
                 }
                 // Return the number of pdfs that the passed through #words# share
                 return docIds.size();

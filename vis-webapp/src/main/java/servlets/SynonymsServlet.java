@@ -23,14 +23,9 @@
  */
 package servlets;
 
-/**
- *
- * @author perryc on 10/10/15
- */
-
 import com.google.gson.GsonBuilder;
+import common.data.ScoredTerm;
 import org.apache.commons.lang.StringUtils;
-import common.ScoredTerm;
 import synonyms.SynonymAdapter;
 
 import javax.servlet.GenericServlet;
@@ -48,7 +43,18 @@ import java.util.Set;
  */
 @WebServlet(value = "/synonyms", name = "SynonymsServlet")
 public class SynonymsServlet extends GenericServlet {
-
+    /**
+     * Service for the Synonyms servlet
+     *
+     * @param req Required Parameters:
+     *            term: The term to find synonyms for
+     *            Optional Parameters:
+     *            scored: The terms will have scores attached
+     *            related: Terms will be minimally related (zeroes will be filtered)
+     * @param res Response will contain a list of synonyms or scored synonyms
+     * @throws ServletException
+     * @throws IOException
+     */
     @Override
     public void service(ServletRequest req, ServletResponse res) throws ServletException, IOException {
 

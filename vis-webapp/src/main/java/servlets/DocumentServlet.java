@@ -1,10 +1,9 @@
 package servlets;
 
-import org.apache.commons.lang.ObjectUtils;
-import searcher.MetadataRetriever;
-import searcher.PDFRetriever;
+import access_utils.PDFRetriever;
+import org.apache.commons.io.FileUtils;
+import reader.LuceneIndexReader;
 import searcher.exception.LuceneSearchException;
-import searcher.reader.LuceneIndexReader;
 
 import javax.servlet.GenericServlet;
 import javax.servlet.ServletException;
@@ -13,30 +12,38 @@ import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebServlet;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import org.apache.commons.io.FileUtils;
 
 /**
+ * Returns PDF documents from the filesystem.
  * Created by Chris on 10/8/2015.
  */
 @WebServlet(value = "/docs", name = "docServlet")
 public class DocumentServlet extends GenericServlet {
+    /**
+     * Servlet Service for getting Documents
+     *
+     * @param req Required parameters:
+     *            docId: The document ID to get the most common terms for
+     * @param res Response contains a PDF file that can be displayed in the browser
+     * @throws ServletException
+     * @throws IOException
+     */
     @Override
     public void service(ServletRequest req, ServletResponse res) throws ServletException, IOException {
         int docId = Integer.parseInt(req.getParameter("docId"));
         PDFRetriever retriever = null;
         try {
             retriever = new PDFRetriever(LuceneIndexReader.getInstance());
-        } catch(LuceneSearchException e){
+        } catch (LuceneSearchException e) {
             e.printStackTrace();
         }
 
-        try{
+        try {
             res.setContentType("application/pdf");
             File document = retriever.getPDFFile(docId);
             FileUtils.copyFile(document, res.getOutputStream());
         } catch (LuceneSearchException |
-                 NullPointerException e) {
+                NullPointerException e) {
             e.printStackTrace();
         }
     }

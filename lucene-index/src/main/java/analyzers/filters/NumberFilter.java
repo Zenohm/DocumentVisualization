@@ -33,6 +33,7 @@ import java.text.NumberFormat;
 import java.text.ParsePosition;
 
 /**
+ * Filters out numbers from the token stream
  * Created by Chris on 8/20/2015.
  */
 public class NumberFilter extends FilteringTokenFilter {
@@ -41,6 +42,12 @@ public class NumberFilter extends FilteringTokenFilter {
         super(in);
     }
 
+    /**
+     * Checks if a string is numeric
+     *
+     * @param str String to check if it is a number
+     * @return True if the string is a number
+     */
     public static boolean isNumeric(String str) {
         NumberFormat formatter = NumberFormat.getInstance();
         ParsePosition pos = new ParsePosition(0);

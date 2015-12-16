@@ -1,9 +1,10 @@
 package servlets;
 
 import com.google.gson.GsonBuilder;
-import searcher.TermsAnalyzer;
+import common.data.ScoredTerm;
+import full_text_analysis.TermsAnalyzer;
+import reader.LuceneIndexReader;
 import searcher.exception.LuceneSearchException;
-import searcher.reader.LuceneIndexReader;
 
 import javax.servlet.GenericServlet;
 import javax.servlet.ServletException;
@@ -13,34 +14,45 @@ import javax.servlet.annotation.WebServlet;
 import java.io.IOException;
 import java.util.List;
 
-import common.ScoredTerm;
-
 /**
+ * Utilized for searches on related terms. Finds related terms in a document.
  * Created by chris on 10/13/15.
  */
 @WebServlet(value = "/related_terms", name = "relatedTermsServlet")
 public class RelatedTermsServlet extends GenericServlet {
 
+    /**
+     * Related Terms Service
+     *
+     * @param req Required Parameters:
+     *            docId: The id of the document that is used as the basis for finding related terms
+     *            term: The term to find the related terms for
+     *            Optional Parameters:
+     *            limit: Limit the number of terms that are returned
+     * @param res Response contains a list of Scored Termss
+     * @throws ServletException
+     * @throws IOException
+     */
     @Override
     public void service(ServletRequest req, ServletResponse res) throws ServletException, IOException {
         try {
             int docId;
-            if(req.getParameterMap().containsKey("docId")){
+            if (req.getParameterMap().containsKey("docId")) {
                 docId = Integer.parseInt(req.getParameter("docId"));
-            }else{
+            } else {
                 throw new LuceneSearchException("No document ID.");
             }
 
             String term;
-            if(req.getParameterMap().containsKey("term")){
+            if (req.getParameterMap().containsKey("term")) {
                 term = req.getParameter("term");
-            }else{
+            } else {
                 throw new LuceneSearchException("No Term");
             }
 
 
             List<ScoredTerm> terms;
-            if(req.getParameterMap().containsKey("limit")){
+            if (req.getParameterMap().containsKey("limit")) {
                 int limit = Integer.parseInt(req.getParameter("limit"));
                 terms = TermsAnalyzer.getRelatedTermsInDocument(LuceneIndexReader.getInstance().getReader(), docId, term, limit);
             } else {
