@@ -16,6 +16,16 @@ public class DocumentNode extends Node {
         this.score = score;
     }
 
+    /**
+     * Creates a document node with the given parameters
+     * @param name
+     * @param id
+     * @param color
+     * @param docId
+     * @param size
+     * @param score
+     * @return new Document node
+     */
     public static DocumentNode of(String name, int id, String color, int docId, int size, double score){
         return new DocumentNode(name, id, color, docId, size, score);
     }

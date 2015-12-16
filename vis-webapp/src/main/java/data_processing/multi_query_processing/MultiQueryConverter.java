@@ -64,7 +64,7 @@ public class MultiQueryConverter {
             int termId = (-1 * i) - 1;
 
             termIndexes.put(currentTerm, i);
-            fixedNodes.add(new FixedNode(currentTerm, termId, color, x, y, currentTerm.split(" ")));
+            fixedNodes.add(FixedNode.of(currentTerm, termId, color, x, y, currentTerm.split(" ")));
         }
 
         fixedNodes.forEach(jsonObject.nodes::add);

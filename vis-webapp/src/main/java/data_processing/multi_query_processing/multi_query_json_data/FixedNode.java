@@ -17,4 +17,8 @@ public class FixedNode extends Node {
         this.yLoc = yLoc;
         this.text_content = Arrays.asList(text_content);
     }
+
+    public static FixedNode of(String name, int id, String color, double xLoc, double yLoc, String... text_content){
+        return new FixedNode(name, id, color, xLoc, yLoc, text_content);
+    }
 }
