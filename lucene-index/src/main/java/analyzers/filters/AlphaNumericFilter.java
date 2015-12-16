@@ -32,6 +32,7 @@ import org.apache.lucene.analysis.util.FilteringTokenFilter;
 import java.io.IOException;
 
 /**
+ * Ensures that a token is alpha numeric, filters tokens that are not alphanumeric
  * Created by chris on 8/26/15.
  */
 public class AlphaNumericFilter extends FilteringTokenFilter {
