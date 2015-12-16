@@ -45,12 +45,12 @@ import java.util.Set;
 public class SynonymsServlet extends GenericServlet {
     /**
      * Service for the Synonyms servlet
-     * @param req
-     * Required Parameters:
-     *    term: The term to find synonyms for
-     * Optional Parameters:
-     *    scored: The terms will have scores attached
-     *    related: Terms will be minimally related (zeroes will be filtered)
+     *
+     * @param req Required Parameters:
+     *            term: The term to find synonyms for
+     *            Optional Parameters:
+     *            scored: The terms will have scores attached
+     *            related: Terms will be minimally related (zeroes will be filtered)
      * @param res Response will contain a list of synonyms or scored synonyms
      * @throws ServletException
      * @throws IOException

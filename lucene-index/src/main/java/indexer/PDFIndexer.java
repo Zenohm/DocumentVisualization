@@ -140,6 +140,7 @@ public class PDFIndexer {
 
     /**
      * Updates the index
+     *
      * @throws IOException
      */
     public void updateIndex() throws IOException {

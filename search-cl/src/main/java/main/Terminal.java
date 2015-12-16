@@ -1,17 +1,16 @@
 package main;
 
+import access_utils.MetadataRetriever;
+import common.Constants;
 import common.data.ScoredDocument;
 import indexer.PDFIndexer;
+import reader.LuceneIndexReader;
 import searcher.DocumentSearcher;
-import access_utils.MetadataRetriever;
 import searcher.DocumentSearcherFactory;
 import searcher.TokenizerType;
 import searcher.exception.LuceneSearchException;
-import reader.LuceneIndexReader;
-import common.Constants;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Scanner;
 
 /**
@@ -25,8 +24,7 @@ public class Terminal {
         PDFIndexer indexer = new PDFIndexer(INDEX_OUT, System.getenv(Constants.RESOURCE_FOLDER_VAR));
 //        indexer.updateIndex();
 
-        if(!LuceneIndexReader.getInstance().initializeIndexReader(INDEX_OUT))
-        {
+        if (!LuceneIndexReader.getInstance().initializeIndexReader(INDEX_OUT)) {
             System.err.println("Initializer Error: Could Not Initialize IndexReader");
         }
 
@@ -35,7 +33,7 @@ public class Terminal {
         MetadataRetriever retriever = new MetadataRetriever(LuceneIndexReader.getInstance());
 
         Scanner kb = new Scanner(System.in);
-        while(true){
+        while (true) {
             System.out.print("Enter a search term: ");
             String search = kb.nextLine();
             if (search.equals("") || search.isEmpty()) break;

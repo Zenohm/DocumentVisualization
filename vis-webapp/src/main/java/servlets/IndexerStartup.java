@@ -24,16 +24,15 @@
 
 package servlets;
 
+import common.Constants;
 import indexer.PDFIndexer;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import reader.LuceneIndexReader;
-import common.Constants;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import java.io.FileInputStream;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
@@ -49,6 +48,7 @@ public class IndexerStartup extends HttpServlet {
 
     /**
      * Initialization Service, starts up the server
+     *
      * @throws ServletException
      */
     public void init() throws ServletException {
@@ -58,20 +58,20 @@ public class IndexerStartup extends HttpServlet {
         Logger.getRootLogger().setLevel(Level.WARN);
         System.out.println("Disabling PDF Box Logging");
         String[] annoyingLoggers = {"org.apache.pdfbox.pdmodel.font.PDType0Font",
-                                    "org.apache.pdfbox.pdmodel.font.PDType1Font",
-                                    "org.apache.pdfbox.pdmodel.font.PDSimpleFont",
-                                    "org.apache.pdfbox.pdmodel.font.PDCIDFontType0",
-                                    "org.apache.pdfbox.io.ScratchFileBuffer",
-                                    "org.apache.pdfbox.pdfparser.COSParser",
-                                    "org.apache.pdfbox.pdmodel.font.PDTrueTypeFont",
-                                    "org.apache.pdfbox.pdfparser.PDFObjectStreamParser",
-                                    "org.apache.pdfbox.pdmodel.font.PDFont",
-                                    "org.apache.pdfbox.pdmodel.font.FileSystemFontProvider",
-                                    "org.apache.fontbox.ttf.CmapSubtable",
-                                    "org.apache.pdfbox.pdmodel.font.FileSystemFontProvider",
-                                    "org.apache.pdfbox.pdmodel.font.encoding.GlyphList",
-                                    "org.apache.pdfbox.text.TextPosition"};
-        for(String annoyingLogger : annoyingLoggers){
+                "org.apache.pdfbox.pdmodel.font.PDType1Font",
+                "org.apache.pdfbox.pdmodel.font.PDSimpleFont",
+                "org.apache.pdfbox.pdmodel.font.PDCIDFontType0",
+                "org.apache.pdfbox.io.ScratchFileBuffer",
+                "org.apache.pdfbox.pdfparser.COSParser",
+                "org.apache.pdfbox.pdmodel.font.PDTrueTypeFont",
+                "org.apache.pdfbox.pdfparser.PDFObjectStreamParser",
+                "org.apache.pdfbox.pdmodel.font.PDFont",
+                "org.apache.pdfbox.pdmodel.font.FileSystemFontProvider",
+                "org.apache.fontbox.ttf.CmapSubtable",
+                "org.apache.pdfbox.pdmodel.font.FileSystemFontProvider",
+                "org.apache.pdfbox.pdmodel.font.encoding.GlyphList",
+                "org.apache.pdfbox.text.TextPosition"};
+        for (String annoyingLogger : annoyingLoggers) {
             org.apache.log4j.Logger logPdfEngine = org.apache.log4j.Logger.getLogger(annoyingLogger);
             logPdfEngine.setLevel(Level.FATAL);
         }
@@ -97,11 +97,11 @@ public class IndexerStartup extends HttpServlet {
 
             Properties props = new Properties();
             String propFilename = System.getenv(Constants.RESOURCE_FOLDER_VAR)
-                + "/" + Constants.INDEX_CONFIG_FILE;
+                    + "/" + Constants.INDEX_CONFIG_FILE;
             InputStream in = new FileInputStream(propFilename);
             props.load(in);
             in.close();
-            if(props.getProperty("INDEX_DOCS").equals("false")){
+            if (props.getProperty("INDEX_DOCS").equals("false")) {
                 updateIndex = false;
             }
         } catch (IOException e) {
@@ -110,7 +110,7 @@ public class IndexerStartup extends HttpServlet {
                     "Configuration file should be placed in RESOURCE_DIR/config/index-config.cfg");
         }
 
-        if(updateIndex) {
+        if (updateIndex) {
             try {
                 indexer.updateIndex();
             } catch (IOException e) {

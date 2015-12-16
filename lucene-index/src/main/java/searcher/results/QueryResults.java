@@ -11,6 +11,7 @@ public class QueryResults {
 
     /**
      * Constructor
+     *
      * @param docId The document ID
      * @param query The String query
      * @param score The score that was obtained

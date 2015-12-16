@@ -60,6 +60,7 @@ public class LuceneIndexReader implements IndexReader {
     /**
      * This is called as a part of the startup for the indexer.
      * When running an application that is on the web application, the reader is started by the startup script.
+     *
      * @param filename The index directory
      * @return if the index initialization succeeds return true.
      */
@@ -77,6 +78,7 @@ public class LuceneIndexReader implements IndexReader {
 
     /**
      * Default initializer for the index reader. Initializes the index to the default index directory.
+     *
      * @return if the initialization is successful, returns true
      */
     public boolean initializeIndexReader() {

@@ -30,6 +30,7 @@ public class MultiQuerySearcher extends Searcher {
 
     /**
      * Searches for multiple queries
+     *
      * @param queries The query terms to search for
      * @return A list of results for the multiple queries
      * @throws IOException
@@ -73,6 +74,7 @@ public class MultiQuerySearcher extends Searcher {
 
     /**
      * Parses the query and relates it to a string
+     *
      * @param str String to parse the query for
      * @return A Pair with the String and the query
      */

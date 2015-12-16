@@ -75,32 +75,32 @@ body {
     float: left;
 }
 
-.input{
+.input {
     margin: 0 auto;
     width: 90%;
 }
 
-.red{
+.red {
     background-color: red;
 }
 
-.blue{
+.blue {
     background-color: blue;
 }
 
-.green{
+.green {
     background-color: green;
 }
 
-#search-terms{
+#search-terms {
     width: 60%;
     margin: auto;
 }
 
-#close{
-    display:block;
-    float:right;
-    width:30px;
-    height:29px;
-    margin:0;
+#close {
+    display: block;
+    float: right;
+    width: 30px;
+    height: 29px;
+    margin: 0;
 }

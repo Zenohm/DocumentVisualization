@@ -24,21 +24,22 @@ public class MultiQueryConverter {
 
     /**
      * Convert a list of MultiQueryResults to a MultiQueryJson object
+     *
      * @param results The list of results to convert into the view
      * @return Object that represents the JSON object that can be read by D3.
      */
-    public static MultiQueryJson convertToLinksAndNodes(List<MultiQueryResults> results){
+    public static MultiQueryJson convertToLinksAndNodes(List<MultiQueryResults> results) {
         // Generate the JSON Object
         MultiQueryJson jsonObject = new MultiQueryJson();
 
         // Get a list of the unique terms within the results set.
         ArrayList<String> terms = new ArrayList<>();
         results.stream().forEach(result -> result.terms.stream()
-                                                       .filter(term -> !terms.contains(term))
-                                                       .forEach(terms::add));
+                .filter(term -> !terms.contains(term))
+                .forEach(terms::add));
 
         int numFixedNodes = terms.size();
-        double angleBetweenNodes = (2*Math.PI) / numFixedNodes;
+        double angleBetweenNodes = (2 * Math.PI) / numFixedNodes;
         double circleCenter = .5;
         double diameter = .7;
         double radius = diameter / 2.0;
@@ -46,17 +47,17 @@ public class MultiQueryConverter {
         Map<String, Integer> termIndexes = new HashMap<>();
         ArrayList<FixedNode> fixedNodes = new ArrayList<>();
         // Set positioning information for the fixed nodes
-        for(int i = 0; i < terms.size(); i++){
+        for (int i = 0; i < terms.size(); i++) {
             String currentTerm = terms.get(i); // The current term
 
             // Figure out the node positioning
             double currentAngle = i * angleBetweenNodes; // first node will be at 0 degrees
-            double x = radius*Math.sin(currentAngle) + circleCenter;
-            double y = -1*radius*Math.cos(currentAngle) + circleCenter;
+            double x = radius * Math.sin(currentAngle) + circleCenter;
+            double y = -1 * radius * Math.cos(currentAngle) + circleCenter;
 
             // Do node coloring
             String color = colors[i % colors.length];
-            if(i == terms.size() - 1 && color.equals(fixedNodes.get(0).color)){
+            if (i == terms.size() - 1 && color.equals(fixedNodes.get(0).color)) {
                 color = colors[(i + 1) % colors.length];
             }
 
@@ -69,19 +70,19 @@ public class MultiQueryConverter {
 
         fixedNodes.forEach(jsonObject.nodes::add);
 
-        for(MultiQueryResults result : results){
-            String documentName = "doc"+result.docId;
-            int nodeSize = (int)Math.floor(result.score * SIZE_NORMALIZER);
-            if(nodeSize < MIN_SIZE) nodeSize = MIN_SIZE;
+        for (MultiQueryResults result : results) {
+            String documentName = "doc" + result.docId;
+            int nodeSize = (int) Math.floor(result.score * SIZE_NORMALIZER);
+            if (nodeSize < MIN_SIZE) nodeSize = MIN_SIZE;
             String nodeColor = determineColor(result);
             jsonObject.nodes.add(DocumentNode.of(documentName, result.docId, nodeColor,
                     result.docId, nodeSize, result.score));
 
             int myIndex = jsonObject.nodes.size() - 1;
-            for(QueryResults qResult : result.getQueryResults()){
+            for (QueryResults qResult : result.getQueryResults()) {
                 int sourceIndex = termIndexes.get(qResult.query);
                 double linkPower = qResult.score;
-                if(linkPower >= .001){
+                if (linkPower >= .001) {
                     jsonObject.links.add(Link.of(sourceIndex, myIndex, linkPower));
                 }
             }
@@ -94,10 +95,11 @@ public class MultiQueryConverter {
 
     /**
      * Determines the colors of the nodes
+     *
      * @param result Result to convert to a color
      * @return The color of the result
      */
-    public static String determineColor(MultiQueryResults result){
+    public static String determineColor(MultiQueryResults result) {
         return "black";
     }
 }

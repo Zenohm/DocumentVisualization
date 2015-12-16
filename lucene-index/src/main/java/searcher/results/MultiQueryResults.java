@@ -16,6 +16,7 @@ public class MultiQueryResults {
 
     /**
      * Build a Multiquery result
+     *
      * @param docId Document ID
      * @param score Overall Score for the Document
      * @param terms A list of the terms that were searched for
@@ -29,6 +30,7 @@ public class MultiQueryResults {
 
     /**
      * Adds a query result to the list
+     *
      * @param res The result to add
      */
     public void addQueryResult(QueryResults res) {
@@ -37,6 +39,7 @@ public class MultiQueryResults {
 
     /**
      * Returns an array reference to the query results
+     *
      * @return The list of query results
      */
     public QueryResults[] getQueryResults() {

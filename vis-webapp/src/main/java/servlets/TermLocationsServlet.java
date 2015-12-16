@@ -20,12 +20,12 @@ import java.io.IOException;
 public class TermLocationsServlet extends GenericServlet {
     @Override
     public void service(ServletRequest req, ServletResponse res) throws ServletException, IOException {
-        try{
+        try {
             String term = StringUtils.trim(req.getParameter("term"));
             TermLocationsSearcher searcher =
                     new TermLocationsSearcher(LuceneIndexReader.getInstance());
             res.getWriter().println((new GsonBuilder()).create().toJson(searcher.getLocationsOfTerm(term)));
-        }catch(LuceneSearchException e){
+        } catch (LuceneSearchException e) {
             System.err.println("There was an error with the Term Locations servlet");
             e.printStackTrace();
         }

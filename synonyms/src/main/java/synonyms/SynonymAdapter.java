@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
 /**
  * Adapter to communicate with JAWS (which communicates with WordNet db files.)  Usage requires the setting of VM
  * options with the following:
- *    -Dwordnet.database.dir={Directory containing the 'dict' folder for wordnet files}
+ * -Dwordnet.database.dir={Directory containing the 'dict' folder for wordnet files}
  *
  * @author perryc on 10/10/15
  */
@@ -43,7 +43,7 @@ public class SynonymAdapter {
     // Command line version of the servlet.
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
-        while(true) {
+        while (true) {
             try {
                 System.out.println("Enter a word");
                 String word = sc.nextLine();

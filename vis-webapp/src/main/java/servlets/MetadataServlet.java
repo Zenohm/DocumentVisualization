@@ -1,10 +1,10 @@
 package servlets;
 
+import access_utils.MetadataRetriever;
 import com.google.gson.GsonBuilder;
 import common.data.DocumentMetadata;
-import access_utils.MetadataRetriever;
-import searcher.exception.LuceneSearchException;
 import reader.LuceneIndexReader;
+import searcher.exception.LuceneSearchException;
 
 import javax.servlet.GenericServlet;
 import javax.servlet.ServletException;
@@ -22,9 +22,9 @@ public class MetadataServlet extends GenericServlet {
 
     /**
      * Servlet Service for getting Metadata
-     * @param req
-     * Required parameters:
-     *    docId: The document ID to get the metadata for
+     *
+     * @param req Required parameters:
+     *            docId: The document ID to get the metadata for
      * @param res Response contains JSON representation of a DocumentMetadata object.
      * @throws ServletException
      * @throws IOException
@@ -39,7 +39,7 @@ public class MetadataServlet extends GenericServlet {
             e.printStackTrace();
         }
 
-        try{
+        try {
             DocumentMetadata metadata = retriever.getMetadata(docId);
             res.getWriter().println((new GsonBuilder()).create().toJson(metadata));
         } catch (LuceneSearchException e) {

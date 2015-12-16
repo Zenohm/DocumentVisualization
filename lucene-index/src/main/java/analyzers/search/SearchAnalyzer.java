@@ -19,15 +19,16 @@ import java.lang.reflect.InvocationTargetException;
  * Analyzer that is used for searching. Can have a variable tokenizer
  * Created by chris on 12/14/15.
  */
-public class SearchAnalyzer extends Analyzer{
+public class SearchAnalyzer extends Analyzer {
 
     private Class<? extends Tokenizer> tokenizerClass;
 
     /**
      * Constructor that allows for picking a tokenizer that will be used
+     *
      * @param tokenizerClass The class to use for a tokenizer
      */
-    public SearchAnalyzer(Class<? extends Tokenizer> tokenizerClass){
+    public SearchAnalyzer(Class<? extends Tokenizer> tokenizerClass) {
         this.tokenizerClass = tokenizerClass;
     }
 
@@ -35,7 +36,7 @@ public class SearchAnalyzer extends Analyzer{
     protected TokenStreamComponents createComponents(String s) {
         StringReader reader = new StringReader(s);
         Tokenizer tokenizer = getTokenizer();
-        if(tokenizer == null){
+        if (tokenizer == null) {
             System.err.println("Reverting to whitespace tokenizer");
             tokenizer = new WhitespaceTokenizer();
         }
@@ -55,10 +56,9 @@ public class SearchAnalyzer extends Analyzer{
     }
 
     /**
-     *
      * @return The tokenizer that has been assigned to this class
      */
-    private Tokenizer getTokenizer(){
+    private Tokenizer getTokenizer() {
         try {
             return tokenizerClass.getConstructor().newInstance();
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {

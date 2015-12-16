@@ -17,19 +17,19 @@ import java.util.List;
 /**
  * Created by chris on 12/16/15.
  */
-public class TermLocationsSearcher extends LuceneReader{
+public class TermLocationsSearcher extends LuceneReader {
     LeafReader lReader;
 
-    public TermLocationsSearcher(IndexReader reader) throws LuceneSearchException{
+    public TermLocationsSearcher(IndexReader reader) throws LuceneSearchException {
         super(reader);
-        try{
+        try {
             lReader = SlowCompositeReaderWrapper.wrap(reader.getReader());
-        }catch(IOException e){
+        } catch (IOException e) {
             throw new LuceneSearchException("Could Not Wrap IndexReader: " + e.getMessage());
         }
     }
 
-    public List<TermLocations> getLocationsOfTerm(String term) throws LuceneSearchException{
+    public List<TermLocations> getLocationsOfTerm(String term) throws LuceneSearchException {
         // TODO: Possibly need to stem term
         Term searchTerm = new Term(Constants.FIELD_CONTENTS, term);
 
@@ -39,21 +39,21 @@ public class TermLocationsSearcher extends LuceneReader{
         } catch (IOException e) {
             throw new LuceneSearchException("There was an error getting the postings: " + e.getMessage());
         }
-        if(postings == null){
+        if (postings == null) {
             System.err.println("No Postings Found!");
             return new ArrayList<>();
         }
 
         int docId;
-        try{
+        try {
             docId = postings.nextDoc();
-        }catch(IOException e){
+        } catch (IOException e) {
             throw new LuceneSearchException("Next doc threw an exception while getting initial doc: " + e.getMessage());
         }
 
         List<TermLocations> locationsList = new ArrayList<>();
 
-        while(docId != DocIdSetIterator.NO_MORE_DOCS){
+        while (docId != DocIdSetIterator.NO_MORE_DOCS) {
             TermLocations locations = new TermLocations(docId);
 
             int numHits = 0;
@@ -64,7 +64,7 @@ public class TermLocationsSearcher extends LuceneReader{
             }
 
             int i = 0;
-            while(i < numHits){
+            while (i < numHits) {
                 try {
                     locations.addTermLocation(postings.nextPosition());
                 } catch (IOException e) {
@@ -74,9 +74,9 @@ public class TermLocationsSearcher extends LuceneReader{
                 i++;
             }
 
-            try{
+            try {
                 docId = postings.nextDoc();
-            }catch (IOException e){
+            } catch (IOException e) {
                 System.err.println("No more documents were found.");
                 docId = DocIdSetIterator.NO_MORE_DOCS;
             }
@@ -88,20 +88,20 @@ public class TermLocationsSearcher extends LuceneReader{
     }
 
 
-    class TermLocations{
+    class TermLocations {
         public final int docId;
         public final List<Integer> locations;
 
-        public TermLocations(int docId){
+        public TermLocations(int docId) {
             this.docId = docId;
             locations = new ArrayList<>();
         }
 
-        public void addTermLocation(int loc){
+        public void addTermLocation(int loc) {
             locations.add(loc);
         }
 
-        public List<Integer> getLocations(){
+        public List<Integer> getLocations() {
             return new ArrayList<>(locations);
         }
     }

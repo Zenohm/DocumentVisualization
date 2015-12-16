@@ -3,13 +3,13 @@ html, body {
     height: 100%;
 }
 
-body{
+body {
     margin: 0 auto;
 }
 
-header{
+header {
     height: 10%;
-    width:100%;
+    width: 100%;
     float: left;
     background-color: coral;
 }

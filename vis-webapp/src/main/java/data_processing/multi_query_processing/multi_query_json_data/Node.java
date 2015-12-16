@@ -9,7 +9,8 @@ public abstract class Node {
     public final String name;
     public final int id;
     public final String color;
-    public Node(boolean fixed, String name, int id, String color){
+
+    public Node(boolean fixed, String name, int id, String color) {
         this.fixed = fixed;
         this.name = name;
         this.id = id;

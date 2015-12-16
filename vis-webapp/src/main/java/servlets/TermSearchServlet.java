@@ -23,9 +23,9 @@ public class TermSearchServlet extends GenericServlet {
 
     /**
      * Searches the document database for a term
-     * @param req
-     * Required Parameters:
-     *    term: The term to search for
+     *
+     * @param req Required Parameters:
+     *            term: The term to search for
      * @param res The response will contain a list of documents and their scores.
      * @throws ServletException
      * @throws IOException

@@ -14,8 +14,9 @@ public class FullTextExtractor {
 
     /**
      * Extracts the full text given the document ID
+     *
      * @param reader Index reader to use. in order to find the full text
-     * @param docId The document ID to get the full text for
+     * @param docId  The document ID to get the full text for
      * @return The full text as a string. Removes all newlines.
      */
     public static String extractText(IndexReader reader, int docId) {

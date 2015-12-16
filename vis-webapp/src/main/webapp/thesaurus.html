@@ -7,10 +7,10 @@
     <link rel="stylesheet" type="text/css" href="text_search.css"/>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script language="javascript" type="application/javascript">
-        function searchForSynonyms(){
+        function searchForSynonyms() {
             document.getElementById("results").innerHTML = "";
-            $.getJSON("synonyms?term="+document.getElementById("searchbox").value+"&scored=yes", function(data) {
-                data.forEach(function(obj){
+            $.getJSON("synonyms?term=" + document.getElementById("searchbox").value + "&scored=yes", function (data) {
+                data.forEach(function (obj) {
                     var result = document.createElement("div");
                     result.className = "result";
                     var synonyms = document.createElement("p");
@@ -23,7 +23,8 @@
     </script>
 </head>
 <body>
-<input id="searchbox" type="search" /><button onclick="searchForSynonyms()">Search</button>
+<input id="searchbox" type="search"/>
+<button onclick="searchForSynonyms()">Search</button>
 <div id="results"></div>
 </body>
 </html>

@@ -20,6 +20,7 @@ public class MetadataRetriever extends LuceneReader {
 
     /**
      * Gets metadata for the document id
+     *
      * @param documentId The document id to get metadata for
      * @return Metadata for the document
      * @throws LuceneSearchException
@@ -44,6 +45,7 @@ public class MetadataRetriever extends LuceneReader {
 
     /**
      * Gets the title for a given document
+     *
      * @param documentId The document id
      * @return The title of the document
      * @throws LuceneSearchException
@@ -54,6 +56,7 @@ public class MetadataRetriever extends LuceneReader {
 
     /**
      * Gets the author for a given document
+     *
      * @param documentId The document id
      * @return The author of the document
      * @throws LuceneSearchException
@@ -64,6 +67,7 @@ public class MetadataRetriever extends LuceneReader {
 
     /**
      * Gets the conference for a given document
+     *
      * @param documentId The document id
      * @return The conference that the document was published in
      * @throws LuceneSearchException

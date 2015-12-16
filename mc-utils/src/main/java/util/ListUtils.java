@@ -9,8 +9,9 @@ import java.util.List;
 public class ListUtils {
     /**
      * Gets the top amount in the list
+     *
      * @param list The list
-     * @param n The number of items at the beginning of the list to get
+     * @param n    The number of items at the beginning of the list to get
      * @param <T>
      * @return A list with n elements
      */

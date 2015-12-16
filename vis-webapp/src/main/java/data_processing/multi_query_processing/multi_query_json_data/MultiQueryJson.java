@@ -10,7 +10,8 @@ import java.util.List;
 public class MultiQueryJson {
     public final List<Node> nodes;
     public final List<Link> links;
-    public MultiQueryJson(){
+
+    public MultiQueryJson() {
         nodes = new ArrayList<>();
         links = new ArrayList<>();
     }

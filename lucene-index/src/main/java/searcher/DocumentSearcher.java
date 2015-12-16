@@ -1,11 +1,9 @@
 package searcher;
 
-import common.Constants;
 import common.data.ScoredDocument;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.search.Query;
-import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TopDocs;
 import reader.IndexReader;
 import searcher.exception.LuceneSearchException;
@@ -28,6 +26,7 @@ public class DocumentSearcher extends Searcher {
 
     /**
      * Returns a list of scored documents given a term
+     *
      * @param term Term to search for
      * @return List of scored documents for the search term
      * @throws LuceneSearchException
@@ -63,12 +62,13 @@ public class DocumentSearcher extends Searcher {
 
     /**
      * Searches for a set of terms, only returns the first N
-     * @param term The term to search for documents that contain it
+     *
+     * @param term  The term to search for documents that contain it
      * @param limit Limit for the number of documents
      * @return A list of scored documents of size limit or smaller.
      * @throws LuceneSearchException
      */
-    public List<ScoredDocument> searchForTerm(String term, int limit) throws LuceneSearchException{
+    public List<ScoredDocument> searchForTerm(String term, int limit) throws LuceneSearchException {
         return ListUtils.getSublist(searchForTerm(term), limit);
     }
 

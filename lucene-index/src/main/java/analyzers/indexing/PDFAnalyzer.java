@@ -49,6 +49,7 @@ public class PDFAnalyzer extends Analyzer {
 
     /**
      * Instantiate a new PDF analyzer
+     *
      * @param stopwordFile The file containing all the stopwords
      */
     public PDFAnalyzer(String stopwordFile) {

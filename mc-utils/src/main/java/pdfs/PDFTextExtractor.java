@@ -37,13 +37,14 @@ import java.io.IOException;
 public class PDFTextExtractor {
     /**
      * Given a PDF file, gets all the text from it
+     *
      * @param filename The filename to get all the text from
      * @return The fulltext of the file
      * @throws IOException
      */
     public static String extractText(String filename) throws IOException {
         File file = new File(filename);
-        if(!file.exists()) throw new IOException("ERROR: " + filename + " doesn't exist");
+        if (!file.exists()) throw new IOException("ERROR: " + filename + " doesn't exist");
         PDDocument document = PDDocument.load(file);
         PDFTextStripper stripper = new PDFTextStripper();
         String res = stripper.getText(document);

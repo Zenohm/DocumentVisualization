@@ -39,7 +39,6 @@
     <packaging>pom</packaging>
 
 
-
     <modules>
         <module>lucene-index</module>
         <module>search-cl</module>
@@ -65,6 +64,6 @@
             </plugin>
         </plugins>
     </reporting>
-    
+
 
 </project>

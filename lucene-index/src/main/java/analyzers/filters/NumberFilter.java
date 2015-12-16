@@ -44,6 +44,7 @@ public class NumberFilter extends FilteringTokenFilter {
 
     /**
      * Checks if a string is numeric
+     *
      * @param str String to check if it is a number
      * @return True if the string is a number
      */

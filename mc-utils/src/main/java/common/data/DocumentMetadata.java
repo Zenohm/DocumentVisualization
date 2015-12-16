@@ -23,6 +23,7 @@
  */
 
 package common.data;
+
 import org.apache.commons.csv.CSVRecord;
 
 /**

@@ -9,8 +9,9 @@ import searcher.exception.LuceneSearchException;
  */
 public abstract class LuceneReader {
     protected IndexReader reader;
+
     public LuceneReader(IndexReader reader) throws LuceneSearchException {
-        if(!reader.isInitialized()){
+        if (!reader.isInitialized()) {
             throw new LuceneSearchException(getClass().getName() + ": IndexReader Not Initialized");
         }
         this.reader = reader;

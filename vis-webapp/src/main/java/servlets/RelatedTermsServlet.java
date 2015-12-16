@@ -23,12 +23,12 @@ public class RelatedTermsServlet extends GenericServlet {
 
     /**
      * Related Terms Service
-     * @param req
-     * Required Parameters:
-     *    docId: The id of the document that is used as the basis for finding related terms
-     *    term: The term to find the related terms for
-     * Optional Parameters:
-     *    limit: Limit the number of terms that are returned
+     *
+     * @param req Required Parameters:
+     *            docId: The id of the document that is used as the basis for finding related terms
+     *            term: The term to find the related terms for
+     *            Optional Parameters:
+     *            limit: Limit the number of terms that are returned
      * @param res Response contains a list of Scored Termss
      * @throws ServletException
      * @throws IOException
@@ -37,22 +37,22 @@ public class RelatedTermsServlet extends GenericServlet {
     public void service(ServletRequest req, ServletResponse res) throws ServletException, IOException {
         try {
             int docId;
-            if(req.getParameterMap().containsKey("docId")){
+            if (req.getParameterMap().containsKey("docId")) {
                 docId = Integer.parseInt(req.getParameter("docId"));
-            }else{
+            } else {
                 throw new LuceneSearchException("No document ID.");
             }
 
             String term;
-            if(req.getParameterMap().containsKey("term")){
+            if (req.getParameterMap().containsKey("term")) {
                 term = req.getParameter("term");
-            }else{
+            } else {
                 throw new LuceneSearchException("No Term");
             }
 
 
             List<ScoredTerm> terms;
-            if(req.getParameterMap().containsKey("limit")){
+            if (req.getParameterMap().containsKey("limit")) {
                 int limit = Integer.parseInt(req.getParameter("limit"));
                 terms = TermsAnalyzer.getRelatedTermsInDocument(LuceneIndexReader.getInstance().getReader(), docId, term, limit);
             } else {

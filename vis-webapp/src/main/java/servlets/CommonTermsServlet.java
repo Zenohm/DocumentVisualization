@@ -1,9 +1,10 @@
 package servlets;
 
 import com.google.gson.GsonBuilder;
+import common.data.ScoredTerm;
 import full_text_analysis.TermsAnalyzer;
-import searcher.exception.LuceneSearchException;
 import reader.LuceneIndexReader;
+import searcher.exception.LuceneSearchException;
 
 import javax.servlet.GenericServlet;
 import javax.servlet.ServletException;
@@ -12,21 +13,20 @@ import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebServlet;
 import java.io.IOException;
 import java.util.List;
-import common.data.ScoredTerm;
 
 /**
  * Servlet that is designed to get the most common terms for the document.
  * Created by chris on 10/13/15.
  */
 @WebServlet(value = "/common_terms", name = "commonTermsServlet")
-public class CommonTermsServlet extends GenericServlet{
+public class CommonTermsServlet extends GenericServlet {
     /**
      * Servlet Service for common terms
-     * @param req
-     * Required parameters:
-     *    docId: The document ID to get the most common terms for
-     * Optional Parameters:
-     *    limit: The limit of the number of common terms to return
+     *
+     * @param req Required parameters:
+     *            docId: The document ID to get the most common terms for
+     *            Optional Parameters:
+     *            limit: The limit of the number of common terms to return
      * @param res The response contains a JSON object with a List of ScoredTerms.
      * @throws ServletException
      * @throws IOException
@@ -36,7 +36,7 @@ public class CommonTermsServlet extends GenericServlet{
         try {
             int docId = Integer.parseInt(req.getParameter("docId"));
             List<ScoredTerm> terms;
-            if(req.getParameterMap().containsKey("limit")) {
+            if (req.getParameterMap().containsKey("limit")) {
                 int limit = Integer.parseInt(req.getParameter("limit"));
                 terms = TermsAnalyzer.getTopTerms(LuceneIndexReader.getInstance().getReader(), docId, limit);
             } else {

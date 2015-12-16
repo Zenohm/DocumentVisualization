@@ -3,8 +3,8 @@
  */
 
 // Appends the metadata to a search result.
-function appendMetadata(result, docId){
-    $.getJSON("metadata?docId="+docId, function(data){
+function appendMetadata(result, docId) {
+    $.getJSON("metadata?docId=" + docId, function (data) {
         var title = document.createElement("p");
         title.innerHTML = data.title;
         title.className = "res-title";
@@ -19,7 +19,7 @@ function appendMetadata(result, docId){
         result.appendChild(conference);
         var link = document.createElement('a');
         link.innerHTML = "[LINK]";
-        link.setAttribute("href", "docs?docId="+docId);
+        link.setAttribute("href", "docs?docId=" + docId);
         link.setAttribute("target", "_blank");
         result.appendChild(link);
     });

@@ -41,30 +41,30 @@
     </servlet>
 
     <!--<servlet>-->
-        <!--<servlet-name>helloServlet</servlet-name>-->
-        <!--<servlet-class>cite_graph.HelloServlet</servlet-class>-->
+    <!--<servlet-name>helloServlet</servlet-name>-->
+    <!--<servlet-class>cite_graph.HelloServlet</servlet-class>-->
     <!--</servlet>-->
     <!--<servlet-mapping>-->
-        <!--<servlet-name>helloServlet</servlet-name>-->
-        <!--<url-pattern>/hello</url-pattern>-->
+    <!--<servlet-name>helloServlet</servlet-name>-->
+    <!--<url-pattern>/hello</url-pattern>-->
     <!--</servlet-mapping>-->
 
     <!--<servlet>-->
-        <!--<servlet-name>testServlet</servlet-name>-->
-        <!--<servlet-class>test_utils.TestServlet</servlet-class>-->
+    <!--<servlet-name>testServlet</servlet-name>-->
+    <!--<servlet-class>test_utils.TestServlet</servlet-class>-->
     <!--</servlet>-->
     <!--<servlet-mapping>-->
-        <!--<servlet-name>testServlet</servlet-name>-->
-        <!--<url-pattern>/test</url-pattern>-->
+    <!--<servlet-name>testServlet</servlet-name>-->
+    <!--<url-pattern>/test</url-pattern>-->
     <!--</servlet-mapping>-->
 
     <!--<servlet>-->
-        <!--<servlet-name>randomJSON</servlet-name>-->
-        <!--<servlet-class>cite_graph.JSONGeneratorServlet</servlet-class>-->
+    <!--<servlet-name>randomJSON</servlet-name>-->
+    <!--<servlet-class>cite_graph.JSONGeneratorServlet</servlet-class>-->
     <!--</servlet>-->
     <!--<servlet-mapping>-->
-        <!--<servlet-name>randomJSON</servlet-name>-->
-        <!--<url-pattern>/json</url-pattern>-->
+    <!--<servlet-name>randomJSON</servlet-name>-->
+    <!--<url-pattern>/json</url-pattern>-->
     <!--</servlet-mapping>-->
 
     <servlet>

@@ -25,11 +25,11 @@ package synonyms;
 
 import common.data.ScoredDocument;
 import common.data.ScoredTerm;
+import reader.LuceneIndexReader;
 import searcher.DocumentSearcher;
 import searcher.DocumentSearcherFactory;
 import searcher.TokenizerType;
 import searcher.exception.LuceneSearchException;
-import reader.LuceneIndexReader;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -59,8 +59,8 @@ public class SynonymScorer {
     /**
      * Given a word and a set of its synonym, returns an ordered list of synonyms ranked from most relevant to least.
      *
-     * @param original The word you want to find ranked synonyms for
-     * @param synonyms The set of synonyms for the original word
+     * @param original          The word you want to find ranked synonyms for
+     * @param synonyms          The set of synonyms for the original word
      * @param minRelevanceRatio An optional parameter for the minimum a synonym must score to be returned. If none
      *                          given, .50 is assumed.
      * @return A list of scoredTerms, in descending order of their scores.
@@ -95,7 +95,7 @@ public class SynonymScorer {
     /**
      * Helper method to run ScoredTerms through a filter and give the axe to ones that fall below the cutoff point.
      *
-     * @param scoredTerms A list of terms that have scores.
+     * @param scoredTerms       A list of terms that have scores.
      * @param minRelevanceRatio The minimum score a term must have to avoid being cut.  If none is given,
      *                          #DEFAULT_CUTOFF_RATIO# is assumed.
      * @return A trimmed list of scored terms, containing only synonyms who scored greater than #minRelevanceRatio#
@@ -112,7 +112,7 @@ public class SynonymScorer {
      * Gets the ratio of documents containing original AND synonym / documents containing the synonym
      *
      * @param original The original word
-     * @param synonym A synonym of #original#
+     * @param synonym  A synonym of #original#
      * @return A double representing #docs(BOTH original AND synonym)/#docs(synonym)
      */
     private static double score(String original, String synonym) {
@@ -132,7 +132,7 @@ public class SynonymScorer {
      * @param words The word(s) to do a documentSearch for.
      * @return The number of documents containing (all of) #words#
      */
-    private static int getNumOfDocuments(String ... words) {
+    private static int getNumOfDocuments(String... words) {
         // Handle idiot cases
         if (words == null || words.length == 0) {
             return -1;
@@ -142,7 +142,7 @@ public class SynonymScorer {
         try {
             // Initialize Lucene stuff
             DocumentSearcher searcher = DocumentSearcherFactory
-                            .getDocumentSearcher(LuceneIndexReader.getInstance(), TokenizerType.KEYWORD_TOKENIZER);
+                    .getDocumentSearcher(LuceneIndexReader.getInstance(), TokenizerType.KEYWORD_TOKENIZER);
 
             // Search for the first term
             List<ScoredDocument> originalWordResults = searcher.searchForTerm(words[0]);

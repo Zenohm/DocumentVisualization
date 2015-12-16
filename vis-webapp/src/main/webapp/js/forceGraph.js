@@ -125,8 +125,8 @@ function dataHandler(error, graph) {
      */
     function onTick() {
         link.attr("x1", function (d) {
-            return d.source.x;
-        })
+                return d.source.x;
+            })
             .attr("y1", function (d) {
                 return d.source.y;
             })

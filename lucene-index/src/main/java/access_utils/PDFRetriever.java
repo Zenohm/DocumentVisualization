@@ -19,6 +19,7 @@ public class PDFRetriever extends LuceneReader {
 
     /**
      * Returns a file reference to a PDF document
+     *
      * @param docId The document id to get the PDF for
      * @return The PDF file
      * @throws LuceneSearchException
