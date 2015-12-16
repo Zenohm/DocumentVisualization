@@ -3,7 +3,10 @@ package analyzers.search;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.Tokenizer;
-import org.apache.lucene.analysis.core.*;
+import org.apache.lucene.analysis.core.LowerCaseFilter;
+import org.apache.lucene.analysis.core.StopAnalyzer;
+import org.apache.lucene.analysis.core.StopFilter;
+import org.apache.lucene.analysis.core.WhitespaceTokenizer;
 import org.apache.lucene.analysis.snowball.SnowballFilter;
 import org.apache.lucene.analysis.standard.StandardFilter;
 import org.tartarus.snowball.ext.EnglishStemmer;
@@ -11,24 +14,23 @@ import org.tartarus.snowball.ext.EnglishStemmer;
 import java.io.IOException;
 import java.io.StringReader;
 import java.lang.reflect.InvocationTargetException;
-import java.util.logging.Logger;
 
 /**
+ * Analyzer that is used for searching. Can have a variable tokenizer
  * Created by chris on 12/14/15.
  */
 public class SearchAnalyzer extends Analyzer{
 
     private Class<? extends Tokenizer> tokenizerClass;
 
+    /**
+     * Constructor that allows for picking a tokenizer that will be used
+     * @param tokenizerClass The class to use for a tokenizer
+     */
     public SearchAnalyzer(Class<? extends Tokenizer> tokenizerClass){
         this.tokenizerClass = tokenizerClass;
     }
 
-    /**
-     *
-     * @param s
-     * @return
-     */
     @Override
     protected TokenStreamComponents createComponents(String s) {
         StringReader reader = new StringReader(s);

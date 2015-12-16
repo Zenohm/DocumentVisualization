@@ -41,14 +41,20 @@ import java.util.List;
 
 
 /**
+ * Analyzer used for PDF indexing.
  * Created by Chris on 8/20/2015.
  */
 public class PDFAnalyzer extends Analyzer {
     private final List<String> stopwords;
 
+    /**
+     * Instantiate a new PDF analyzer
+     * @param stopwordFile The file containing all the stopwords
+     */
     public PDFAnalyzer(String stopwordFile) {
         stopwords = new ArrayList<>();
         try {
+            // Read file and add all the stopwords to our list
             BufferedReader reader = new BufferedReader(new FileReader(stopwordFile));
             String line;
             while ((line = reader.readLine()) != null) {
