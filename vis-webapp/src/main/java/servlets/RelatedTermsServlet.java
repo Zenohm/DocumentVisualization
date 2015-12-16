@@ -1,9 +1,10 @@
 package servlets;
 
 import com.google.gson.GsonBuilder;
+import common.data.ScoredTerm;
 import full_text_analysis.TermsAnalyzer;
-import searcher.exception.LuceneSearchException;
 import reader.LuceneIndexReader;
+import searcher.exception.LuceneSearchException;
 
 import javax.servlet.GenericServlet;
 import javax.servlet.ServletException;
@@ -13,14 +14,25 @@ import javax.servlet.annotation.WebServlet;
 import java.io.IOException;
 import java.util.List;
 
-import common.data.ScoredTerm;
-
 /**
+ * Utilized for searches on related terms. Finds related terms in a document.
  * Created by chris on 10/13/15.
  */
 @WebServlet(value = "/related_terms", name = "relatedTermsServlet")
 public class RelatedTermsServlet extends GenericServlet {
 
+    /**
+     * Related Terms Service
+     * @param req
+     * Required Parameters:
+     *    docId: The id of the document that is used as the basis for finding related terms
+     *    term: The term to find the related terms for
+     * Optional Parameters:
+     *    limit: Limit the number of terms that are returned
+     * @param res Response contains a list of Scored Termss
+     * @throws ServletException
+     * @throws IOException
+     */
     @Override
     public void service(ServletRequest req, ServletResponse res) throws ServletException, IOException {
         try {
