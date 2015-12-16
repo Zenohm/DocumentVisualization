@@ -28,6 +28,12 @@ public class MultiQuerySearcher extends Searcher {
         super(reader, new SearchAnalyzer(WhitespaceTokenizer.class));
     }
 
+    /**
+     * Searches for multiple queries
+     * @param queries The query terms to search for
+     * @return A list of results for the multiple queries
+     * @throws IOException
+     */
     public List<MultiQueryResults> searchForResults(String... queries) throws IOException {
         // Create a list of queries
         List<Map.Entry<String, Query>> queryList = Arrays.asList(queries).stream() // This cannot be parallel
@@ -65,6 +71,11 @@ public class MultiQuerySearcher extends Searcher {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Parses the query and relates it to a string
+     * @param str String to parse the query for
+     * @return A Pair with the String and the query
+     */
     private Map.Entry<String, Query> parseQuery(String str) {
         try {
             return Maps.immutableEntry(str, parser.parse(str));

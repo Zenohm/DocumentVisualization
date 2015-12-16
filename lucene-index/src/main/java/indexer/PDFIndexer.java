@@ -25,6 +25,7 @@
 package indexer;
 
 import analyzers.indexing.PDFAnalyzer;
+import common.Constants;
 import common.data.DocumentMetadata;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
@@ -37,7 +38,6 @@ import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
-import common.Constants;
 import pdfs.PDFTextExtractor;
 
 import java.io.FileReader;
@@ -139,7 +139,8 @@ public class PDFIndexer {
     }
 
     /**
-     * Creates or updates the index
+     * Updates the index
+     * @throws IOException
      */
     public void updateIndex() throws IOException {
         try {

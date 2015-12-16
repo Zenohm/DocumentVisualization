@@ -25,6 +25,7 @@
 package common;
 
 /**
+ * Stores constants for the program. This should become a configuration loader someday.
  * Created by Chris on 8/19/2015.
  */
 public class Constants {

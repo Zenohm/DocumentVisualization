@@ -24,14 +24,17 @@
 
 package reader;
 
+import common.Constants;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.store.FSDirectory;
-import common.Constants;
 
 import java.io.IOException;
 import java.nio.file.FileSystems;
 
 /**
+ * Specific implementation of index reader for Lucene.
+ * SINGLETON that stores the version of the reader from Lucene
+ * TODO: Abstract the methods and things that are specific to lucene so we aren't locked into it.
  * Created by Chris on 9/24/2015.
  */
 public class LuceneIndexReader implements IndexReader {

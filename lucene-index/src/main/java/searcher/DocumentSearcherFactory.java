@@ -7,6 +7,7 @@ import reader.IndexReader;
 import searcher.exception.LuceneSearchException;
 
 /**
+ * Creates instances of DocumentSearchers
  * Created by chris on 12/14/15.
  */
 public class DocumentSearcherFactory {
