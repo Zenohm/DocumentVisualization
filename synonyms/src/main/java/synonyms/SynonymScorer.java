@@ -23,6 +23,7 @@
  */
 package synonyms;
 
+import common.data.ScoredDocument;
 import common.data.ScoredTerm;
 import searcher.DocumentSearcher;
 import searcher.DocumentSearcherFactory;
@@ -144,20 +145,20 @@ public class SynonymScorer {
                             .getDocumentSearcher(LuceneIndexReader.getInstance(), TokenizerType.KEYWORD_TOKENIZER);
 
             // Search for the first term
-            List<Map.Entry<Double, Integer>> originalWordResults = searcher.searchForTerm(words[0]);
+            List<ScoredDocument> originalWordResults = searcher.searchForTerm(words[0]);
             if (words.length == 1) {
                 // If there was only 1 term, we're done.  Return the length of the results.
                 return originalWordResults.size();
             } else { // You've complicated things a bit.
                 // Make a set of all the pdf ids for the original word
-                Set<Integer> docIds = originalWordResults.stream().map(Map.Entry::getValue).collect(Collectors.toSet());
+                Set<Integer> docIds = originalWordResults.stream().map(ScoredDocument::getDocId).collect(Collectors.toSet());
 
                 // Go through each word
                 for (String word : words) {
                     // Keep only the ids for pdfs that contained all of #words#.
                     docIds.retainAll(
                             searcher.searchForTerm(word) // Do the search
-                                    .stream().map(Map.Entry::getValue).collect(Collectors.toSet()));
+                                    .stream().map(ScoredDocument::getDocId).collect(Collectors.toSet()));
                 }
                 // Return the number of pdfs that the passed through #words# share
                 return docIds.size();

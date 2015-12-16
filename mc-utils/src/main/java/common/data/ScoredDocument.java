@@ -36,4 +36,12 @@ public class ScoredDocument {
         }
         return -1;
     }
+
+    public int getDocId(){
+        return docId;
+    }
+
+    public double getScore(){
+        return score;
+    }
 }

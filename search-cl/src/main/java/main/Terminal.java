@@ -1,5 +1,6 @@
 package main;
 
+import common.data.ScoredDocument;
 import indexer.PDFIndexer;
 import searcher.DocumentSearcher;
 import access_utils.MetadataRetriever;
@@ -38,10 +39,10 @@ public class Terminal {
             System.out.print("Enter a search term: ");
             String search = kb.nextLine();
             if (search.equals("") || search.isEmpty()) break;
-            List<Map.Entry<Double, Integer>> docs = searcher.searchForTerm(search);
+            List<ScoredDocument> docs = searcher.searchForTerm(search);
             docs.stream().forEach(doc -> {
                 try {
-                    System.out.println(doc.getKey() + "\t" + retriever.getTitle(doc.getValue()));
+                    System.out.println(doc.score + "\t" + retriever.getTitle(doc.docId));
                 } catch (LuceneSearchException e) {
                     System.err.println("Error finding document title: " + e.toString());
                 }
