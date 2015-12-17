@@ -23,10 +23,6 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="d3" level="application" />
     <orderEntry type="library" name="jquery" level="application" />
-    <orderEntry type="library" name="Maven: org.apache.pdfbox:pdfbox:2.0.0-SNAPSHOT" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.pdfbox:fontbox:2.0.0-SNAPSHOT" level="project" />
-    <orderEntry type="library" name="Maven: commons-logging:commons-logging:1.2" level="project" />
-    <orderEntry type="library" name="Maven: log4j:log4j:1.2.12" level="project" />
     <orderEntry type="module" module-name="lucene-index" />
     <orderEntry type="library" name="Maven: org.apache.pdfbox:pdfbox:2.0.0-SNAPSHOT" level="project" />
     <orderEntry type="library" name="Maven: org.apache.pdfbox:fontbox:2.0.0-SNAPSHOT" level="project" />

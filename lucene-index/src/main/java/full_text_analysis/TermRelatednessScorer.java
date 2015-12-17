@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package synonyms;
+package full_text_analysis;
 
 import common.data.ScoredDocument;
 import common.data.ScoredTerm;
@@ -35,9 +35,10 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * Created by Chris on 11/6/15.
+ * Scores terms based on how related they are.
+ * Created by Chris P. on 11/6/15.
  */
-public class SynonymScorer {
+public class TermRelatednessScorer {
 
     /**
      * The minimum a synonym must score to avoid being eliminated
@@ -51,43 +52,43 @@ public class SynonymScorer {
      * @param synonyms The set of synonyms for the original word
      * @return A list of scoredTerms, in descending order of their scores
      */
-    public static List<ScoredTerm> getRankedSynonymsWithScores(String original, Set<String> synonyms) {
-        // Call getRankedSynonymsWithScores with the default ratio
-        return getRankedSynonymsWithScores(original, synonyms, DEFAULT_CUTOFF_RATIO);
+    public static List<ScoredTerm> getRankedTermsWithScores(String original, Set<String> synonyms) {
+        // Call getRankedTermsWithScores with the default ratio
+        return getRankedTermsWithScores(original, synonyms, DEFAULT_CUTOFF_RATIO);
     }
 
     /**
-     * Given a word and a set of its synonym, returns an ordered list of synonyms ranked from most relevant to least.
+     * Given a word and a set of its related relatedTerms, returns an ordered list of relatedTerms ranked from most relevant to least.
      *
-     * @param original          The word you want to find ranked synonyms for
-     * @param synonyms          The set of synonyms for the original word
+     * @param original          The word you want to find ranked relatedTerms for
+     * @param relatedTerms          The set of relatedTerms for the original word
      * @param minRelevanceRatio An optional parameter for the minimum a synonym must score to be returned. If none
      *                          given, .50 is assumed.
      * @return A list of scoredTerms, in descending order of their scores.
      */
-    public static List<ScoredTerm> getRankedSynonymsWithScores(String original, Set<String> synonyms,
-                                                               double minRelevanceRatio) {
+    public static List<ScoredTerm> getRankedTermsWithScores(String original, Set<String> relatedTerms,
+                                                            double minRelevanceRatio) {
         // Handle null/empty cases
-        if (original == null || synonyms == null || synonyms.isEmpty()) {
+        if (original == null || relatedTerms == null || relatedTerms.isEmpty()) {
             return Collections.EMPTY_LIST;
         }
         // A HashMap with the word as the key, and its corresponding score
-        List<ScoredTerm> scoredSynonyms = new ArrayList<>();
+        List<ScoredTerm> scoredTerms = new ArrayList<>();
 
-        // Open up a parallel stream on the synonyms to perform the doc search on them all
-        synonyms.parallelStream()
-                .forEach(synonym -> scoredSynonyms.add(new ScoredTerm(synonym, score(original, synonym))));
+        // Open up a parallel stream on the relatedTerms to perform the doc search on them all
+        relatedTerms.parallelStream()
+                .forEach(term -> scoredTerms.add(new ScoredTerm(term, score(original, term))));
 
-        // TODO: NOTICE: if the change is made to use a 'top ten' type, refactor to just take first 'x' terms
+        // TODO: NOTICE: if the change is made to use a 'top ten' type, refactor to just take first 'x' relatedTerms
         // Trim the fat - anything below relevance rank gets the D
-        List<ScoredTerm> relevantTerms = getRelevantSynonyms(scoredSynonyms, minRelevanceRatio);
+        List<ScoredTerm> relevantTerms = getRelevantTerms(scoredTerms, minRelevanceRatio);
 
         // Use common.data.ScoredTerm's built-in comparator for sorting purposes
         relevantTerms.sort(ScoredTerm::compareTo);
         // It is by default in ascending order; we want most relevant first, so reverse it
         relevantTerms.sort(Comparator.reverseOrder());
 
-        // If there were no relevant terms, return null.
+        // If there were no relevant relatedTerms, return null.
         // TODO: throw a NoRelevantTerms exception?
         return relevantTerms.size() > 0 ? relevantTerms : Collections.EMPTY_LIST;
     }
@@ -98,32 +99,32 @@ public class SynonymScorer {
      * @param scoredTerms       A list of terms that have scores.
      * @param minRelevanceRatio The minimum score a term must have to avoid being cut.  If none is given,
      *                          #DEFAULT_CUTOFF_RATIO# is assumed.
-     * @return A trimmed list of scored terms, containing only synonyms who scored greater than #minRelevanceRatio#
+     * @return A trimmed list of scored terms, containing only terms who scored greater than #minRelevanceRatio#
      */
-    private static List<ScoredTerm> getRelevantSynonyms(List<ScoredTerm> scoredTerms, double minRelevanceRatio) {
+    private static List<ScoredTerm> getRelevantTerms(List<ScoredTerm> scoredTerms, double minRelevanceRatio) {
         // If a cutoff is specified, use it, otherwise use the default.
-        List<ScoredTerm> relevantSynonyms = scoredTerms.stream()
+        List<ScoredTerm> relevantTerms = scoredTerms.stream()
                 .filter(scoredTerm -> scoredTerm.getScore() >= minRelevanceRatio)
                 .collect(Collectors.toList());
-        return relevantSynonyms;
+        return relevantTerms;
     }
 
     /**
-     * Gets the ratio of documents containing original AND synonym / documents containing the synonym
+     * Gets the ratio of documents containing original AND otherWord / documents containing the otherWord
      *
      * @param original The original word
-     * @param synonym  A synonym of #original#
-     * @return A double representing #docs(BOTH original AND synonym)/#docs(synonym)
+     * @param otherWord  A otherWord of #original#
+     * @return A double representing #docs(BOTH original AND otherWord)/#docs(otherWord)
      */
-    private static double score(String original, String synonym) {
-        // Search for original AND synonym
-        double numContainingOriginalAndSynonym = getNumOfDocuments(original, synonym); // LuceneSearch for number of docs containing BOTH
+    public static double score(String original, String otherWord) {
+        // Search for original AND otherWord
+        double numContainingOriginalAndOtherWord = getNumOfDocuments(original, otherWord); // LuceneSearch for number of docs containing BOTH
 
-        // Search for docs containing synonym
-        double numContainingSynonym = getNumOfDocuments(synonym);
+        // Search for docs containing otherWord
+        double numContainingOtherWord = getNumOfDocuments(otherWord);
 
         // Return containingBoth/containingSynonym while avoiding division by zero.
-        return numContainingSynonym == 0 ? 0 : (numContainingOriginalAndSynonym / numContainingSynonym);
+        return numContainingOtherWord == 0 ? 0 : (numContainingOriginalAndOtherWord / numContainingOtherWord);
     }
 
     /**
