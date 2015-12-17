@@ -46,6 +46,8 @@ public class CompoundRelatedTerms extends Searcher{
         TermLocationsSearcher tlSearcher = new TermLocationsSearcher(reader);
         List<TermLocations> termLocations = tlSearcher.getLocationsOfTerm(term);
 
+        //TODO: I should really parallelize this, because it is going to be slow.
+        Set<String> potentialCompoundTerms = new HashSet<>();
         for(TermLocations loc : termLocations){
             Document doc;
             try {
@@ -54,33 +56,30 @@ public class CompoundRelatedTerms extends Searcher{
                 System.err.println("There was an error getting document " + loc.docId + ": " + e.getMessage());
                 continue; // Go to next set of term locations
             }
-            String[] contents = doc.getValues(Constants.FIELD_CONTENTS);
 
+            String[] contents = doc.getValues(Constants.FIELD_CONTENTS);
             for(int location : loc.getLocations()){
                 String baseTerm = contents[location];
-
                 // Check the plus one location
                 if(location + 1 < contents.length){
                     String addTerm = contents[location + 1];
                     if(!stopwords.contains(addTerm)){
                         // Do the relatedness search
                         String compoundTerm = baseTerm + " " + addTerm;
-
-
+                        potentialCompoundTerms.add(compoundTerm);
                     }
-
                 }
-
                 // Check the minus one location
                 if(location - 1 > 0){
-
+                    String addTerm = contents[location - 1];
+                    if(!stopwords.contains(addTerm)){
+                        String compoundTerm = baseTerm + " " + addTerm;
+                        potentialCompoundTerms.add(compoundTerm);
+                    }
                 }
-
-
-
             }
-
         }
-        return null;
+
+        return TermRelatednessScorer.getRankedTermsWithScores(term, potentialCompoundTerms);
     }
 }
