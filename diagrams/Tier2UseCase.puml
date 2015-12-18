@@ -1,0 +1,18 @@
+@startuml
+left to right direction
+skinparam packageStyle rect
+
+actor User
+
+rectangle TierTwo {
+    (Marvel at pretty visualization) as Marvel
+    (Hover over word) as Hover
+    (Display word metadata) as Display
+    (Return to Tier 1) as Return
+
+    User -- Marvel
+    User -- Hover
+    Hover -- Display
+    User -- Return
+}
+@enduml

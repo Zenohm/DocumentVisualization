@@ -1,0 +1,27 @@
+@startuml
+left to right direction
+skinparam packageStyle rect
+
+actor User
+
+rectangle TierOne {
+    (Search for papers) as Search
+    (Click on paper) as Click
+    (Marvel at pretty visualization) as Marvel
+    (Hover over paper) as Hover
+    (Launch Tier 2) as Launch
+    (Display search results) as Results
+    (Display additional information) as Info
+
+    User -- Search
+    Search -- Results
+    User -- Click
+    Click -- Launch
+    Click .> Results : include
+    User -- Marvel
+    Marvel .> Results : include
+    User -- Hover
+    Hover .> Results : include
+    Hover -- Info
+}
+@enduml
