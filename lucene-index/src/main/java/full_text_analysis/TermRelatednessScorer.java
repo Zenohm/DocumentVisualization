@@ -101,9 +101,8 @@ public class TermRelatednessScorer {
         List<ScoredTerm> relevantTerms = getRelevantTerms(scoredTerms, minRelevanceRatio);
 
         // Use common.data.ScoredTerm's built-in comparator for sorting purposes
-        relevantTerms.sort(ScoredTerm::compareTo);
         // It is by default in ascending order; we want most relevant first, so reverse it
-        relevantTerms.sort(Comparator.reverseOrder());
+        Collections.sort(scoredTerms, Comparator.reverseOrder());
 
         // If there were no relevant relatedTerms, return null.
         // TODO: throw a NoRelevantTerms exception?
@@ -151,12 +150,10 @@ public class TermRelatednessScorer {
      * @return The number of documents containing (all of) #words#
      */
     private static int getNumOfDocuments(String... words) {
-
         // Handle idiot cases
         if (words == null || words.length == 0) {
             return 0;
         }
-        String stopwordFile = System.getenv(Constants.RESOURCE_FOLDER_VAR) + "/" + Constants.STOPWORDS_FILE;
 
         BooleanQuery q = new BooleanQuery();
         for (String word : words) {
