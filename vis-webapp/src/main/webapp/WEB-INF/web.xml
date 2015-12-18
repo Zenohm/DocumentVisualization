@@ -139,6 +139,15 @@
         <url-pattern>/term_locs</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <servlet-name>CompoundRelatedTermsServlet</servlet-name>
+        <servlet-class>servlets.CompoundRelatedTermsServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>CompoundRelatedTermsServlet</servlet-name>
+        <url-pattern>/compound_related_terms</url-pattern>
+    </servlet-mapping>
+
     <welcome-file-list>
         <welcome-file>index.html</welcome-file>
     </welcome-file-list>

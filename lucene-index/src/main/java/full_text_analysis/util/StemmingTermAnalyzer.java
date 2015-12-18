@@ -32,7 +32,8 @@ public class StemmingTermAnalyzer extends Analyzer {
     public StemmingTermAnalyzer(String stopwordFile) {
         stopwords = new ArrayList<>();
         try {
-            BufferedReader reader = new BufferedReader(new FileReader(stopwordFile));
+            FileReader fileReader = new FileReader(stopwordFile);
+            BufferedReader reader = new BufferedReader(fileReader);
             String line;
             while ((line = reader.readLine()) != null) {
                 stopwords.add(line);

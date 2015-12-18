@@ -12,7 +12,9 @@ import util.Searcher;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -20,8 +22,11 @@ import java.util.stream.Collectors;
  * Created by chris on 10/5/15.
  */
 public class DocumentSearcher extends Searcher {
+    Map<String, TopDocs> cachedResult;
+
     public DocumentSearcher(IndexReader reader, Analyzer analyzer) throws LuceneSearchException {
         super(reader, analyzer);
+        cachedResult = new HashMap<>();
     }
 
     /**
@@ -34,19 +39,15 @@ public class DocumentSearcher extends Searcher {
     public List<ScoredDocument> searchForTerm(String term) throws LuceneSearchException {
         try {
             Query query = parser.parse(term);
-            System.out.print("Searching for query: " + query.toString());
             // Searches and returns the max number of documents
-            final TopDocs search = searcher.search(query, reader.getReader().numDocs());
-            System.out.print(". Found " + search.totalHits + " documents matching your query.\n");
+            TopDocs search;
+            if(cachedResult.containsKey(term)){
+                search = cachedResult.get(term);
+            }else{
+                search = searcher.search(query, reader.getReader().numDocs());
+            }
 
-            // Prints the contents of the document
-//            for(ScoreDoc doc : search.scoreDocs){
-//                System.out.print("Doc ID: ");
-//                for(String content : reader.getReader().document(doc.doc).getValues(Constants.FIELD_CONTENTS)){
-//                    System.out.print(content + ", ");
-//                }
-//                System.out.println();
-//            }
+            System.out.println("Searching for: " + query.toString());
 
             return Arrays.asList(search.scoreDocs)
                     .stream()

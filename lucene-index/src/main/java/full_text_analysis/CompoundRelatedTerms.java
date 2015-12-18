@@ -1,10 +1,13 @@
 package full_text_analysis;
 
+import access_utils.FullTextTokenizer;
 import access_utils.TermLocationsSearcher;
 import access_utils.data.TermLocations;
+import analyzers.filters.NumberFilter;
 import analyzers.search.SearchAnalyzer;
 import common.Constants;
 import common.data.ScoredTerm;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.lucene.analysis.core.KeywordTokenizer;
 import org.apache.lucene.document.Document;
 import reader.IndexReader;
@@ -15,9 +18,8 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * This class implements a compound related terms search.
@@ -47,39 +49,52 @@ public class CompoundRelatedTerms extends Searcher{
         List<TermLocations> termLocations = tlSearcher.getLocationsOfTerm(term);
 
         //TODO: I should really parallelize this, because it is going to be slow.
-        Set<String> potentialCompoundTerms = new HashSet<>();
-        for(TermLocations loc : termLocations){
+        Set<String> potentialCompoundTerms = Collections.newSetFromMap(new ConcurrentHashMap<>());
+        termLocations.parallelStream().forEach(loc ->{
             Document doc;
             try {
                 doc = reader.getReader().document(loc.docId);
             } catch (IOException e) {
                 System.err.println("There was an error getting document " + loc.docId + ": " + e.getMessage());
-                continue; // Go to next set of term locations
+                return;
             }
 
-            String[] contents = doc.getValues(Constants.FIELD_CONTENTS);
-            for(int location : loc.getLocations()){
-                String baseTerm = contents[location];
-                // Check the plus one location
-                if(location + 1 < contents.length){
-                    String addTerm = contents[location + 1];
-                    if(!stopwords.contains(addTerm)){
-                        // Do the relatedness search
-                        String compoundTerm = baseTerm + " " + addTerm;
-                        potentialCompoundTerms.add(compoundTerm);
-                    }
+            String[] contents;
+            try {
+                String[] values = doc.getValues(Constants.FIELD_CONTENTS);
+                String totalContent = "";
+                for(String content : values){
+                    totalContent += content + " ";
                 }
-                // Check the minus one location
-                if(location - 1 > 0){
-                    String addTerm = contents[location - 1];
-                    if(!stopwords.contains(addTerm)){
-                        String compoundTerm = baseTerm + " " + addTerm;
-                        potentialCompoundTerms.add(compoundTerm);
-                    }
-                }
+                contents = FullTextTokenizer.tokenizeText(totalContent);
+            } catch (IOException e) {
+                System.err.println("There was an error while tokenizing the text for " + loc.docId + ": " + e.getMessage());
+                return;
+            } catch (ArrayIndexOutOfBoundsException e){
+                System.err.println("Document #" + loc.docId + " doesn't have contents?");
+                return;
             }
-        }
 
-        return TermRelatednessScorer.getRankedTermsWithScores(term, potentialCompoundTerms);
+
+            loc.getLocations().parallelStream()
+                    .filter(location -> location + 1 < contents.length)
+                    .map(location -> new ImmutablePair<>(contents[location].toLowerCase().trim(),
+                            contents[location + 1].toLowerCase().trim()))
+                    .filter(content -> !stopwords.contains(content.getRight()))
+                    .filter(content -> !NumberFilter.isNumeric(content.getRight()))
+                    .map(content -> content.getLeft() + " " + content.getRight())
+                    .forEach(potentialCompoundTerms::add);
+
+            loc.getLocations().parallelStream()
+                    .filter(location -> location - 1 >= 0)
+                    .map(location -> new ImmutablePair<>(contents[location].toLowerCase().trim(),
+                            contents[location - 1].toLowerCase().trim()))
+                    .filter(content -> !stopwords.contains(content.getRight()))
+                    .filter(content -> !NumberFilter.isNumeric(content.getRight()))
+                    .map(content -> content.getRight() + " " + content.getLeft())
+                    .forEach(potentialCompoundTerms::add);
+        });
+
+        return TermRelatednessScorer.getRankedTermsWithScores(term, potentialCompoundTerms, 0);
     }
 }

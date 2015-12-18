@@ -65,6 +65,7 @@ public class SearchAnalyzer extends Analyzer {
             System.err.println("There was an error getting the tokenizer");
             e.printStackTrace();
         }
+        System.err.println("Get Tokenizer returned null");
         return null;
     }
 

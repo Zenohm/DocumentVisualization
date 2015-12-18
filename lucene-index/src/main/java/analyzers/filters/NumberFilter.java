@@ -31,6 +31,8 @@ import org.apache.lucene.analysis.util.FilteringTokenFilter;
 import java.io.IOException;
 import java.text.NumberFormat;
 import java.text.ParsePosition;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Filters out numbers from the token stream
@@ -52,7 +54,13 @@ public class NumberFilter extends FilteringTokenFilter {
         NumberFormat formatter = NumberFormat.getInstance();
         ParsePosition pos = new ParsePosition(0);
         formatter.parse(str, pos);
-        return str.length() == pos.getIndex();
+        boolean IsANumber = str.length() == pos.getIndex();
+
+        Pattern p = Pattern.compile("[0-9]");
+        Matcher m = p.matcher(str);
+        boolean containsNumber = m.matches();
+
+        return IsANumber || containsNumber;
     }
 
     @Override

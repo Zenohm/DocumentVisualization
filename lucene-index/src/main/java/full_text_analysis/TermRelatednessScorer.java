@@ -23,15 +23,22 @@
  */
 package full_text_analysis;
 
+import common.Constants;
 import common.data.ScoredDocument;
 import common.data.ScoredTerm;
+import full_text_analysis.util.StemmingTermAnalyzer;
+import org.apache.lucene.index.Term;
+import org.apache.lucene.search.*;
+import org.apache.lucene.util.QueryBuilder;
 import reader.LuceneIndexReader;
 import searcher.DocumentSearcher;
 import searcher.DocumentSearcherFactory;
 import searcher.TokenizerType;
 import searcher.exception.LuceneSearchException;
 
+import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 /**
@@ -44,6 +51,16 @@ public class TermRelatednessScorer {
      * The minimum a synonym must score to avoid being eliminated
      */
     private static final double DEFAULT_CUTOFF_RATIO = .50;
+
+    private static IndexSearcher searcher;
+    static{
+        searcher = new IndexSearcher(LuceneIndexReader.getInstance().getReader());
+    }
+
+    private static Map<String, Integer> cache;
+    static{
+        cache = new ConcurrentHashMap<>();
+    }
 
     /**
      * Given a word and a set of its synonym, returns an ordered list of synonyms ranked from most relevant to least.
@@ -121,10 +138,10 @@ public class TermRelatednessScorer {
         double numContainingOriginalAndOtherWord = getNumOfDocuments(original, otherWord); // LuceneSearch for number of docs containing BOTH
 
         // Search for docs containing otherWord
-        double numContainingOtherWord = getNumOfDocuments(otherWord);
+        double numContainingOriginal = getNumOfDocuments(original);
 
         // Return containingBoth/containingSynonym while avoiding division by zero.
-        return numContainingOtherWord == 0 ? 0 : (numContainingOriginalAndOtherWord / numContainingOtherWord);
+        return numContainingOriginal == 0 ? 0 : (numContainingOriginalAndOtherWord / numContainingOriginal);
     }
 
     /**
@@ -134,42 +151,37 @@ public class TermRelatednessScorer {
      * @return The number of documents containing (all of) #words#
      */
     private static int getNumOfDocuments(String... words) {
+
         // Handle idiot cases
         if (words == null || words.length == 0) {
-            return -1;
+            return 0;
+        }
+        String stopwordFile = System.getenv(Constants.RESOURCE_FOLDER_VAR) + "/" + Constants.STOPWORDS_FILE;
+
+        BooleanQuery q = new BooleanQuery();
+        for (String word : words) {
+            PhraseQuery query = new PhraseQuery();
+            Arrays.asList(word.split(" ")).stream()
+                    .map(term -> new Term(Constants.FIELD_CONTENTS, term))
+                    .forEach(query::add);
+
+            query.setSlop(0);
+            q.add(query, BooleanClause.Occur.MUST);
         }
 
-        // Attempt a lucene search for #words# to find relevant docs.
+        // Caching to save a little bit of time
+        if(cache.containsKey(q.toString())){
+            return cache.get(q.toString());
+        }
+
         try {
-            // Initialize Lucene stuff
-            DocumentSearcher searcher = DocumentSearcherFactory
-                    .getDocumentSearcher(LuceneIndexReader.getInstance(), TokenizerType.KEYWORD_TOKENIZER);
-
-            // Search for the first term
-            List<ScoredDocument> originalWordResults = searcher.searchForTerm(words[0]);
-            if (words.length == 1) {
-                // If there was only 1 term, we're done.  Return the length of the results.
-                return originalWordResults.size();
-            } else { // You've complicated things a bit.
-                // Make a set of all the pdf ids for the original word
-                Set<Integer> docIds = originalWordResults.stream().map(ScoredDocument::getDocId).collect(Collectors.toSet());
-
-                // Go through each word
-                for (String word : words) {
-                    // Keep only the ids for pdfs that contained all of #words#.
-                    docIds.retainAll(
-                            searcher.searchForTerm(word) // Do the search
-                                    .stream().map(ScoredDocument::getDocId).collect(Collectors.toSet()));
-                }
-                // Return the number of pdfs that the passed through #words# share
-                return docIds.size();
-            }
-        } catch (LuceneSearchException e) {
-            // If something weird happens, log an error, and throw an exception
-            System.err.println("There was an error with the index searcher.");
-            e.printStackTrace();
-            return -1;
-            // TODO: Throw exception instead
+            int result = searcher.count(q);
+            cache.put(q.toString(), result);
+            return result;
+        } catch (IOException e) {
+            System.err.println(TermRelatednessScorer.class.toString() + ": ERROR: Could not get term count for query " +
+                    q.toString() + ".");
+            return 0; // Assume no documents then.
         }
     }
 }

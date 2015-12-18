@@ -33,4 +33,8 @@ public class DocumentSearcherFactory {
                 return new DocumentSearcher(reader, new SearchAnalyzer(WhitespaceTokenizer.class));
         }
     }
+
+    public static DocumentSearcher defaultDocumentSearcher(IndexReader reader) throws LuceneSearchException{
+        return new DocumentSearcher(reader, new SearchAnalyzer(WhitespaceTokenizer.class));
+    }
 }

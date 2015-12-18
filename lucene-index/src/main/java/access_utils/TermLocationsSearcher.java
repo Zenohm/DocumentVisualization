@@ -19,7 +19,7 @@ import java.util.List;
  * Created by chris on 12/16/15.
  */
 public class TermLocationsSearcher extends LuceneReader {
-    LeafReader lReader;
+    private final LeafReader lReader;
 
     public TermLocationsSearcher(IndexReader reader) throws LuceneSearchException {
         super(reader);
