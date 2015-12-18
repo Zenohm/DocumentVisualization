@@ -20,6 +20,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Stream;
 
 /**
  * This class implements a compound related terms search.
@@ -56,14 +57,14 @@ public class CompoundRelatedTerms extends Searcher{
         cacheMisses = 0;
         // Goes through terms list to determine the potential compound terms.
         Set<String> potentialCompoundTerms = Collections.newSetFromMap(new ConcurrentHashMap<>());
-        termLocations.parallelStream().forEach(loc ->{
+        getStream(termLocations).forEach(loc ->{
             String[] contents = getTokenizedText(loc.docId);
             if(contents == null){
                 System.err.println("Error Getting Tokenized Contents for: " + loc.docId);
                 return;
             }
 
-            loc.getLocations().parallelStream()
+            getStream(loc.getLocations())
                     .filter(location -> location + 1 < contents.length)
                     .map(location -> new ImmutablePair<>(contents[location].toLowerCase().trim(),
                             contents[location + 1].toLowerCase().trim()))
@@ -72,7 +73,7 @@ public class CompoundRelatedTerms extends Searcher{
                     .map(content -> content.getLeft() + " " + content.getRight())
                     .forEach(potentialCompoundTerms::add);
 
-            loc.getLocations().parallelStream()
+            getStream(loc.getLocations())
                     .filter(location -> location - 1 >= 0)
                     .map(location -> new ImmutablePair<>(contents[location].toLowerCase().trim(),
                             contents[location - 1].toLowerCase().trim()))
@@ -82,9 +83,17 @@ public class CompoundRelatedTerms extends Searcher{
                     .forEach(potentialCompoundTerms::add);
         });
 
-        System.out.println("Cache Hits: " + cacheHits + "\nCache Misses: " + cacheMisses);
+        System.out.println("Token Cache Hits: " + cacheHits + " Token Cache Misses: " + cacheMisses);
 
         return TermRelatednessScorer.getRankedTermsWithScores(term, potentialCompoundTerms, 0);
+    }
+
+    private <E> Stream<E> getStream(List<E> list){
+        if(list.size() > 100){
+            return list.parallelStream();
+        }else{
+            return list.stream();
+        }
     }
 
     private String[] getTokenizedText(int docId){
@@ -118,5 +127,7 @@ public class CompoundRelatedTerms extends Searcher{
 
         return contents;
     }
+
+
 
 }
