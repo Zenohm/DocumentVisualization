@@ -48,7 +48,7 @@ public class CompoundRelatedTerms extends Searcher{
         TermLocationsSearcher tlSearcher = new TermLocationsSearcher(reader);
         List<TermLocations> termLocations = tlSearcher.getLocationsOfTerm(term);
 
-        //TODO: I should really parallelize this, because it is going to be slow.
+        // Goes through terms list to determine the potential compound terms.
         Set<String> potentialCompoundTerms = Collections.newSetFromMap(new ConcurrentHashMap<>());
         termLocations.parallelStream().forEach(loc ->{
             Document doc;

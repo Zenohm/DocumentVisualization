@@ -24,17 +24,10 @@
 package full_text_analysis;
 
 import common.Constants;
-import common.data.ScoredDocument;
 import common.data.ScoredTerm;
-import full_text_analysis.util.StemmingTermAnalyzer;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.*;
-import org.apache.lucene.util.QueryBuilder;
 import reader.LuceneIndexReader;
-import searcher.DocumentSearcher;
-import searcher.DocumentSearcherFactory;
-import searcher.TokenizerType;
-import searcher.exception.LuceneSearchException;
 
 import java.io.IOException;
 import java.util.*;
@@ -57,28 +50,31 @@ public class TermRelatednessScorer {
         searcher = new IndexSearcher(LuceneIndexReader.getInstance().getReader());
     }
 
+    /**
+     * Caching utilized to speed up the processing of scores.
+     */
     private static Map<String, Integer> cache;
     static{
         cache = new ConcurrentHashMap<>();
     }
 
     /**
-     * Given a word and a set of its synonym, returns an ordered list of synonyms ranked from most relevant to least.
+     * Given a word and a set of its synonym, returns an ordered list of terms ranked from most relevant to least.
      *
-     * @param original The word you want to find ranked synonyms for
-     * @param synonyms The set of synonyms for the original word
+     * @param original The word you want to find ranked terms for
+     * @param terms The set of terms for related to the original
      * @return A list of scoredTerms, in descending order of their scores
      */
-    public static List<ScoredTerm> getRankedTermsWithScores(String original, Set<String> synonyms) {
+    public static List<ScoredTerm> getRankedTermsWithScores(String original, Set<String> terms) {
         // Call getRankedTermsWithScores with the default ratio
-        return getRankedTermsWithScores(original, synonyms, DEFAULT_CUTOFF_RATIO);
+        return getRankedTermsWithScores(original, terms, DEFAULT_CUTOFF_RATIO);
     }
 
     /**
      * Given a word and a set of its related relatedTerms, returns an ordered list of relatedTerms ranked from most relevant to least.
      *
      * @param original          The word you want to find ranked relatedTerms for
-     * @param relatedTerms          The set of relatedTerms for the original word
+     * @param relatedTerms          The set of terms related to the original
      * @param minRelevanceRatio An optional parameter for the minimum a synonym must score to be returned. If none
      *                          given, .50 is assumed.
      * @return A list of scoredTerms, in descending order of their scores.
@@ -155,6 +151,7 @@ public class TermRelatednessScorer {
             return 0;
         }
 
+        // The words ALL MUST contain the terms.
         BooleanQuery q = new BooleanQuery();
         for (String word : words) {
             PhraseQuery query = new PhraseQuery();
@@ -166,7 +163,7 @@ public class TermRelatednessScorer {
             q.add(query, BooleanClause.Occur.MUST);
         }
 
-        // Caching to save a little bit of time
+        // Caching to save a little bit of time, queries should be deterministic
         if(cache.containsKey(q.toString())){
             return cache.get(q.toString());
         }
