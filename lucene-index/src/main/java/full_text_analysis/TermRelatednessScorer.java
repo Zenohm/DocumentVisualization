@@ -98,7 +98,7 @@ public class TermRelatednessScorer {
 
         // Use common.data.ScoredTerm's built-in comparator for sorting purposes
         // It is by default in ascending order; we want most relevant first, so reverse it
-        Collections.sort(scoredTerms, Comparator.reverseOrder());
+        Collections.sort(relevantTerms, Comparator.reverseOrder());
 
         // If there were no relevant relatedTerms, return null.
         // TODO: throw a NoRelevantTerms exception?

@@ -26,6 +26,10 @@ import java.util.concurrent.ConcurrentHashMap;
  * Created by chris on 12/16/15.
  */
 public class CompoundRelatedTerms extends Searcher{
+    private static Map<Integer, String[]> tokenCache = new ConcurrentHashMap<>();
+    private int cacheHits = 0;
+    private int cacheMisses = 0;
+
     private final Set<String> stopwords;
     public CompoundRelatedTerms(IndexReader reader, String stopwordFile) throws LuceneSearchException {
         super(reader, new SearchAnalyzer(KeywordTokenizer.class));
@@ -48,33 +52,16 @@ public class CompoundRelatedTerms extends Searcher{
         TermLocationsSearcher tlSearcher = new TermLocationsSearcher(reader);
         List<TermLocations> termLocations = tlSearcher.getLocationsOfTerm(term);
 
+        cacheHits = 0;
+        cacheMisses = 0;
         // Goes through terms list to determine the potential compound terms.
         Set<String> potentialCompoundTerms = Collections.newSetFromMap(new ConcurrentHashMap<>());
         termLocations.parallelStream().forEach(loc ->{
-            Document doc;
-            try {
-                doc = reader.getReader().document(loc.docId);
-            } catch (IOException e) {
-                System.err.println("There was an error getting document " + loc.docId + ": " + e.getMessage());
+            String[] contents = getTokenizedText(loc.docId);
+            if(contents == null){
+                System.err.println("Error Getting Tokenized Contents for: " + loc.docId);
                 return;
             }
-
-            String[] contents;
-            try {
-                String[] values = doc.getValues(Constants.FIELD_CONTENTS);
-                String totalContent = "";
-                for(String content : values){
-                    totalContent += content + " ";
-                }
-                contents = FullTextTokenizer.tokenizeText(totalContent);
-            } catch (IOException e) {
-                System.err.println("There was an error while tokenizing the text for " + loc.docId + ": " + e.getMessage());
-                return;
-            } catch (ArrayIndexOutOfBoundsException e){
-                System.err.println("Document #" + loc.docId + " doesn't have contents?");
-                return;
-            }
-
 
             loc.getLocations().parallelStream()
                     .filter(location -> location + 1 < contents.length)
@@ -95,6 +82,41 @@ public class CompoundRelatedTerms extends Searcher{
                     .forEach(potentialCompoundTerms::add);
         });
 
+        System.out.println("Cache Hits: " + cacheHits + "\nCache Misses: " + cacheMisses);
+
         return TermRelatednessScorer.getRankedTermsWithScores(term, potentialCompoundTerms, 0);
     }
+
+    private String[] getTokenizedText(int docId){
+        if(tokenCache.containsKey(docId)){
+            cacheHits++;
+            return tokenCache.get(docId);
+        }
+
+        cacheMisses++;
+        Document doc;
+        try {
+            doc = reader.getReader().document(docId);
+        } catch (IOException e) {
+            System.err.println("There was an error getting document " + docId + ": " + e.getMessage());
+            return null;
+        }
+
+        String[] contents;
+        try {
+            String[] values = doc.getValues(Constants.FIELD_CONTENTS);
+            String totalContent = "";
+            for(String content : values){
+                totalContent += content + " ";
+            }
+            contents = FullTextTokenizer.tokenizeText(totalContent);
+            tokenCache.put(docId, contents);
+        } catch (IOException e) {
+            System.err.println("There was an error while tokenizing the text for " + docId + ": " + e.getMessage());
+            return null;
+        }
+
+        return contents;
+    }
+
 }
