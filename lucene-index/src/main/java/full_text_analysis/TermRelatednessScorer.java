@@ -135,7 +135,7 @@ public class TermRelatednessScorer {
         // Search for docs containing otherWord
         double numContainingOriginal = getNumOfDocuments(original);
 
-        // Return containingBoth/containingSynonym while avoiding division by zero.
+        // Return containingBoth/containingOriginal while avoiding division by zero.
         return numContainingOriginal == 0 ? 0 : (numContainingOriginalAndOtherWord / numContainingOriginal);
     }
 
