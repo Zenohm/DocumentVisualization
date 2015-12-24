@@ -4,6 +4,8 @@ import data_processing.multi_query_processing.multi_query_json_data.DocumentNode
 import data_processing.multi_query_processing.multi_query_json_data.FixedNode;
 import data_processing.multi_query_processing.multi_query_json_data.Link;
 import data_processing.multi_query_processing.multi_query_json_data.MultiQueryJson;
+import full_text_analysis.util.FullTextExtractor;
+import reader.LuceneIndexReader;
 import searcher.results.MultiQueryResults;
 import searcher.results.QueryResults;
 
@@ -17,8 +19,12 @@ import java.util.Map;
  * Created by chris on 11/22/15.
  */
 public class MultiQueryConverter {
-    public static final int SIZE_NORMALIZER = 100;
+
+    public static final int MAX_SIZE = 25;
+    public static final int NORM_SIZE = 15;
     public static final int MIN_SIZE = 5;
+
+    public static final int AVERAGE_COUNT = 45000;
 
     public static final String[] colors = {"red", "blue", "green"};
 
@@ -69,12 +75,21 @@ public class MultiQueryConverter {
         }
 
         fixedNodes.forEach(jsonObject.nodes::add);
+        boolean firstItr = true;
+        double maxScore = 0;
 
         for (MultiQueryResults result : results) {
+            // We know values are sorted, so this is the max score.
+            if(firstItr){
+                firstItr = false;
+                maxScore = result.score;
+            }
+
             String documentName = "doc" + result.docId;
-            int nodeSize = (int) Math.floor(result.score * SIZE_NORMALIZER);
-            if (nodeSize < MIN_SIZE) nodeSize = MIN_SIZE;
-            String nodeColor = determineColor(result);
+
+            int nodeSize = NORM_SIZE; //determineNodeSize(result);
+            String nodeColor = determineColor(result, maxScore);
+
             jsonObject.nodes.add(DocumentNode.of(documentName, result.docId, nodeColor,
                     result.docId, nodeSize, result.score));
 
@@ -99,7 +114,33 @@ public class MultiQueryConverter {
      * @param result Result to convert to a color
      * @return The color of the result
      */
-    public static String determineColor(MultiQueryResults result) {
-        return "black";
+    public static String determineColor(MultiQueryResults result, double maxScore) {
+        int val; // Lightness value
+        if(result.score == 0){
+            val = 100;
+        }else{
+            val = 100 - (int)(100*(result.score / maxScore));
+        }
+
+        String hslString = "hsl(0,0%," + Integer.toString(val) + "%)";
+//        System.out.println("Score: " + result.score);
+//        System.out.println("HSL: " + hslString);
+        return hslString;
+    }
+
+    public static int determineNodeSize(MultiQueryResults result){
+        String fullText = FullTextExtractor
+                .extractText(LuceneIndexReader.getInstance().getReader(), result.docId);
+
+        int length = fullText.length();
+//        System.out.println("Text Length: " + length);
+        double scale = ((double)length)/AVERAGE_COUNT;
+        scale = 1 / scale;
+
+        int size = (int)Math.ceil(scale*NORM_SIZE);
+        if(size > MAX_SIZE) size = MAX_SIZE;
+        if(size < MIN_SIZE) size = MIN_SIZE;
+
+        return size;
     }
 }

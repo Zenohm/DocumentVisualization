@@ -37,13 +37,13 @@ function forceChart() {
         height = 400,
         force = 0,
         svg = 0,
-        color = d3.scale.category20(),
         link = 0,
         node = 0,
         text = 0,
         quadTree = 0,
         graph = 0,
-        me = 0;
+        me = 0,
+        clickedNode = -1;
 
     // This generates the chart
     function chart(selection) {
@@ -107,7 +107,7 @@ function forceChart() {
                     return d.r;
                 })
                 .style("fill", function (d) {
-                    return d3.rgb(d.color);
+                    return d3.hsl(d.color);
                 })
                 .on("click", function (d) {
                     // Don't run this on the fixed nodes
@@ -115,16 +115,21 @@ function forceChart() {
                         // A clever trick to save the node and the original color
                         var originalColor = d3.select(this).style("fill");
                         var node = d3.select(this);
+                        if(clickedNode != d.docId){
+                            // change the color of the node to purple
+                            node.style("fill", function () {
+                                return d3.rgb(255, 0, 255);
+                            });
 
-                        // change the color of the node to white
-                        node.style("fill", function () {
-                            return d3.rgb(255, 255, 255);
-                        });
+                            var colorCallback = function(){
+                                node.style("fill", originalColor);
+                            };
 
-                        // Have a callback function to change the color back
-                        displayDocument(d.docId, function () {
-                            node.style("fill", originalColor);
-                        });
+                            clickedNode = d.docId;
+
+                            // Have a callback function to change the color back
+                            displayDocument(d.docId, colorCallback);
+                        }
                     }
                 });
 
