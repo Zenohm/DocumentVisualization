@@ -26,6 +26,7 @@ package servlets;
 import com.google.gson.GsonBuilder;
 import common.data.ScoredTerm;
 import org.apache.commons.lang.StringUtils;
+import servlets.servlet_util.ResponseUtils;
 import synonyms.SynonymAdapter;
 import util.JsonCreator;
 
@@ -62,21 +63,24 @@ public class SynonymsServlet extends GenericServlet {
         String term = StringUtils.trim(req.getParameter("term"));
         Map<String, String[]> params = req.getParameterMap();
 
+        String response;
         if (!params.containsKey("scored")) {
             // If you just want unscored synonyms.
             Set synonyms = SynonymAdapter.getSynonyms(term);
-            res.getWriter().println(JsonCreator.toJson(synonyms));
+            response = JsonCreator.toJson(synonyms);
         } else {
             // If you want minimally related terms
             if (params.containsKey("related")) {
                 List<ScoredTerm> synonyms = SynonymAdapter.getScoredSynonymsWithMinimalRelation(term);
-                res.getWriter().println(JsonCreator.toJson(synonyms));
+                response = JsonCreator.toJson(synonyms);
             } else {
                 // If you want to include everything with the scores
                 List<ScoredTerm> synonyms = SynonymAdapter.getScoredSynonymsWithUnrelatedIncluded(term);
-                res.getWriter().println(JsonCreator.toJson(synonyms));
+                response = JsonCreator.toJson(synonyms);
             }
         }
+
+        ResponseUtils.printResponse(res, response);
     }
 
 }

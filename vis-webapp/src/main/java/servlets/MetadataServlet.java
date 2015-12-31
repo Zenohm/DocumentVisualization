@@ -5,6 +5,9 @@ import com.google.gson.GsonBuilder;
 import common.data.DocumentMetadata;
 import reader.LuceneIndexReader;
 import searcher.exception.LuceneSearchException;
+import servlets.servlet_util.RequestUtils;
+import servlets.servlet_util.ResponseUtils;
+import servlets.servlet_util.ServletConstant;
 import util.JsonCreator;
 
 import javax.servlet.GenericServlet;
@@ -32,21 +35,22 @@ public class MetadataServlet extends GenericServlet {
      */
     @Override
     public void service(ServletRequest req, ServletResponse res) throws ServletException, IOException {
-        int docId = Integer.parseInt(req.getParameter("docId"));
-        MetadataRetriever retriever = null;
+        int docId = RequestUtils.getIntegerParameter(req, ServletConstant.DOC_ID);
+        MetadataRetriever retriever;
         try {
             retriever = new MetadataRetriever(LuceneIndexReader.getInstance());
         } catch (LuceneSearchException e) {
             e.printStackTrace();
+            System.err.println("MetadataServlet: Metadata retriever could not be created");
+            return;
         }
 
         try {
             DocumentMetadata metadata = retriever.getMetadata(docId);
-            res.getWriter().println(JsonCreator.toJson(metadata));
+            String response = JsonCreator.toJson(metadata);
+            ResponseUtils.printResponse(res, response);
         } catch (LuceneSearchException e) {
             e.printStackTrace();
-        } catch (NullPointerException e) {
-            System.err.println("MetadataServlet: Metadata retriever could not be created");
         }
 
     }

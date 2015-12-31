@@ -1,5 +1,6 @@
 package servlets;
 
+import servlets.servlet_util.ResponseUtils;
 import util.JsonCreator;
 
 import javax.servlet.annotation.WebServlet;
@@ -20,6 +21,6 @@ public class LastQueryServlet extends HttpServlet {
         if(attr != null){
             response = JsonCreator.toJson(attr);
         }
-        res.getOutputStream().println(response);
+        ResponseUtils.printResponse(res, response);
     }
 }

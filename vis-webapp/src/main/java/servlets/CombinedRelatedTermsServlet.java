@@ -6,6 +6,9 @@ import data_processing.related_terms_combiner.CombinedRelatedTerms;
 import full_text_analysis.TermsAnalyzer;
 import reader.LuceneIndexReader;
 import searcher.exception.LuceneSearchException;
+import servlets.servlet_util.RequestUtils;
+import servlets.servlet_util.ResponseUtils;
+import servlets.servlet_util.ServletConstant;
 import util.JsonCreator;
 
 import javax.servlet.GenericServlet;
@@ -33,8 +36,8 @@ public class CombinedRelatedTermsServlet extends GenericServlet {
     public void service(ServletRequest req, ServletResponse res) throws ServletException, IOException {
         try {
             int docId;
-            if (req.getParameterMap().containsKey("docId")) {
-                docId = Integer.parseInt(req.getParameter("docId"));
+            if (req.getParameterMap().containsKey(ServletConstant.DOC_ID)) {
+                docId = RequestUtils.getIntegerParameter(req, ServletConstant.DOC_ID);
             } else {
                 throw new LuceneSearchException("No document ID.");
             }
@@ -46,8 +49,8 @@ public class CombinedRelatedTermsServlet extends GenericServlet {
                 throw new LuceneSearchException("No Term");
             }
 
-            res.getWriter().println(JsonCreator.getPrettyJson(combined.getRelatedTerms(term, docId)));
-
+            String response = JsonCreator.getPrettyJson(combined.getRelatedTerms(term, docId));
+            ResponseUtils.printResponse(res, response);
 
         } catch (LuceneSearchException | NumberFormatException e) {
             e.printStackTrace();

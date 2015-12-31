@@ -2,6 +2,7 @@ package servlets;
 
 import com.google.gson.GsonBuilder;
 import data_processing.multi_query_processing.MultiQueryConverter;
+import servlets.servlet_util.RequestUtils;
 import util.data.D3ConvertibleJson;
 import reader.LuceneIndexReader;
 import searcher.MultiQuerySearcher;
@@ -27,8 +28,7 @@ import java.util.List;
  */
 @WebServlet(value = "/multi_term_search", name = "multiTermSearch")
 public class MultiQueryServlet extends HttpServlet {
-    public static final int MAX_QUERIES = 10;
-    public static final String QUERY_STRING = "query";
+
 
     /**
      * Servlet Service for doing multi query searches
@@ -44,7 +44,7 @@ public class MultiQueryServlet extends HttpServlet {
     @Override
     public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException{
         try {
-            List<String> queries = getQueries(req);
+            List<String> queries = RequestUtils.getQueries(req);
             req.getSession().setAttribute("queries", queries); // TODO: Remove the magic string
             String[] queryStringArray = new String[queries.size()];
             queryStringArray = queries.toArray(queryStringArray);
@@ -66,16 +66,6 @@ public class MultiQueryServlet extends HttpServlet {
         }
     }
 
-    public static List<String> getQueries(ServletRequest req){
-        List<String> queries = new ArrayList<>();
-        for (int queryNum = 1; queryNum < MAX_QUERIES; queryNum++) {
-            String queryName = QUERY_STRING + queryNum;
-            if (req.getParameterMap().containsKey(queryName)) {
-                String q = req.getParameter(queryName);
-                queries.add(q);
-            }
-        }
-        return queries;
-    }
+
 
 }
