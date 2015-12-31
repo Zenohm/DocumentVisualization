@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Map;
 
 /**
+ * Generates fixed nodes for the D3 visualizations. (Lots of clever maths)
  * Created by chris on 12/30/15.
  */
 public class FixedNodeGenerator {
