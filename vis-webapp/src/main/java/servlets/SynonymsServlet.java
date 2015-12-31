@@ -27,6 +27,7 @@ import com.google.gson.GsonBuilder;
 import common.data.ScoredTerm;
 import org.apache.commons.lang.StringUtils;
 import synonyms.SynonymAdapter;
+import util.JsonCreator;
 
 import javax.servlet.GenericServlet;
 import javax.servlet.ServletException;
@@ -64,16 +65,16 @@ public class SynonymsServlet extends GenericServlet {
         if (!params.containsKey("scored")) {
             // If you just want unscored synonyms.
             Set synonyms = SynonymAdapter.getSynonyms(term);
-            res.getWriter().println((new GsonBuilder()).create().toJson(synonyms));
+            res.getWriter().println(JsonCreator.toJson(synonyms));
         } else {
             // If you want minimally related terms
             if (params.containsKey("related")) {
                 List<ScoredTerm> synonyms = SynonymAdapter.getScoredSynonymsWithMinimalRelation(term);
-                res.getWriter().println((new GsonBuilder()).create().toJson(synonyms));
+                res.getWriter().println(JsonCreator.toJson(synonyms));
             } else {
                 // If you want to include everything with the scores
                 List<ScoredTerm> synonyms = SynonymAdapter.getScoredSynonymsWithUnrelatedIncluded(term);
-                res.getWriter().println((new GsonBuilder()).create().toJson(synonyms));
+                res.getWriter().println(JsonCreator.toJson(synonyms));
             }
         }
     }

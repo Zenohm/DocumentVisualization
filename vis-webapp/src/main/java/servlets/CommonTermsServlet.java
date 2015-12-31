@@ -5,6 +5,7 @@ import common.data.ScoredTerm;
 import full_text_analysis.TermsAnalyzer;
 import reader.LuceneIndexReader;
 import searcher.exception.LuceneSearchException;
+import util.JsonCreator;
 
 import javax.servlet.GenericServlet;
 import javax.servlet.ServletException;
@@ -43,7 +44,7 @@ public class CommonTermsServlet extends GenericServlet {
                 terms = TermsAnalyzer.getTerms(LuceneIndexReader.getInstance().getReader(), docId);
             }
 
-            res.getWriter().println((new GsonBuilder()).create().toJson(terms));
+            res.getWriter().println(JsonCreator.toJson(terms));
 
         } catch (LuceneSearchException | NumberFormatException e) {
             e.printStackTrace();

@@ -1,4 +1,4 @@
-package data_processing.multi_query_processing.multi_query_json_data;
+package util.data;
 
 /**
  * Representation of the Link for JSON object

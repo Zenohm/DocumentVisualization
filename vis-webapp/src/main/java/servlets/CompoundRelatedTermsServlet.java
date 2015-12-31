@@ -6,6 +6,7 @@ import common.data.ScoredTerm;
 import full_text_analysis.CompoundRelatedTerms;
 import reader.LuceneIndexReader;
 import searcher.exception.LuceneSearchException;
+import util.JsonCreator;
 
 import javax.servlet.GenericServlet;
 import javax.servlet.ServletException;
@@ -45,7 +46,7 @@ public class CompoundRelatedTermsServlet extends GenericServlet{
             System.out.println("Took: " + (System.nanoTime() - start)/Math.pow(10, 9) +
                     " seconds to generate related terms");
 
-            res.getWriter().println((new GsonBuilder().setPrettyPrinting()).create().toJson(terms));
+            res.getWriter().println(JsonCreator.getPrettyJson(terms));
         }catch (LuceneSearchException e){
             e.printStackTrace();
             res.getWriter().println("<h1>ERROR</h1>" + e.toString()); // TODO: Better logging and debugging

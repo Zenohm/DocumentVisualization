@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import common.data.DocumentMetadata;
 import reader.LuceneIndexReader;
 import searcher.exception.LuceneSearchException;
+import util.JsonCreator;
 
 import javax.servlet.GenericServlet;
 import javax.servlet.ServletException;
@@ -41,7 +42,7 @@ public class MetadataServlet extends GenericServlet {
 
         try {
             DocumentMetadata metadata = retriever.getMetadata(docId);
-            res.getWriter().println((new GsonBuilder()).create().toJson(metadata));
+            res.getWriter().println(JsonCreator.toJson(metadata));
         } catch (LuceneSearchException e) {
             e.printStackTrace();
         } catch (NullPointerException e) {

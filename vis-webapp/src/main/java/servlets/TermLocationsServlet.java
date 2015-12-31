@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import org.apache.commons.lang.StringUtils;
 import reader.LuceneIndexReader;
 import searcher.exception.LuceneSearchException;
+import util.JsonCreator;
 
 import javax.servlet.GenericServlet;
 import javax.servlet.ServletException;
@@ -24,7 +25,7 @@ public class TermLocationsServlet extends GenericServlet {
             String term = StringUtils.trim(req.getParameter("term"));
             TermLocationsSearcher searcher =
                     new TermLocationsSearcher(LuceneIndexReader.getInstance());
-            res.getWriter().println((new GsonBuilder()).create().toJson(searcher.getLocationsOfTerm(term)));
+            res.getWriter().println(JsonCreator.toJson(searcher.getLocationsOfTerm(term)));
         } catch (LuceneSearchException e) {
             System.err.println("There was an error with the Term Locations servlet");
             e.printStackTrace();

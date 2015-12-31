@@ -1,4 +1,6 @@
-package data_processing.multi_query_processing.multi_query_json_data;
+package data_processing.multi_query_processing.data;
+
+import util.data.Node;
 
 /**
  * Document node, this node contains a document.

@@ -1,9 +1,10 @@
 package data_processing.multi_query_processing;
 
-import data_processing.multi_query_processing.multi_query_json_data.DocumentNode;
-import data_processing.multi_query_processing.multi_query_json_data.FixedNode;
-import data_processing.multi_query_processing.multi_query_json_data.Link;
-import data_processing.multi_query_processing.multi_query_json_data.MultiQueryJson;
+import util.FixedNodeGenerator;
+import util.data.D3ConvertibleJson;
+import data_processing.multi_query_processing.data.DocumentNode;
+import util.data.FixedNode;
+import util.data.Link;
 import full_text_analysis.util.FullTextExtractor;
 import reader.LuceneIndexReader;
 import searcher.results.MultiQueryResults;
@@ -29,14 +30,14 @@ public class MultiQueryConverter {
     public static final String[] colors = {"red", "blue", "green"};
 
     /**
-     * Convert a list of MultiQueryResults to a MultiQueryJson object
+     * Convert a list of MultiQueryResults to a D3ConvertibleJson object
      *
      * @param results The list of results to convert into the view
      * @return Object that represents the JSON object that can be read by D3.
      */
-    public static MultiQueryJson convertToLinksAndNodes(List<MultiQueryResults> results) {
+    public static D3ConvertibleJson convertToLinksAndNodes(List<MultiQueryResults> results) {
         // Generate the JSON Object
-        MultiQueryJson jsonObject = new MultiQueryJson();
+        D3ConvertibleJson jsonObject = new D3ConvertibleJson();
 
         // Get a list of the unique terms within the results set.
         ArrayList<String> terms = new ArrayList<>();
@@ -44,36 +45,13 @@ public class MultiQueryConverter {
                 .filter(term -> !terms.contains(term))
                 .forEach(terms::add));
 
-        int numFixedNodes = terms.size();
-        double angleBetweenNodes = (2 * Math.PI) / numFixedNodes;
-        double circleCenter = .5;
-        double diameter = .7;
-        double radius = diameter / 2.0;
-
         Map<String, Integer> termIndexes = new HashMap<>();
         ArrayList<FixedNode> fixedNodes = new ArrayList<>();
-        // Set positioning information for the fixed nodes
-        for (int i = 0; i < terms.size(); i++) {
-            String currentTerm = terms.get(i); // The current term
+        FixedNodeGenerator.generateFixedNodes(termIndexes,
+                                              fixedNodes,
+                                              terms.toArray(new String[terms.size()]));
 
-            // Figure out the node positioning
-            double currentAngle = i * angleBetweenNodes; // first node will be at 0 degrees
-            double x = radius * Math.sin(currentAngle) + circleCenter;
-            double y = -1 * radius * Math.cos(currentAngle) + circleCenter;
-
-            // Do node coloring
-            String color = colors[i % colors.length];
-            if (i == terms.size() - 1 && color.equals(fixedNodes.get(0).color)) {
-                color = colors[(i + 1) % colors.length];
-            }
-
-            // Give the term a unique id
-            int termId = (-1 * i) - 1;
-
-            termIndexes.put(currentTerm, i);
-            fixedNodes.add(FixedNode.of(currentTerm, termId, color, x, y, currentTerm.split(" ")));
-        }
-
+        // Adding the fixed nodes
         fixedNodes.forEach(jsonObject.nodes::add);
         boolean firstItr = true;
         double maxScore = 0;

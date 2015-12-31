@@ -2,6 +2,7 @@ package servlets;
 
 import com.google.gson.GsonBuilder;
 import common.data.ScoredTerm;
+import data_processing.related_terms_combiner.CombinedRelatedTerms;
 import full_text_analysis.TermsAnalyzer;
 import reader.LuceneIndexReader;
 import searcher.exception.LuceneSearchException;
@@ -16,24 +17,18 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * Utilized for searches on related terms. Finds related terms in a document.
- * Created by chris on 10/13/15.
+ * Created by chris on 12/30/15.
  */
-@WebServlet(value = "/related_terms", name = "relatedTermsServlet")
-public class RelatedTermsServlet extends GenericServlet {
+@WebServlet(value = "/combined_terms", name = "CombinedTerms")
+public class CombinedRelatedTermsServlet extends GenericServlet {
 
-    /**
-     * Related Terms Service
-     *
-     * @param req Required Parameters:
-     *            docId: The id of the document that is used as the basis for finding related terms
-     *            term: The term to find the related terms for
-     *            Optional Parameters:
-     *            limit: Limit the number of terms that are returned
-     * @param res Response contains a list of Scored Termss
-     * @throws ServletException
-     * @throws IOException
-     */
+    private CombinedRelatedTerms combined;
+
+    public CombinedRelatedTermsServlet(){
+        super();
+        combined = new CombinedRelatedTerms();
+    }
+
     @Override
     public void service(ServletRequest req, ServletResponse res) throws ServletException, IOException {
         try {
@@ -51,16 +46,8 @@ public class RelatedTermsServlet extends GenericServlet {
                 throw new LuceneSearchException("No Term");
             }
 
+            res.getWriter().println(JsonCreator.getPrettyJson(combined.getRelatedTerms(term, docId)));
 
-            List<ScoredTerm> terms;
-            if (req.getParameterMap().containsKey("limit")) {
-                int limit = Integer.parseInt(req.getParameter("limit"));
-                terms = TermsAnalyzer.getRelatedTermsInDocument(LuceneIndexReader.getInstance().getReader(), docId, term, limit);
-            } else {
-                terms = TermsAnalyzer.getRelatedTermsInDocument(LuceneIndexReader.getInstance().getReader(), docId, term);
-            }
-
-            res.getWriter().println(JsonCreator.toJson(terms));
 
         } catch (LuceneSearchException | NumberFormatException e) {
             e.printStackTrace();
