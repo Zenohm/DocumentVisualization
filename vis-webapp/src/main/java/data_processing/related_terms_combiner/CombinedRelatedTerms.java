@@ -42,8 +42,6 @@ public class CombinedRelatedTerms {
     }
 
     public List<RelatedTerm> getRelatedTerms(String term, int docId){
-        List<RelatedTerm> terms = new ArrayList<>();
-
         // Get the compound related terms
         List<ScoredTerm> compoundRelatedTerms = null;
         try {
