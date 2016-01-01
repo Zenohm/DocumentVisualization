@@ -79,17 +79,17 @@ public class CombinedRelatedTerms {
     private List<RelatedTerm> combineRelatedTerms(List<ScoredTerm> compound, List<ScoredTerm> sentence, List<ScoredTerm> synonyms){
         // TODO: Need to normalize scores!
         List<RelatedTerm> allTerms = new ArrayList<>();
-        if(compound != null){
+        if(compound != null && !compound.isEmpty()){
             allTerms.addAll(compound.stream()
                     .map(rt ->  RelatedTerm.convertScoredTerm(rt, RelatedTermType.Compound))
                     .collect(Collectors.toList()));
         }
-        if(sentence != null) {
+        if(sentence != null && !sentence.isEmpty()) {
             allTerms.addAll(sentence.stream()
                     .map(rt -> RelatedTerm.convertScoredTerm(rt, RelatedTermType.Sentence))
                     .collect(Collectors.toList()));
         }
-        if(synonyms != null){
+        if(synonyms != null && !synonyms.isEmpty()){
             allTerms.addAll(synonyms.stream()
                     .map(rt -> RelatedTerm.convertScoredTerm(rt, RelatedTermType.Synonym))
                     .collect(Collectors.toList()));

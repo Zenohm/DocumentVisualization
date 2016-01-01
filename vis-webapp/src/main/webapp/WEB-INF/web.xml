@@ -165,7 +165,17 @@
         <servlet-name>LastQueryServlet</servlet-name>
         <url-pattern>/last_query</url-pattern>
     </servlet-mapping>
-    
+
+    <!-- Second Tier Servlet -->
+    <servlet>
+        <servlet-name>SecondTier</servlet-name>
+        <servlet-class>servlets.SecondTierServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>SecondTier</servlet-name>
+        <url-pattern>/second_tier</url-pattern>
+    </servlet-mapping>
+
     <welcome-file-list>
         <welcome-file>index.html</welcome-file>
     </welcome-file-list>

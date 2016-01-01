@@ -9,6 +9,7 @@ import servlets.servlet_util.ResponseUtils;
 import servlets.servlet_util.ServletConstant;
 import util.data.D3ConvertibleJson;
 
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -18,6 +19,7 @@ import java.util.List;
 /**
  * Created by chris on 12/31/15.
  */
+@WebServlet(value = "/second_tier", name = "SecondTier")
 public class SecondTierServlet extends HttpServlet {
 
     private CombinedRelatedTerms crt;
@@ -66,6 +68,6 @@ public class SecondTierServlet extends HttpServlet {
         D3ConvertibleJson json = CombinedRelatedTermsConverter
                 .convertToLinksAndNodes(results.toArray(resArray));
 
-        ResponseUtils.printJsonResponse(res, json);
+        ResponseUtils.printPrettyJsonResponse(res, json);
     }
 }

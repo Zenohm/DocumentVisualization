@@ -22,4 +22,8 @@ public class ResponseUtils {
     public static <T> void printJsonResponse(ServletResponse res, T response){
         printResponse(res, JsonCreator.toJson(response));
     }
+
+    public static <T> void printPrettyJsonResponse(ServletResponse res, T response){
+        printResponse(res, JsonCreator.getPrettyJson(response));
+    }
 }

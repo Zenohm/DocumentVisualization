@@ -39,10 +39,10 @@ public class CombinedRelatedTermsConverter {
             int sourceIndex = termIndexes.get(result.term);
             for(RelatedTerm rTerm : result.getResults()){
                 int myIndex = jsonObject.nodes.size() - 1;
-                int id = result.term.hashCode();
+                int id = rTerm.getText().hashCode();
                 String color = determineColor(rTerm);
                 double linkPower = rTerm.getScore();
-                jsonObject.nodes.add(TermNode.of(result.term, id, color, rTerm.type));
+                jsonObject.nodes.add(TermNode.of(rTerm.getText(), id, color, rTerm.type));
                 if(linkPower >= .001){
                     jsonObject.links.add(Link.of(sourceIndex, myIndex, linkPower));
                 }
@@ -52,7 +52,7 @@ public class CombinedRelatedTermsConverter {
     }
 
     private static String determineColor(RelatedTerm rTerm){
-        return "red";
+        return "orange";
     }
 
 }
