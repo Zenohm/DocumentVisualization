@@ -25,7 +25,14 @@ public class CombinedRelatedTerms {
     public CombinedRelatedTerms(){
         String resourceDirectory = System.getenv(Constants.RESOURCE_FOLDER_VAR);
         String stopwordsFile = resourceDirectory + "/" + Constants.STOPWORDS_FILE;
+        instantiate(stopwordsFile);
+    }
 
+    public CombinedRelatedTerms(String stopwordsFile){
+        instantiate(stopwordsFile);
+    }
+
+    private void instantiate(String stopwordsFile){
         try {
             crt = new CompoundRelatedTerms(LuceneIndexReader.getInstance(), stopwordsFile);
         } catch (LuceneSearchException e) {
@@ -72,6 +79,7 @@ public class CombinedRelatedTerms {
     }
 
     private List<RelatedTerm> combineRelatedTerms(List<ScoredTerm> compound, List<ScoredTerm> sentence, List<ScoredTerm> synonyms){
+        // TODO: Need to normalize scores!
         List<RelatedTerm> allTerms = new ArrayList<>();
         if(compound != null){
             allTerms.addAll(compound.stream()

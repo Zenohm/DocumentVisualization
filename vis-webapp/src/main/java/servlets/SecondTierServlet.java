@@ -1,6 +1,13 @@
 package servlets;
 
+import data_processing.related_terms_combiner.CombinedRelatedTerms;
+import data_processing.related_terms_combiner.CombinedRelatedTermsConverter;
+import data_processing.related_terms_combiner.data.RelatedTermResult;
+import searcher.exception.LuceneSearchException;
 import servlets.servlet_util.RequestUtils;
+import servlets.servlet_util.ResponseUtils;
+import servlets.servlet_util.ServletConstant;
+import util.data.D3ConvertibleJson;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -13,10 +20,17 @@ import java.util.List;
  */
 public class SecondTierServlet extends HttpServlet {
 
+    private CombinedRelatedTerms crt;
+    public SecondTierServlet(){
+        super();
+        crt = new CombinedRelatedTerms();
+    }
+
     public static final String USE_PREVIOUS = "prev";
 
     @Override
     public void doGet(HttpServletRequest req, HttpServletResponse res){
+
         // We have the option of using the previous or not based on request
         List<String> queries;
         if(req.getParameterMap().containsKey(USE_PREVIOUS)){
@@ -30,7 +44,28 @@ public class SecondTierServlet extends HttpServlet {
         }else{
             queries = RequestUtils.getQueries(req);
         }
+        if(queries.size() == 0){
+            System.err.println("ERROR: Could not get queries.");
+            return;
+        }
 
+        int docId;
+        if(req.getParameterMap().containsKey(ServletConstant.DOC_ID)){
+            docId = RequestUtils.getIntegerParameter(req, ServletConstant.DOC_ID);
+        }else{
+            System.err.println("ERROR: Could not get queries");
+            return;
+        }
 
+        List<RelatedTermResult> results = new ArrayList<>();
+        queries.stream()
+                .map(q -> RelatedTermResult.createResult(crt, q, docId))
+                .forEach(results::add);
+
+        RelatedTermResult[] resArray = new RelatedTermResult[results.size()];
+        D3ConvertibleJson json = CombinedRelatedTermsConverter
+                .convertToLinksAndNodes(results.toArray(resArray));
+
+        ResponseUtils.printJsonResponse(res, json);
     }
 }

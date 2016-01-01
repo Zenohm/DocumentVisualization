@@ -1,5 +1,7 @@
 package servlets.servlet_util;
 
+import util.JsonCreator;
+
 import javax.servlet.ServletResponse;
 import java.io.IOException;
 
@@ -15,6 +17,9 @@ public class ResponseUtils {
             e.printStackTrace();
             System.err.println("Error, could not get writer while attempting to send: " + responseText);
         }
+    }
 
+    public static <T> void printJsonResponse(ServletResponse res, T response){
+        printResponse(res, JsonCreator.toJson(response));
     }
 }

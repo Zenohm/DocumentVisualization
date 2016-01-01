@@ -1,5 +1,7 @@
 package util.data;
 
+import util.JsonCreator;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,5 +16,9 @@ public class D3ConvertibleJson {
     public D3ConvertibleJson() {
         nodes = new ArrayList<>();
         links = new ArrayList<>();
+    }
+
+    public String toString(){
+        return JsonCreator.toJson(this);
     }
 }
