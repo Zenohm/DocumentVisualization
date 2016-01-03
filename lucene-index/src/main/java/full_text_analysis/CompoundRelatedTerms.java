@@ -5,6 +5,8 @@ import access_utils.TermLocationsSearcher;
 import access_utils.data.TermLocations;
 import analyzers.filters.NumberFilter;
 import analyzers.search.SearchAnalyzer;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import common.Constants;
 import common.data.ScoredTerm;
 import common.StopwordsProvider;
@@ -17,7 +19,9 @@ import util.Searcher;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Stream;
 
 /**
@@ -25,9 +29,7 @@ import java.util.stream.Stream;
  * Created by chris on 12/16/15.
  */
 public class CompoundRelatedTerms extends Searcher{
-    private static Map<Integer, String[]> tokenCache = new ConcurrentHashMap<>();
-    private int cacheHits = 0;
-    private int cacheMisses = 0;
+    private static Cache<Integer, String[]> tokenCache = CacheBuilder.newBuilder().maximumSize(10000).build();
 
     private Set<String> stopwords =
             StopwordsProvider.getProvider().getStopwords();
@@ -41,8 +43,6 @@ public class CompoundRelatedTerms extends Searcher{
         TermLocationsSearcher tlSearcher = new TermLocationsSearcher(reader);
         List<TermLocations> termLocations = tlSearcher.getLocationsOfTerm(term);
 
-        cacheHits = 0;
-        cacheMisses = 0;
         // Goes through terms list to determine the potential compound terms.
         Set<String> potentialCompoundTerms = Collections.newSetFromMap(new ConcurrentHashMap<>());
         getStream(termLocations).forEach(loc ->{
@@ -85,12 +85,15 @@ public class CompoundRelatedTerms extends Searcher{
     }
 
     private String[] getTokenizedText(int docId){
-        if(tokenCache.containsKey(docId)){
-            cacheHits++;
-            return tokenCache.get(docId);
+        try {
+            return tokenCache.get(docId, () -> uncachedText(docId));
+        } catch (ExecutionException e) {
+            System.err.println("[CRT]: ERROR: There was an error while getting tokenized text");
+            return new String[0];
         }
+    }
 
-        cacheMisses++;
+    private String[] uncachedText(int docId){
         Document doc;
         try {
             doc = reader.getReader().document(docId);
@@ -107,7 +110,6 @@ public class CompoundRelatedTerms extends Searcher{
                 totalContent += content + " ";
             }
             contents = FullTextTokenizer.tokenizeText(totalContent);
-            tokenCache.put(docId, contents);
         } catch (IOException e) {
             System.err.println("There was an error while tokenizing the text for " + docId + ": " + e.getMessage());
             return null;
@@ -115,7 +117,6 @@ public class CompoundRelatedTerms extends Searcher{
 
         return contents;
     }
-
 
 
 }

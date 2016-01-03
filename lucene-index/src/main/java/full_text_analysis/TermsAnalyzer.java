@@ -24,6 +24,8 @@
 
 package full_text_analysis;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import common.Constants;
 import common.data.ScoredTerm;
 import common.StopwordsProvider;
@@ -39,14 +41,18 @@ import util.ListUtils;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 /**
  * Created by Chris on 9/24/2015.
  */
 public class TermsAnalyzer {
-    private static final Set<String> stopwords =
-            StopwordsProvider.getProvider().getStopwords();
+    private static final Set<String> stopwords = StopwordsProvider.getProvider().getStopwords();
+
+    // Yay for accurate caching methods
+    private static Cache<Integer, List<ScoredTerm>> cache = CacheBuilder.newBuilder().maximumSize(10000).build();
 
     /**
      * This method uses the getRelatedTerms but uses FullText that is obtained from Lucene.
@@ -57,12 +63,20 @@ public class TermsAnalyzer {
      * @return Sorted list of related terms
      */
     public static List<ScoredTerm> getRelatedTermsInDocument(IndexReader reader, int docId, String term) throws LuceneSearchException {
-        String fullText = FullTextExtractor.extractText(reader, docId);
+        List<ScoredTerm> relatedTerms = null;
+        try {
+            relatedTerms = cache.get(docId, () -> {
+                String fullText = FullTextExtractor.extractText(reader, docId);
 
-        if (fullText.equals(FullTextExtractor.FAILED_TEXT))
-            throw new LuceneSearchException("Failed to extract fulltext");
+                if (fullText.equals(FullTextExtractor.FAILED_TEXT))
+                    throw new LuceneSearchException("Failed to extract fulltext");
 
-        return getRelatedTerms(fullText, term);
+                return getRelatedTerms(fullText, term);
+            });
+        } catch (ExecutionException e) {
+            throw new LuceneSearchException("[TermsAnalyzer] ERROR: Error while getting related terms");
+        }
+        return relatedTerms != null ? relatedTerms : Collections.EMPTY_LIST;
     }
 
     /**
@@ -75,11 +89,7 @@ public class TermsAnalyzer {
      * @return Sorted list of related terms
      */
     public static List<ScoredTerm> getRelatedTermsInDocument(IndexReader reader, int docId, String term, int limit) throws LuceneSearchException {
-        String fullText = FullTextExtractor.extractText(reader, docId);
-        if (fullText.equals(FullTextExtractor.FAILED_TEXT))
-            throw new LuceneSearchException("Failed to extract fulltext");
-
-        return ListUtils.getSublist(getRelatedTerms(fullText, term), limit);
+        return ListUtils.getSublist(getRelatedTermsInDocument(reader, docId, term), limit);
     }
 
     /**
