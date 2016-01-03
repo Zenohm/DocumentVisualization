@@ -7,6 +7,7 @@ import analyzers.filters.NumberFilter;
 import analyzers.search.SearchAnalyzer;
 import common.Constants;
 import common.data.ScoredTerm;
+import data.StopwordsProvider;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.lucene.analysis.core.KeywordTokenizer;
 import org.apache.lucene.document.Document;
@@ -31,21 +32,11 @@ public class CompoundRelatedTerms extends Searcher{
     private int cacheHits = 0;
     private int cacheMisses = 0;
 
-    private final Set<String> stopwords;
+    private Set<String> stopwords =
+            StopwordsProvider.getProvider().getStopwords();
     public CompoundRelatedTerms(IndexReader reader, String stopwordFile) throws LuceneSearchException {
         super(reader, new SearchAnalyzer(KeywordTokenizer.class));
-        stopwords = new HashSet<>();
-        try{
-            BufferedReader fileReader = new BufferedReader(new FileReader(stopwordFile));
-            String line;
-            while((line = fileReader.readLine()) != null){
-                stopwords.add(line);
-            }
-        }catch(FileNotFoundException e){
-            System.err.println("Stopword File: " + stopwordFile + " could not be found.");
-        }catch (IOException e){
-            System.err.println("There was an error reading the file.");
-        }
+        stopwords = StopwordsProvider.getProvider(stopwordFile).getStopwords();
     }
 
     public List<ScoredTerm> getCompoundRelatedTerms(String term) throws LuceneSearchException{

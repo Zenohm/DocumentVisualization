@@ -26,6 +26,7 @@ package full_text_analysis;
 
 import common.Constants;
 import common.data.ScoredTerm;
+import data.StopwordsProvider;
 import full_text_analysis.util.FullTextExtractor;
 import full_text_analysis.util.StemmingTermAnalyzer;
 import org.apache.commons.lang.StringUtils;
@@ -36,8 +37,6 @@ import org.apache.lucene.index.IndexReader;
 import searcher.exception.LuceneSearchException;
 import util.ListUtils;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -46,22 +45,8 @@ import java.util.stream.Collectors;
  * Created by Chris on 9/24/2015.
  */
 public class TermsAnalyzer {
-    private static final List<String> STOPWORDS = new ArrayList<>();
-
-    // Initialize the stopwords with the stopwords file
-    static {
-        String filename = System.getenv(Constants.RESOURCE_FOLDER_VAR) + "/" + Constants.STOPWORDS_FILE;
-        Scanner s = null;
-        try {
-            s = new Scanner(new File(filename));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        while (s != null && s.hasNextLine()) {
-            STOPWORDS.add(s.nextLine());
-        }
-        if (s != null) s.close();
-    }
+    private static final Set<String> stopwords =
+            StopwordsProvider.getProvider().getStopwords();
 
     /**
      * This method uses the getRelatedTerms but uses FullText that is obtained from Lucene.
@@ -162,7 +147,7 @@ public class TermsAnalyzer {
      * @return The stop words as a regular expression
      */
     private static String getStopwordRegex() {
-        return StringUtils.join(STOPWORDS.parallelStream().map(s -> {
+        return StringUtils.join(stopwords.parallelStream().map(s -> {
             String newRegex = "\\s*\\b";
             newRegex += s;
             newRegex += "\\b\\s*";

@@ -26,6 +26,8 @@ package analyzers.indexing;
 
 import analyzers.filters.AlphaNumericFilter;
 import analyzers.filters.NumberFilter;
+import com.google.common.collect.Lists;
+import data.StopwordsProvider;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.Tokenizer;
@@ -34,10 +36,12 @@ import org.apache.lucene.analysis.core.StopAnalyzer;
 import org.apache.lucene.analysis.core.StopFilter;
 import org.apache.lucene.analysis.standard.StandardFilter;
 import org.apache.lucene.analysis.standard.StandardTokenizer;
+import org.apache.lucene.analysis.util.CharArraySet;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 
 /**
@@ -45,7 +49,7 @@ import java.util.List;
  * Created by Chris on 8/20/2015.
  */
 public class PDFAnalyzer extends Analyzer {
-    private final List<String> stopwords;
+    private final CharArraySet stop_set; // DO THIS ONCE!
 
     /**
      * Instantiate a new PDF analyzer
@@ -53,21 +57,9 @@ public class PDFAnalyzer extends Analyzer {
      * @param stopwordFile The file containing all the stopwords
      */
     public PDFAnalyzer(String stopwordFile) {
-        stopwords = new ArrayList<>();
-        try {
-            // Read file and add all the stopwords to our list
-            BufferedReader reader = new BufferedReader(new FileReader(stopwordFile));
-            String line;
-            while ((line = reader.readLine()) != null) {
-                stopwords.add(line);
-            }
-        } catch (FileNotFoundException e) {
-            System.err.println("Stopword File: " + stopwordFile + " could not be found");
-        } catch (IOException e) {
-            System.err.println("There was an error reading the file.");
-        }
-
-
+        List<String> stop_list =
+                Lists.newArrayList(StopwordsProvider.getProvider(stopwordFile).getStopwords());
+        stop_set = StopFilter.makeStopSet(stop_list);
     }
 
     @Override
@@ -84,7 +76,7 @@ public class PDFAnalyzer extends Analyzer {
         TokenStream filter = new StandardFilter(tokenizer);
         filter = new LowerCaseFilter(filter);
         filter = new StopFilter(filter, StopAnalyzer.ENGLISH_STOP_WORDS_SET);
-        filter = new StopFilter(filter, StopFilter.makeStopSet(stopwords));
+        filter = new StopFilter(filter, stop_set);
         filter = new NumberFilter(filter);
         filter = new AlphaNumericFilter(filter);
         return new TokenStreamComponents(tokenizer, filter);
