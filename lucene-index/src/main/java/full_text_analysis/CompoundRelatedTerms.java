@@ -7,7 +7,7 @@ import analyzers.filters.NumberFilter;
 import analyzers.search.SearchAnalyzer;
 import common.Constants;
 import common.data.ScoredTerm;
-import data.StopwordsProvider;
+import common.StopwordsProvider;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.lucene.analysis.core.KeywordTokenizer;
 import org.apache.lucene.document.Document;
@@ -15,9 +15,6 @@ import reader.IndexReader;
 import searcher.exception.LuceneSearchException;
 import util.Searcher;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;

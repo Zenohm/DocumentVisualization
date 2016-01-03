@@ -26,7 +26,7 @@ package full_text_analysis;
 
 import common.Constants;
 import common.data.ScoredTerm;
-import data.StopwordsProvider;
+import common.StopwordsProvider;
 import full_text_analysis.util.FullTextExtractor;
 import full_text_analysis.util.StemmingTermAnalyzer;
 import org.apache.commons.lang.StringUtils;

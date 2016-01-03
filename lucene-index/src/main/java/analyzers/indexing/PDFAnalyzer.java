@@ -27,7 +27,7 @@ package analyzers.indexing;
 import analyzers.filters.AlphaNumericFilter;
 import analyzers.filters.NumberFilter;
 import com.google.common.collect.Lists;
-import data.StopwordsProvider;
+import common.StopwordsProvider;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.Tokenizer;
@@ -39,9 +39,7 @@ import org.apache.lucene.analysis.standard.StandardTokenizer;
 import org.apache.lucene.analysis.util.CharArraySet;
 
 import java.io.*;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 
 /**

@@ -3,7 +3,7 @@ package full_text_analysis.util;
 import analyzers.filters.AlphaNumericFilter;
 import analyzers.filters.NumberFilter;
 import com.google.common.collect.Lists;
-import data.StopwordsProvider;
+import common.StopwordsProvider;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.Tokenizer;
@@ -17,9 +17,7 @@ import org.apache.lucene.analysis.util.CharArraySet;
 import org.tartarus.snowball.ext.EnglishStemmer;
 
 import java.io.*;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Stemming Term analyzer, very similar to PDF analyzer. Used to stem terms before they are searched for.

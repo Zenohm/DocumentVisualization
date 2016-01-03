@@ -1,13 +1,9 @@
-package data;
-
-import common.Constants;
+package common;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-
-import static common.Constants.*;
 
 /**
  * Created by chris on 1/3/16.
