@@ -83,7 +83,7 @@ public class CompoundRelatedTerms extends Searcher{
                     .forEach(potentialCompoundTerms::add);
         });
 
-        System.out.println("Token Cache Hits: " + cacheHits + " Token Cache Misses: " + cacheMisses);
+//        System.out.println("Token Cache Hits: " + cacheHits + " Token Cache Misses: " + cacheMisses);
 
         return TermRelatednessScorer.getRankedTermsWithScores(term, potentialCompoundTerms, 0);
     }

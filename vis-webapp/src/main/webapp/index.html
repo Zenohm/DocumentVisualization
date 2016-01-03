@@ -40,7 +40,29 @@
             var docInfo = document.getElementById("documentInfo");
             docInfo.innerHTML = "";
             displaySidebar();
-            appendMetadata(docInfo, docId);
+            var additionalData = [function(resultDiv, docId){
+                var link = document.createElement("a");
+                link.innerHTML = "[SECOND_TIER]";
+                link.setAttribute("href", "second_tier?prev&docId=" + docId);
+                link.setAttribute("target", "_blank");
+                resultDiv.appendChild(link);
+            },
+            function(resultDiv, docId){
+                $.getJSON("last_query", function(data){
+                    data.forEach(function(term){
+                        var link = document.createElement("a");
+                        link.innerHTML = "[" + term + " RT]";
+                        link.setAttribute("href", "combined_terms?docId="+docId+"&term="+term);
+                        link.setAttribute("target", "_blank");
+                        resultDiv.appendChild(link);
+                        resultDiv.appendChild(document.createElement("br"));
+                    });
+                });
+            }];
+
+
+
+            appendMetadata(docInfo, docId, additionalData);
             onHideSidebar = callback;
         }
 

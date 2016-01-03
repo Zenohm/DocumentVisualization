@@ -86,7 +86,7 @@ public class TermRelatednessScorer {
             return Collections.EMPTY_LIST;
         }
         // A HashMap with the word as the key, and its corresponding score
-        List<ScoredTerm> scoredTerms = new ArrayList<>();
+        List<ScoredTerm> scoredTerms = Collections.synchronizedList(new ArrayList<>());
 
         // Open up a parallel stream on the relatedTerms to perform the doc search on them all
         relatedTerms.parallelStream()
@@ -115,10 +115,9 @@ public class TermRelatednessScorer {
      */
     private static List<ScoredTerm> getRelevantTerms(List<ScoredTerm> scoredTerms, double minRelevanceRatio) {
         // If a cutoff is specified, use it, otherwise use the default.
-        List<ScoredTerm> relevantTerms = scoredTerms.stream()
+        return scoredTerms.stream()
                 .filter(scoredTerm -> scoredTerm.getScore() >= minRelevanceRatio)
                 .collect(Collectors.toList());
-        return relevantTerms;
     }
 
     /**

@@ -57,7 +57,7 @@ public class CombinedRelatedTerms {
         // Get the sentence related terms
         List<ScoredTerm> sentenceRelatedTerms = null;
         try {
-            sentenceRelatedTerms = TermsAnalyzer.getTerms(LuceneIndexReader.getInstance().getReader(), docId);
+            sentenceRelatedTerms = TermsAnalyzer.getRelatedTermsInDocument(LuceneIndexReader.getInstance().getReader(), docId, term);
         } catch (LuceneSearchException e) {
             System.err.println("ERROR: Sentence Related Terms Could not be obtained");
             e.printStackTrace();
