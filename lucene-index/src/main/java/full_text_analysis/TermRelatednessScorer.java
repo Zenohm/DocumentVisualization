@@ -23,6 +23,9 @@
  */
 package full_text_analysis;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
 import common.Constants;
 import common.data.ScoredTerm;
 import org.apache.lucene.index.Term;
@@ -31,7 +34,9 @@ import reader.LuceneIndexReader;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 /**
@@ -53,10 +58,7 @@ public class TermRelatednessScorer {
     /**
      * Caching utilized to speed up the processing of scores.
      */
-    private static Map<String, Integer> cache;
-    static{
-        cache = new ConcurrentHashMap<>();
-    }
+    private static Cache<String, Integer> cache = CacheBuilder.newBuilder().maximumSize(Constants.MAX_CACHE_SIZE).build();
 
     /**
      * Given a word and a set of its synonym, returns an ordered list of terms ranked from most relevant to least.
@@ -162,19 +164,25 @@ public class TermRelatednessScorer {
             q.add(query, BooleanClause.Occur.MUST);
         }
 
-        // Caching to save a little bit of time, queries should be deterministic
-        if(cache.containsKey(q.toString())){
-            return cache.get(q.toString());
-        }
+        // Get the search call
+        Callable<Integer> search = () -> {
+            try {
+                return searcher.count(q);
+            } catch (IOException e) {
+                System.err.println(TermRelatednessScorer.class.toString() + ": ERROR: Could not get term count for query " +
+                        q.toString() + ".");
+                return 0; // Assume no documents then.
+            }
+        };
 
+        // Get the number of documents from the cache.
+        int numDocuments = 0;
         try {
-            int result = searcher.count(q);
-            cache.put(q.toString(), result);
-            return result;
-        } catch (IOException e) {
-            System.err.println(TermRelatednessScorer.class.toString() + ": ERROR: Could not get term count for query " +
-                    q.toString() + ".");
-            return 0; // Assume no documents then.
+            numDocuments = cache.get(q.toString(), search);
+        } catch (ExecutionException e) {
+            System.err.println("[TermRelatednessScorer] ERROR: There was an error while populating the cache.");
+            e.printStackTrace();
         }
+        return numDocuments;
     }
 }

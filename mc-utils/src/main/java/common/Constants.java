@@ -42,6 +42,8 @@ public class Constants {
     // These are relative to the document resources directory
     static public final String CSV_LOCATION = "db/pdf-info.csv";
 
+    static public final int MAX_CACHE_SIZE = 10000;
+
     // Private constructor so you cant create this class
     private Constants() {
     }
