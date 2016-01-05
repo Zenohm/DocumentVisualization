@@ -20,7 +20,6 @@ public class TextTokenizer extends LuceneReader{
     private static TextTokenizer instance;
     private TextTokenizer() throws LuceneSearchException{
         super(LuceneIndexReader.getInstance());
-        instance = null;
     }
     public static TextTokenizer getInstance(){
         if(instance == null){

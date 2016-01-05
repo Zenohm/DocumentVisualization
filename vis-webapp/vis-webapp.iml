@@ -45,7 +45,7 @@
     <orderEntry type="library" name="Maven: commons-io:commons-io:2.4" level="project" />
     <orderEntry type="library" name="Maven: org.apache.lucene:lucene-core:5.2.1" level="project" />
     <orderEntry type="library" name="Maven: log4j:log4j:1.2.12" level="project" />
-    <orderEntry type="module" module-name="mc-utils" />
+    <orderEntry type="module" module-name="mcs-utils" />
     <orderEntry type="library" name="Maven: org.bouncycastle:bcprov-jdk15on:1.53" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: junit:junit:4.10" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.hamcrest:hamcrest-core:1.1" level="project" />
