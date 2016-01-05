@@ -5,7 +5,7 @@ import util.data.D3ConvertibleJson;
 import data_processing.multi_query_processing.data.DocumentNode;
 import util.data.FixedNode;
 import util.data.Link;
-import full_text_analysis.util.FullTextExtractor;
+import full_text_analysis.FullTextExtractor;
 import reader.LuceneIndexReader;
 import searcher.results.MultiQueryResults;
 import searcher.results.QueryResults;

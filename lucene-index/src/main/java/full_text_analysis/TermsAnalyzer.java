@@ -24,28 +24,25 @@
 
 package full_text_analysis;
 
-import com.google.common.base.Charsets;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import com.google.common.hash.HashFunction;
-import com.google.common.hash.Hashing;
 import common.Constants;
 import common.data.ScoredTerm;
 import common.StopwordsProvider;
 import full_text_analysis.data.TermDocument;
-import full_text_analysis.util.FullTextExtractor;
-import full_text_analysis.util.StemmingTermAnalyzer;
+import analyzers.search.StemmingTermAnalyzer;
 import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.queryparser.classic.ParseException;
 import searcher.exception.LuceneSearchException;
 import util.ListUtils;
+import util.TermStemmer;
 
 import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
@@ -54,17 +51,9 @@ import java.util.stream.Collectors;
  */
 public class TermsAnalyzer {
     private static final Set<String> stopwords;
-    private static final String[] stopArray;
-    private static final String[] emptyStrings;
-//    private static final String stopwordRegex;
     static {
         // Ensure stopwords are initialized before stopword regex
         stopwords = StopwordsProvider.getProvider().getStopwords();
-//        stopwordRegex = getStopwordRegex();
-
-        stopArray = stopwords.toArray(new String[stopwords.size()]);
-        emptyStrings = new String[stopwords.size()];
-        Arrays.fill(emptyStrings, "");
     }
 
     // Yay for accurate caching methods
@@ -123,21 +112,28 @@ public class TermsAnalyzer {
      * @return A sorted list of scored terms.
      */
     public static List<ScoredTerm> getRelatedTerms(String fullText, String term) {
+        String sTerm = term;
+        try {
+            sTerm = TermStemmer.stemTerm(term);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            System.err.println("ERROR: Could not stem term");
+        }
+        final String stemmedTerm = sTerm;
 
         List<String> sentences = Arrays.asList(splitSentences(fullText));
 
         // Get sentences
-        // TODO: Rewrite using apache commons library, for speed.
+        // TODO: Remove numbers and quotation marks in this stream.
         List<String> filteredSentences = sentences.parallelStream()
+                .filter(s -> s.contains(stemmedTerm))
                 .map(s -> s.replaceAll("\\p{Punct}", " ")) // Remove punctuation
-                .map(s -> StringUtils.replaceEach(s, stopArray, emptyStrings)) // Remove stop words
+                .map(s -> StringUtils.remove(s, term))
+                .map(s -> StringUtils.remove(s, stemmedTerm))
+                .map(s -> removeStopwords(s, stopwords)) // Remove stop words
                 .map(s -> s.replaceAll("\\s+", " ")) // Remove excessive spaces
                 .map(s -> s.replaceAll("^\\s", "")) // Remove starting spaces
-                .filter(s -> s.contains(term)) // Filter to only those sentences containing a term
-                .map(s -> s.replaceAll("\\s*\\b" + term + "\\b\\s*", "")) // Remove the term from the sentence
                 .collect(Collectors.toList());
-
-
 
         // Remove all the null or empty strings
         filteredSentences.removeAll(Collections.singletonList(""));
@@ -158,6 +154,14 @@ public class TermsAnalyzer {
         Collections.sort(scores, Collections.reverseOrder());
 
         return scores;
+    }
+
+    private static String removeStopwords(String original, Set<String> stopwords){
+        String output = original;
+        for(String stop : stopwords){
+            output = StringUtils.replace(output, " " + stop + " ", " ");
+        }
+        return output;
     }
 
     /**

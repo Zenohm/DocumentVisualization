@@ -78,7 +78,8 @@ public class CombinedRelatedTerms {
                 System.err.println("ERROR: Sentence Related Terms Could not be obtained");
                 e.printStackTrace();
             }
-            System.out.println("Total Time to produce sentence related terms to " + term + " in document # " + docId + ": " + (System.nanoTime() - srtStart)/Math.pow(10, 9));
+            System.out.println("Total Time to produce sentence related terms to " + term + " in document # " + docId + ": " + (System.nanoTime() - srtStart)/Math.pow(10, 9) +
+                    ". Got " + sentenceRelatedTerms.size() + " sentence related terms");
             return sentenceRelatedTerms;
         });
 

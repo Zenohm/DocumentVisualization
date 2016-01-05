@@ -1,4 +1,4 @@
-package full_text_analysis.util;
+package analyzers.search;
 
 import analyzers.filters.AlphaNumericFilter;
 import analyzers.filters.NumberFilter;
@@ -18,13 +18,14 @@ import org.tartarus.snowball.ext.EnglishStemmer;
 
 import java.io.*;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Stemming Term analyzer, very similar to PDF analyzer. Used to stem terms before they are searched for.
  * Created by chris on 10/16/15.
  */
 public class StemmingTermAnalyzer extends Analyzer {
-    private final CharArraySet stop_set;
+    private CharArraySet stop_set;
 
     /**
      * Intialize the StemmingTermAnalyzer with a stopwordFile
@@ -32,7 +33,15 @@ public class StemmingTermAnalyzer extends Analyzer {
      * @param stopwordFile The stopword file
      */
     public StemmingTermAnalyzer(String stopwordFile) {
-        List<String> stop_list = Lists.newArrayList(StopwordsProvider.getProvider(stopwordFile).getStopwords());
+        initializeStopSet(StopwordsProvider.getProvider(stopwordFile).getStopwords());
+    }
+
+    public StemmingTermAnalyzer(){
+        initializeStopSet(StopwordsProvider.getProvider().getStopwords());
+    }
+
+    private final void initializeStopSet(Set<String> stopwords){
+        List<String> stop_list = Lists.newArrayList(stopwords);
         stop_set = StopFilter.makeStopSet(stop_list);
     }
 

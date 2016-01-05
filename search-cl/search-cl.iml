@@ -9,11 +9,6 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="Maven: org.apache.commons:commons-lang3:3.4" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.lucene:lucene-highlighter:5.2.1" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.lucene:lucene-join:5.2.1" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.lucene:lucene-memory:5.2.1" level="project" />
-    <orderEntry type="library" name="Maven: org.bouncycastle:bcprov-jdk15on:1.53" level="project" />
     <orderEntry type="module" module-name="lucene-index" />
     <orderEntry type="library" name="Maven: org.apache.pdfbox:pdfbox:2.0.0-SNAPSHOT" level="project" />
     <orderEntry type="library" name="Maven: org.apache.pdfbox:fontbox:2.0.0-SNAPSHOT" level="project" />

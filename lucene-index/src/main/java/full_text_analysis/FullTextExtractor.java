@@ -1,4 +1,4 @@
-package full_text_analysis.util;
+package full_text_analysis;
 
 import common.Constants;
 import org.apache.lucene.index.IndexReader;
