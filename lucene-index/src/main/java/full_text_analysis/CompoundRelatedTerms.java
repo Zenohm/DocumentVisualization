@@ -10,6 +10,7 @@ import com.google.common.cache.CacheBuilder;
 import common.Constants;
 import common.data.ScoredTerm;
 import common.StopwordsProvider;
+import full_text_analysis.data.TextTokenizer;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.lucene.analysis.core.KeywordTokenizer;
 import org.apache.lucene.document.Document;
@@ -46,7 +47,7 @@ public class CompoundRelatedTerms extends Searcher{
         // Goes through terms list to determine the potential compound terms.
         Set<String> potentialCompoundTerms = Collections.newSetFromMap(new ConcurrentHashMap<>());
         getStream(termLocations).forEach(loc ->{
-            String[] contents = getTokenizedText(loc.docId);
+            String[] contents = TextTokenizer.getInstance().getTokenizedText(loc.docId);
             if(contents == null){
                 System.err.println("Error Getting Tokenized Contents for: " + loc.docId);
                 return;
@@ -81,40 +82,4 @@ public class CompoundRelatedTerms extends Searcher{
             return list.stream();
         }
     }
-
-    private String[] getTokenizedText(int docId){
-        try {
-            return tokenCache.get(docId, () -> uncachedText(docId));
-        } catch (ExecutionException e) {
-            System.err.println("[CRT]: ERROR: There was an error while getting tokenized text");
-            return new String[0];
-        }
-    }
-
-    private String[] uncachedText(int docId){
-        Document doc;
-        try {
-            doc = reader.getReader().document(docId);
-        } catch (IOException e) {
-            System.err.println("There was an error getting document " + docId + ": " + e.getMessage());
-            return null;
-        }
-
-        String[] contents;
-        try {
-            String[] values = doc.getValues(Constants.FIELD_CONTENTS);
-            String totalContent = "";
-            for(String content : values){
-                totalContent += content + " ";
-            }
-            contents = FullTextTokenizer.tokenizeText(totalContent);
-        } catch (IOException e) {
-            System.err.println("There was an error while tokenizing the text for " + docId + ": " + e.getMessage());
-            return null;
-        }
-
-        return contents;
-    }
-
-
 }

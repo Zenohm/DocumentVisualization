@@ -86,6 +86,7 @@ public class PDFIndexer {
             System.err.println("Indexing was interrupted: " + e.getMessage());
 //            e.printStackTrace();
         }
+
     }
 
     static void indexDoc(IndexWriter writer, DocumentMetadata metadata) throws IOException {
