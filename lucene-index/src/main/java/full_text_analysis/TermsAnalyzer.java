@@ -53,7 +53,19 @@ import java.util.stream.Collectors;
  * Created by Chris on 9/24/2015.
  */
 public class TermsAnalyzer {
-    private static final Set<String> stopwords = StopwordsProvider.getProvider().getStopwords();
+    private static final Set<String> stopwords;
+    private static final String[] stopArray;
+    private static final String[] emptyStrings;
+//    private static final String stopwordRegex;
+    static {
+        // Ensure stopwords are initialized before stopword regex
+        stopwords = StopwordsProvider.getProvider().getStopwords();
+//        stopwordRegex = getStopwordRegex();
+
+        stopArray = stopwords.toArray(new String[stopwords.size()]);
+        emptyStrings = new String[stopwords.size()];
+        Arrays.fill(emptyStrings, "");
+    }
 
     // Yay for accurate caching methods
     private static Cache<TermDocument, List<ScoredTerm>> cache = CacheBuilder.newBuilder().maximumSize(10000).build();
@@ -111,20 +123,21 @@ public class TermsAnalyzer {
      * @return A sorted list of scored terms.
      */
     public static List<ScoredTerm> getRelatedTerms(String fullText, String term) {
-        // Oh look stopwords
-        String stopwordRegex = getStopwordRegex();
 
         List<String> sentences = Arrays.asList(splitSentences(fullText));
 
         // Get sentences
+        // TODO: Rewrite using apache commons library, for speed.
         List<String> filteredSentences = sentences.parallelStream()
                 .map(s -> s.replaceAll("\\p{Punct}", " ")) // Remove punctuation
-                .map(s -> s.replaceAll(stopwordRegex, " ")) // Remove stop words
+                .map(s -> StringUtils.replaceEach(s, stopArray, emptyStrings)) // Remove stop words
                 .map(s -> s.replaceAll("\\s+", " ")) // Remove excessive spaces
                 .map(s -> s.replaceAll("^\\s", "")) // Remove starting spaces
                 .filter(s -> s.contains(term)) // Filter to only those sentences containing a term
                 .map(s -> s.replaceAll("\\s*\\b" + term + "\\b\\s*", "")) // Remove the term from the sentence
                 .collect(Collectors.toList());
+
+
 
         // Remove all the null or empty strings
         filteredSentences.removeAll(Collections.singletonList(""));
@@ -143,8 +156,6 @@ public class TermsAnalyzer {
 
         // Sort in reverse order
         Collections.sort(scores, Collections.reverseOrder());
-
-        long endTime = System.nanoTime();
 
         return scores;
     }
