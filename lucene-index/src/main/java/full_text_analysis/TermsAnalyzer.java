@@ -24,11 +24,15 @@
 
 package full_text_analysis;
 
+import com.google.common.base.Charsets;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.google.common.hash.HashFunction;
+import com.google.common.hash.Hashing;
 import common.Constants;
 import common.data.ScoredTerm;
 import common.StopwordsProvider;
+import full_text_analysis.data.TermDocument;
 import full_text_analysis.util.FullTextExtractor;
 import full_text_analysis.util.StemmingTermAnalyzer;
 import org.apache.commons.lang.StringUtils;
@@ -52,7 +56,7 @@ public class TermsAnalyzer {
     private static final Set<String> stopwords = StopwordsProvider.getProvider().getStopwords();
 
     // Yay for accurate caching methods
-    private static Cache<Integer, List<ScoredTerm>> cache = CacheBuilder.newBuilder().maximumSize(10000).build();
+    private static Cache<TermDocument, List<ScoredTerm>> cache = CacheBuilder.newBuilder().maximumSize(10000).build();
 
     /**
      * This method uses the getRelatedTerms but uses FullText that is obtained from Lucene.
@@ -63,19 +67,21 @@ public class TermsAnalyzer {
      * @return Sorted list of related terms
      */
     public static List<ScoredTerm> getRelatedTermsInDocument(IndexReader reader, int docId, String term) throws LuceneSearchException {
-        List<ScoredTerm> relatedTerms = null;
-        try {
-            relatedTerms = cache.get(docId, () -> {
-                String fullText = FullTextExtractor.extractText(reader, docId);
+        List<ScoredTerm> relatedTerms;
 
+        TermDocument td = TermDocument.of(docId, term);
+        try {
+            relatedTerms = cache.get(td, () -> {
+                String fullText = FullTextExtractor.extractText(reader, docId);
                 if (fullText.equals(FullTextExtractor.FAILED_TEXT))
                     throw new LuceneSearchException("Failed to extract fulltext");
-
                 return getRelatedTerms(fullText, term);
             });
         } catch (ExecutionException e) {
             throw new LuceneSearchException("[TermsAnalyzer] ERROR: Error while getting related terms");
         }
+
+        // Don't return null, return an empty list!
         return relatedTerms != null ? relatedTerms : Collections.EMPTY_LIST;
     }
 
@@ -105,14 +111,10 @@ public class TermsAnalyzer {
      * @return A sorted list of scored terms.
      */
     public static List<ScoredTerm> getRelatedTerms(String fullText, String term) {
-        long startTime = System.nanoTime();
-
         // Oh look stopwords
         String stopwordRegex = getStopwordRegex();
 
         List<String> sentences = Arrays.asList(splitSentences(fullText));
-
-//        sentences.stream().forEach(System.out::println);
 
         // Get sentences
         List<String> filteredSentences = sentences.parallelStream()
@@ -126,9 +128,6 @@ public class TermsAnalyzer {
 
         // Remove all the null or empty strings
         filteredSentences.removeAll(Collections.singletonList(""));
-
-        // Print all the sentences (for debug)
-//        filteredSentences.stream().forEach(System.out::println);
 
         // Collect all the scores
         Map<String, Integer> termScores = new HashMap<>();
@@ -146,7 +145,6 @@ public class TermsAnalyzer {
         Collections.sort(scores, Collections.reverseOrder());
 
         long endTime = System.nanoTime();
-        System.out.println("Total time to produce related terms: " + ((endTime - startTime) / Math.pow(10, 9)));
 
         return scores;
     }

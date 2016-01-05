@@ -59,15 +59,16 @@ public class SecondTierServlet extends HttpServlet {
             return;
         }
 
+        long startTime = System.nanoTime();
         List<RelatedTermResult> results = new ArrayList<>();
-        queries.stream()
+        queries.parallelStream()
                 .map(q -> RelatedTermResult.createResult(crt, q, docId))
                 .forEach(results::add);
 
         RelatedTermResult[] resArray = new RelatedTermResult[results.size()];
         D3ConvertibleJson json = CombinedRelatedTermsConverter
                 .convertToLinksAndNodes(results.toArray(resArray));
-
         ResponseUtils.printPrettyJsonResponse(res, json);
+        System.out.println("Total time to produce combined related term results: " + (System.nanoTime() - startTime)/Math.pow(10, 9));
     }
 }
