@@ -165,20 +165,6 @@ public class TermsAnalyzer {
     }
 
     /**
-     * Get all the stopwords as a regular expression
-     *
-     * @return The stop words as a regular expression
-     */
-    private static String getStopwordRegex() {
-        return StringUtils.join(stopwords.parallelStream().map(s -> {
-            String newRegex = "\\s*\\b";
-            newRegex += s;
-            newRegex += "\\b\\s*";
-            return newRegex;
-        }).collect(Collectors.toList()), "|");
-    }
-
-    /**
      * Get the most common terms in the document based on the reader and the document id
      *
      * @param reader The index reader
@@ -192,12 +178,9 @@ public class TermsAnalyzer {
         if (fullText.equals(FullTextExtractor.FAILED_TEXT))
             throw new LuceneSearchException("Failed to get the full text.");
 
-        // Get the regular expression for the stopwords
-        String stopwordRegex = getStopwordRegex();
-
         String filteredFulltext = Arrays.asList(fullText.split(" ")).parallelStream() // Split based on spaces
                 .map(s -> s.replaceAll("\\p{Punct}", "")) // Remove punctuation
-                .map(s -> s.replaceAll(stopwordRegex, " ")) // Remove stop words
+                .map(s -> removeStopwords(s, stopwords)) // Remove stop words
                 .map(s -> s.replaceAll("\\s+", " ")) // Remove excessive spaces
                 .map(s -> s.replaceAll("^\\s", "")) // Remove starting spaces
                 .collect(Collectors.joining(" "));
