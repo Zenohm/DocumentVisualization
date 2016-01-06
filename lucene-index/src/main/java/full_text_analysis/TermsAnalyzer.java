@@ -39,6 +39,7 @@ import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.queryparser.classic.ParseException;
 import searcher.exception.LuceneSearchException;
 import util.ListUtils;
+import util.StringManip;
 import util.TermStemmer;
 
 import java.io.IOException;
@@ -121,7 +122,7 @@ public class TermsAnalyzer {
         }
         final String stemmedTerm = sTerm;
 
-        List<String> sentences = Arrays.asList(splitSentences(fullText));
+        List<String> sentences = Arrays.asList(StringManip.splitSentences(fullText));
 
         // Get sentences
         // TODO: Remove numbers and quotation marks in this stream.
@@ -130,7 +131,7 @@ public class TermsAnalyzer {
                 .map(s -> s.replaceAll("\\p{Punct}", " ")) // Remove punctuation
                 .map(s -> StringUtils.remove(s, term))
                 .map(s -> StringUtils.remove(s, stemmedTerm))
-                .map(s -> removeStopwords(s, stopwords)) // Remove stop words
+                .map(s -> StringManip.removeStopwords(s, stopwords)) // Remove stop words
                 .map(s -> s.replaceAll("\\s+", " ")) // Remove excessive spaces
                 .map(s -> s.replaceAll("^\\s", "")) // Remove starting spaces
                 .collect(Collectors.toList());
@@ -156,14 +157,6 @@ public class TermsAnalyzer {
         return scores;
     }
 
-    private static String removeStopwords(String original, Set<String> stopwords){
-        String output = original;
-        for(String stop : stopwords){
-            output = StringUtils.replace(output, " " + stop + " ", " ");
-        }
-        return output;
-    }
-
     /**
      * Get the most common terms in the document based on the reader and the document id
      *
@@ -180,7 +173,7 @@ public class TermsAnalyzer {
 
         String filteredFulltext = Arrays.asList(fullText.split(" ")).parallelStream() // Split based on spaces
                 .map(s -> s.replaceAll("\\p{Punct}", "")) // Remove punctuation
-                .map(s -> removeStopwords(s, stopwords)) // Remove stop words
+                .map(s -> StringManip.removeStopwords(s, stopwords)) // Remove stop words
                 .map(s -> s.replaceAll("\\s+", " ")) // Remove excessive spaces
                 .map(s -> s.replaceAll("^\\s", "")) // Remove starting spaces
                 .collect(Collectors.joining(" "));
@@ -255,17 +248,6 @@ public class TermsAnalyzer {
 
 
     /**
-     * Splits a text into an array of sentences.
-     *
-     * @param text Text to split into individual sentences
-     * @return An array of strings that contain sentences
-     */
-    private static String[] splitSentences(String text) {
-        return text.split("(?<=[.!?])\\s*");
-    }
-
-
-    /**
      * Converts the map of terms to a List of scored terms
      *
      * @param terms Map of terms
@@ -289,6 +271,5 @@ public class TermsAnalyzer {
     }
 
     // Make the terms analyzer private so that you can't create one (static class)
-    private TermsAnalyzer() {
-    }
+    private TermsAnalyzer() {}
 }
