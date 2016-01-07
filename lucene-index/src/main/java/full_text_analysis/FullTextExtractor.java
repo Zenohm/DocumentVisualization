@@ -30,4 +30,13 @@ public class FullTextExtractor {
         }
         return FAILED_TEXT;
     }
+
+    public static String extractText(reader.IndexReader reader, int docId){
+        IndexReader iReader = reader.getReader();
+        if(iReader == null){
+            return FAILED_TEXT;
+        }
+        return extractText(iReader, docId);
+    }
+
 }

@@ -26,7 +26,7 @@
     <orderEntry type="library" name="Maven: org.apache.lucene:lucene-highlighter:5.2.1" level="project" />
     <orderEntry type="library" name="Maven: org.apache.lucene:lucene-join:5.2.1" level="project" />
     <orderEntry type="library" name="Maven: org.apache.lucene:lucene-memory:5.2.1" level="project" />
-    <orderEntry type="module" module-name="mcs-utils" />
+    <orderEntry type="module" module-name="mc-utils" />
     <orderEntry type="library" name="Maven: org.bouncycastle:bcprov-jdk15on:1.53" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: junit:junit:4.10" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.hamcrest:hamcrest-core:1.1" level="project" />

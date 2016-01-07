@@ -69,6 +69,6 @@ public class SecondTierServlet extends HttpServlet {
         D3ConvertibleJson json = CombinedRelatedTermsConverter
                 .convertToLinksAndNodes(results.toArray(resArray));
         ResponseUtils.printPrettyJsonResponse(res, json);
-        System.out.println("Total time to produce combined related term results: " + (System.nanoTime() - startTime)/Math.pow(10, 9));
+        System.out.println("Total time to produce second tier results: " + (System.nanoTime() - startTime)/Math.pow(10, 9));
     }
 }
