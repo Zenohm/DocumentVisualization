@@ -89,62 +89,58 @@ function forceChart() {
                 .style("stroke-width", 0);
 
             node = svg.selectAll(".node")
-                .data(d.nodes)
-                .enter().append("path")
-                .attr("class", "node")
-                .attr("transform", function(d){return getTranslate(d);})
-                .attr("d", d3.svg.symbol());
+                .data(d.nodes);
 
-            //// Adding the nodes
-            //node.enter()
-            //    .append("path")
-            //    .attr("class", "node");
-            //
-            //node.attr("transform", function(d){ return getTranslate(d); })
-            //    .attr("d", d3.svg.symbol()
-            //        //.type(function(d){
-            //        //    if(d.fixed){
-            //        //        return "circle";
-            //        //    }
-            //        //    if(d.termType == "Compound"){
-            //        //        return "triangle-up";
-            //        //    }
-            //        //    else if(d.termType == "Sentence"){
-            //        //        return "square";
-            //        //    }
-            //        //    else if(d.termType == "Synonym"){
-            //        //        return "circle";
-            //        //    }
-            //        //    return "cross"; // Return a cross by default
-            //        //})
-            //        .size(function(d){return d.size * 300;})
-            //    )
-            //    .style("fill", function (d) {
-            //        return d3.hsl(d.color);
-            //    })
-            //    .on("click", function (d) {
-            //        // Don't run this on the fixed nodes
-            //        if (!d.fixed) {
-            //            // A clever trick to save the node and the original color
-            //            var originalColor = d3.select(this).style("fill");
-            //            var node = d3.select(this);
-            //            if(clickedNode != d.docId){
-            //                // change the color of the node to purple
-            //                node.style("fill", function () {
-            //                    return d3.rgb(255, 0, 255);
-            //                });
-            //
-            //                var colorCallback = function(){
-            //                    node.style("fill", originalColor);
-            //                };
-            //
-            //                clickedNode = d.docId;
-            //
-            //                // Have a callback function to change the color back
-            //                displayDocument(d.docId, colorCallback);
-            //            }
-            //        }
-            //    });
+            // Adding the nodes
+            node.enter()
+                .append("path")
+                .attr("class", "node");
+
+            node.attr("transform", function(d){ return getTranslate(d); })
+                .attr("d", d3.svg.symbol()
+                    .type(function(d){
+                        if(d.fixed){
+                            return "circle";
+                        }
+                        if(d.termType == "Compound"){
+                            return "triangle-up";
+                        }
+                        else if(d.termType == "Sentence"){
+                            return "square";
+                        }
+                        else if(d.termType == "Synonym"){
+                            return "circle";
+                        }
+                        return "cross"; // Return a cross by default
+                    })
+                    .size(function(d){return d.size * 2500;})
+                )
+                .style("fill", function (d) {
+                    return d3.hsl(d.color);
+                })
+                .on("click", function (d) {
+                    // Don't run this on the fixed nodes
+                    if (!d.fixed) {
+                        // A clever trick to save the node and the original color
+                        var originalColor = d3.select(this).style("fill");
+                        var node = d3.select(this);
+                        if(clickedNode != d.docId){
+                            // change the color of the node to purple
+                            node.style("fill", function () {
+                                return d3.rgb(255, 0, 255);
+                            });
+
+                            var colorCallback = function(){
+                                node.style("fill", originalColor);
+                            };
+
+                            clickedNode = d.docId;
+
+                            // Have a callback function to change the color back
+                            displayDocument(d.docId, colorCallback);
+                        }
+                    }
+                });
 
             text = svg.selectAll("text")
                 .data(d.nodes.filter(function (d) {
@@ -165,7 +161,7 @@ function forceChart() {
 
 
             // If a node is removed, remove it from the sim.
-            //node.exit().remove();
+            node.exit().remove();
             text.exit().remove();
 
             svg.selectAll(".node").data(d.nodes).exit().remove();
@@ -198,7 +194,7 @@ function forceChart() {
                     .attr("x", function(d){return d.x;})
                     .attr("y", function(d){return d.y});
 
-                svg.selectAll(".node").attr("transform", function(d) { getTranslate(d); });
+                svg.selectAll(".node").attr("transform", function(d) { return getTranslate(d); });
 
                 text.attr("x", function (d) {
                     return d.x;
