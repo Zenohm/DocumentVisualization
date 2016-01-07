@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Second Tier</title>
+    <link rel="stylesheet" type="text/css" href="style/style.css"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="js/secondTierGraph.js"></script>
+    <script>
+        $(document).ready(function(){
+            $.get("last_doc", function(data, status){
+                var chart = forceChart();
+                data = data.replace(/"/g, "");
+                d3.json("second_tier?prev&docId="+data, function(error, info){
+                   if(error) throw error;
+                   d3.select("#main_second").datum(info).call(chart);
+                });
+            });
+        })
+    </script>
+</head>
+<body>
+<div id="main_second"></div>
+</body>
+</html>

@@ -53,13 +53,6 @@ public class CombinedRelatedTermsConverter {
         double maxScore = 0;
         Map<String, Double> scoreMap = new HashMap<>();
         for(FixedNode n : fixedNodes){
-            String sTerm = n.name;
-            try{
-                sTerm = TermStemmer.stemTerm(sTerm);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-
             double score = scorer.getScore(n.name, results[0].docId);
             maxScore = score > maxScore ? score : maxScore;
             scoreMap.put(n.name, score);
@@ -67,28 +60,28 @@ public class CombinedRelatedTermsConverter {
 
         // Do the adjustments!
         for(FixedNode n : fixedNodes){
-            double score = 1000 * scoreMap.get(n.name) / maxScore;
-            double logScore = 10 * Math.log(1 + score);
+            double score = 1000 * scoreMap.get(n.name);
+            double logScore = Math.log(1 + score);
             SizedFixedNode sn = SizedFixedNode.of(n, logScore);
             jsonObject.nodes.add(sn);
         }
 
-        // Get the results
-        for(RelatedTermResult result : results){
-            // Add the related terms as nodes
-            int sourceIndex = termIndexes.get(result.term);
-            for(RelatedTerm rTerm : result.getResults()){
-                int myIndex = jsonObject.nodes.size() - 1;
-                int id = rTerm.getText().hashCode();
-                String color = determineColor(rTerm);
-                double linkPower = rTerm.getScore();
-                double size = scorer.getScore(rTerm.getText(), result.docId);
-                jsonObject.nodes.add(TermNode.of(TermNode.NOT_FIXED, rTerm.getText(), id, color, rTerm.type, size));
-                if(linkPower >= .001){
-                    jsonObject.links.add(Link.of(sourceIndex, myIndex, linkPower));
-                }
-            }
-        }
+//        // Get the results
+//        for(RelatedTermResult result : results){
+//            // Add the related terms as nodes
+//            int sourceIndex = termIndexes.get(result.term);
+//            for(RelatedTerm rTerm : result.getResults()){
+//                int myIndex = jsonObject.nodes.size() - 1;
+//                int id = rTerm.getText().hashCode();
+//                String color = determineColor(rTerm);
+//                double linkPower = rTerm.getScore();
+//                double size = scorer.getScore(rTerm.getText(), result.docId);
+//                jsonObject.nodes.add(TermNode.of(TermNode.NOT_FIXED, rTerm.getText(), id, color, rTerm.type, size));
+//                if(linkPower >= .001){
+//                    jsonObject.links.add(Link.of(sourceIndex, myIndex, linkPower));
+//                }
+//            }
+//        }
         return jsonObject;
     }
 

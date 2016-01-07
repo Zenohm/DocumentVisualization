@@ -39,6 +39,7 @@
             if (onHideSidebar != null) onHideSidebar();
             var docInfo = document.getElementById("documentInfo");
             docInfo.innerHTML = "";
+            $.get("last_doc?docId="+docId);
             displaySidebar();
             var additionalData = [function(resultDiv, docId){
                 var link = document.createElement("a");

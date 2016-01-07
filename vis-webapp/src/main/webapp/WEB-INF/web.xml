@@ -176,6 +176,15 @@
         <url-pattern>/second_tier</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <servlet-name>LastDocServlet</servlet-name>
+        <servlet-class>servlets.LastDocumentQuery</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>LastDocServlet</servlet-name>
+        <url-pattern>/last_doc</url-pattern>
+    </servlet-mapping>
+
     <welcome-file-list>
         <welcome-file>index.html</welcome-file>
     </welcome-file-list>
