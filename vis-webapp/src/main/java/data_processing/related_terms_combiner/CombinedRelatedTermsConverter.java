@@ -82,12 +82,6 @@ public class CombinedRelatedTermsConverter {
                 int id = rTerm.getText().hashCode();
                 String color = determineColor(rTerm);
                 double linkPower = rTerm.getScore();
-                String sTerm = rTerm.getText();
-                try {
-                    sTerm = TermStemmer.stemTerm(rTerm.getText());
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
                 double size = scorer.getScore(rTerm.getText(), result.docId);
                 jsonObject.nodes.add(TermNode.of(TermNode.NOT_FIXED, rTerm.getText(), id, color, rTerm.type, size));
                 if(linkPower >= .001){
