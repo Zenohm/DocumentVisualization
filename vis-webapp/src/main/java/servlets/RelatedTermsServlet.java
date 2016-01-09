@@ -5,6 +5,9 @@ import common.data.ScoredTerm;
 import full_text_analysis.TermsAnalyzer;
 import reader.LuceneIndexReader;
 import searcher.exception.LuceneSearchException;
+import servlets.servlet_util.RequestUtils;
+import servlets.servlet_util.ServletConstant;
+import util.JsonCreator;
 
 import javax.servlet.GenericServlet;
 import javax.servlet.ServletException;
@@ -38,7 +41,7 @@ public class RelatedTermsServlet extends GenericServlet {
         try {
             int docId;
             if (req.getParameterMap().containsKey("docId")) {
-                docId = Integer.parseInt(req.getParameter("docId"));
+                docId = RequestUtils.getIntegerParameter(req, ServletConstant.DOC_ID);
             } else {
                 throw new LuceneSearchException("No document ID.");
             }
@@ -53,13 +56,13 @@ public class RelatedTermsServlet extends GenericServlet {
 
             List<ScoredTerm> terms;
             if (req.getParameterMap().containsKey("limit")) {
-                int limit = Integer.parseInt(req.getParameter("limit"));
+                int limit = RequestUtils.getIntegerParameter(req, "limit");
                 terms = TermsAnalyzer.getRelatedTermsInDocument(LuceneIndexReader.getInstance().getReader(), docId, term, limit);
             } else {
                 terms = TermsAnalyzer.getRelatedTermsInDocument(LuceneIndexReader.getInstance().getReader(), docId, term);
             }
 
-            res.getWriter().println((new GsonBuilder()).create().toJson(terms));
+            res.getWriter().println(JsonCreator.toJson(terms));
 
         } catch (LuceneSearchException | NumberFormatException e) {
             e.printStackTrace();

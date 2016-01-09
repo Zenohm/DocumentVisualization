@@ -26,6 +26,7 @@ package synonyms;
 import common.data.ScoredTerm;
 import edu.smu.tspell.wordnet.Synset;
 import edu.smu.tspell.wordnet.WordNetDatabase;
+import full_text_analysis.TermRelatednessScorer;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -94,11 +95,11 @@ public class SynonymAdapter {
 
     public static List<ScoredTerm> getScoredSynonymsWithUnrelatedIncluded(String word) {
         Set<String> synonyms = getSynonyms(word);
-        return SynonymScorer.getRankedSynonymsWithScores(word, synonyms, 0);
+        return TermRelatednessScorer.getRankedTermsWithScores(word, synonyms, 0);
     }
 
     public static List<ScoredTerm> getScoredSynonymsWithMinimalRelation(String word) {
         Set<String> synonyms = getSynonyms(word);
-        return SynonymScorer.getRankedSynonymsWithScores(word, synonyms, 0.00001);
+        return TermRelatednessScorer.getRankedTermsWithScores(word, synonyms, 0.00001);
     }
 }

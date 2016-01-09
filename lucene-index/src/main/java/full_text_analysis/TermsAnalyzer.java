@@ -24,44 +24,41 @@
 
 package full_text_analysis;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import common.Constants;
 import common.data.ScoredTerm;
-import full_text_analysis.util.FullTextExtractor;
-import full_text_analysis.util.StemmingTermAnalyzer;
+import common.StopwordsProvider;
+import full_text_analysis.data.TermDocument;
+import analyzers.search.StemmingTermAnalyzer;
 import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.queryparser.classic.ParseException;
 import searcher.exception.LuceneSearchException;
 import util.ListUtils;
+import util.StringManip;
+import util.TermStemmer;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 /**
  * Created by Chris on 9/24/2015.
  */
 public class TermsAnalyzer {
-    private static final List<String> STOPWORDS = new ArrayList<>();
-
-    // Initialize the stopwords with the stopwords file
+    private static final Set<String> stopwords;
     static {
-        String filename = System.getenv(Constants.RESOURCE_FOLDER_VAR) + "/" + Constants.STOPWORDS_FILE;
-        Scanner s = null;
-        try {
-            s = new Scanner(new File(filename));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        while (s != null && s.hasNextLine()) {
-            STOPWORDS.add(s.nextLine());
-        }
-        if (s != null) s.close();
+        // Ensure stopwords are initialized before stopword regex
+        stopwords = StopwordsProvider.getProvider().getStopwords();
     }
+
+    // Yay for accurate caching methods
+    private static Cache<TermDocument, List<ScoredTerm>> cache = CacheBuilder.newBuilder().maximumSize(10000).build();
 
     /**
      * This method uses the getRelatedTerms but uses FullText that is obtained from Lucene.
@@ -72,12 +69,22 @@ public class TermsAnalyzer {
      * @return Sorted list of related terms
      */
     public static List<ScoredTerm> getRelatedTermsInDocument(IndexReader reader, int docId, String term) throws LuceneSearchException {
-        String fullText = FullTextExtractor.extractText(reader, docId);
+        List<ScoredTerm> relatedTerms;
 
-        if (fullText.equals(FullTextExtractor.FAILED_TEXT))
-            throw new LuceneSearchException("Failed to extract fulltext");
+        TermDocument td = TermDocument.of(docId, term);
+        try {
+            relatedTerms = cache.get(td, () -> {
+                String fullText = FullTextExtractor.extractText(reader, docId);
+                if (fullText.equals(FullTextExtractor.FAILED_TEXT))
+                    throw new LuceneSearchException("Failed to extract fulltext");
+                return getRelatedTerms(fullText, term);
+            });
+        } catch (ExecutionException e) {
+            throw new LuceneSearchException("[TermsAnalyzer] ERROR: Error while getting related terms");
+        }
 
-        return getRelatedTerms(fullText, term);
+        // Don't return null, return an empty list!
+        return relatedTerms != null ? relatedTerms : Collections.EMPTY_LIST;
     }
 
     /**
@@ -90,11 +97,7 @@ public class TermsAnalyzer {
      * @return Sorted list of related terms
      */
     public static List<ScoredTerm> getRelatedTermsInDocument(IndexReader reader, int docId, String term, int limit) throws LuceneSearchException {
-        String fullText = FullTextExtractor.extractText(reader, docId);
-        if (fullText.equals(FullTextExtractor.FAILED_TEXT))
-            throw new LuceneSearchException("Failed to extract fulltext");
-
-        return ListUtils.getSublist(getRelatedTerms(fullText, term), limit);
+        return ListUtils.getSublist(getRelatedTermsInDocument(reader, docId, term), limit);
     }
 
     /**
@@ -110,30 +113,31 @@ public class TermsAnalyzer {
      * @return A sorted list of scored terms.
      */
     public static List<ScoredTerm> getRelatedTerms(String fullText, String term) {
-        long startTime = System.nanoTime();
+        String sTerm = term;
+        try {
+            sTerm = TermStemmer.stemTerm(term);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            System.err.println("ERROR: Could not stem term");
+        }
+        final String stemmedTerm = sTerm;
 
-        // Oh look stopwords
-        String stopwordRegex = getStopwordRegex();
-
-        List<String> sentences = Arrays.asList(splitSentences(fullText));
-
-//        sentences.stream().forEach(System.out::println);
+        List<String> sentences = Arrays.asList(StringManip.splitSentences(fullText));
 
         // Get sentences
+        // TODO: Remove numbers and quotation marks in this stream.
         List<String> filteredSentences = sentences.parallelStream()
+                .filter(s -> s.contains(stemmedTerm))
                 .map(s -> s.replaceAll("\\p{Punct}", " ")) // Remove punctuation
-                .map(s -> s.replaceAll(stopwordRegex, " ")) // Remove stop words
+                .map(s -> StringUtils.remove(s, term))
+                .map(s -> StringUtils.remove(s, stemmedTerm))
+                .map(s -> StringManip.removeStopwords(s, stopwords)) // Remove stop words
                 .map(s -> s.replaceAll("\\s+", " ")) // Remove excessive spaces
                 .map(s -> s.replaceAll("^\\s", "")) // Remove starting spaces
-                .filter(s -> s.contains(term)) // Filter to only those sentences containing a term
-                .map(s -> s.replaceAll("\\s*\\b" + term + "\\b\\s*", "")) // Remove the term from the sentence
                 .collect(Collectors.toList());
 
         // Remove all the null or empty strings
         filteredSentences.removeAll(Collections.singletonList(""));
-
-        // Print all the sentences (for debug)
-//        filteredSentences.stream().forEach(System.out::println);
 
         // Collect all the scores
         Map<String, Integer> termScores = new HashMap<>();
@@ -150,24 +154,7 @@ public class TermsAnalyzer {
         // Sort in reverse order
         Collections.sort(scores, Collections.reverseOrder());
 
-        long endTime = System.nanoTime();
-        System.out.println("Total time to produce related terms: " + ((endTime - startTime) / Math.pow(10, 9)));
-
         return scores;
-    }
-
-    /**
-     * Get all the stopwords as a regular expression
-     *
-     * @return The stop words as a regular expression
-     */
-    private static String getStopwordRegex() {
-        return StringUtils.join(STOPWORDS.parallelStream().map(s -> {
-            String newRegex = "\\s*\\b";
-            newRegex += s;
-            newRegex += "\\b\\s*";
-            return newRegex;
-        }).collect(Collectors.toList()), "|");
     }
 
     /**
@@ -184,12 +171,9 @@ public class TermsAnalyzer {
         if (fullText.equals(FullTextExtractor.FAILED_TEXT))
             throw new LuceneSearchException("Failed to get the full text.");
 
-        // Get the regular expression for the stopwords
-        String stopwordRegex = getStopwordRegex();
-
         String filteredFulltext = Arrays.asList(fullText.split(" ")).parallelStream() // Split based on spaces
                 .map(s -> s.replaceAll("\\p{Punct}", "")) // Remove punctuation
-                .map(s -> s.replaceAll(stopwordRegex, " ")) // Remove stop words
+                .map(s -> StringManip.removeStopwords(s, stopwords)) // Remove stop words
                 .map(s -> s.replaceAll("\\s+", " ")) // Remove excessive spaces
                 .map(s -> s.replaceAll("^\\s", "")) // Remove starting spaces
                 .collect(Collectors.joining(" "));
@@ -264,17 +248,6 @@ public class TermsAnalyzer {
 
 
     /**
-     * Splits a text into an array of sentences.
-     *
-     * @param text Text to split into individual sentences
-     * @return An array of strings that contain sentences
-     */
-    private static String[] splitSentences(String text) {
-        return text.split("(?<=[.!?])\\s*");
-    }
-
-
-    /**
      * Converts the map of terms to a List of scored terms
      *
      * @param terms Map of terms
@@ -298,6 +271,5 @@ public class TermsAnalyzer {
     }
 
     // Make the terms analyzer private so that you can't create one (static class)
-    private TermsAnalyzer() {
-    }
+    private TermsAnalyzer() {}
 }

@@ -26,24 +26,29 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" type="text/css" href="style.css"/>
+    <link rel="stylesheet" type="text/css" href="style/style.css"/>
     <link rel="stylesheet" type="text/css" href="style/results-style.css"/>
     <title>Tier 1 Visualization</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-    <!--<script src="libs/d3.js"></script>-->
-    <!--<script src="libs/jquery.js"></script>-->
     <script src="js/multiTermGraph.js"></script>
     <script src="js/searchUtils.js"></script>
-    <!--<script src="js/forceGraphV2.js"></script>-->
     <script>
         var onHideSidebar = null;
         function displayDocument(docId, callback) {
             if (onHideSidebar != null) onHideSidebar();
             var docInfo = document.getElementById("documentInfo");
             docInfo.innerHTML = "";
+            $.get("last_doc?docId="+docId);
             displaySidebar();
-            appendMetadata(docInfo, docId);
+            var additionalData = [function(resultDiv, docId){
+                var link = document.createElement("a");
+                link.innerHTML = "[SECOND_TIER]";
+                link.setAttribute("href", "second_tier.html");
+                link.setAttribute("target", "_blank");
+                resultDiv.appendChild(link);
+            }];
+            appendMetadata(docInfo, docId, additionalData);
             onHideSidebar = callback;
         }
 

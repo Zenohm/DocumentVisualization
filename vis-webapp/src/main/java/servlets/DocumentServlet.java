@@ -4,6 +4,8 @@ import access_utils.PDFRetriever;
 import org.apache.commons.io.FileUtils;
 import reader.LuceneIndexReader;
 import searcher.exception.LuceneSearchException;
+import servlets.servlet_util.RequestUtils;
+import servlets.servlet_util.ServletConstant;
 
 import javax.servlet.GenericServlet;
 import javax.servlet.ServletException;
@@ -30,7 +32,7 @@ public class DocumentServlet extends GenericServlet {
      */
     @Override
     public void service(ServletRequest req, ServletResponse res) throws ServletException, IOException {
-        int docId = Integer.parseInt(req.getParameter("docId"));
+        int docId = RequestUtils.getIntegerParameter(req, ServletConstant.DOC_ID);
         PDFRetriever retriever = null;
         try {
             retriever = new PDFRetriever(LuceneIndexReader.getInstance());

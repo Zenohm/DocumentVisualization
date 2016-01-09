@@ -1,10 +1,12 @@
 package servlets;
 
-import com.google.gson.GsonBuilder;
 import common.data.ScoredTerm;
 import full_text_analysis.TermsAnalyzer;
 import reader.LuceneIndexReader;
 import searcher.exception.LuceneSearchException;
+import servlets.servlet_util.RequestUtils;
+import servlets.servlet_util.ResponseUtils;
+import util.JsonCreator;
 
 import javax.servlet.GenericServlet;
 import javax.servlet.ServletException;
@@ -34,16 +36,17 @@ public class CommonTermsServlet extends GenericServlet {
     @Override
     public void service(ServletRequest req, ServletResponse res) throws ServletException, IOException {
         try {
-            int docId = Integer.parseInt(req.getParameter("docId"));
+            int docId = RequestUtils.getIntegerParameter(req, "docId"); // TODO: If docID doesn't exist?
             List<ScoredTerm> terms;
             if (req.getParameterMap().containsKey("limit")) {
-                int limit = Integer.parseInt(req.getParameter("limit"));
+                int limit = RequestUtils.getIntegerParameter(req, "limit");
                 terms = TermsAnalyzer.getTopTerms(LuceneIndexReader.getInstance().getReader(), docId, limit);
             } else {
                 terms = TermsAnalyzer.getTerms(LuceneIndexReader.getInstance().getReader(), docId);
             }
 
-            res.getWriter().println((new GsonBuilder()).create().toJson(terms));
+            String response = JsonCreator.toJson(terms);
+            ResponseUtils.printResponse(res, response);
 
         } catch (LuceneSearchException | NumberFormatException e) {
             e.printStackTrace();

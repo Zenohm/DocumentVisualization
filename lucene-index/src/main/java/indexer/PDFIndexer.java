@@ -86,6 +86,7 @@ public class PDFIndexer {
             System.err.println("Indexing was interrupted: " + e.getMessage());
 //            e.printStackTrace();
         }
+
     }
 
     static void indexDoc(IndexWriter writer, DocumentMetadata metadata) throws IOException {
@@ -106,8 +107,10 @@ public class PDFIndexer {
                     Files.getLastModifiedTime(file).toMillis(), Field.Store.YES);
             doc.add(modified);
 
+
+            PDFTextExtractor extractor = new PDFTextExtractor();
             // Get the string contents
-            String textContents = PDFTextExtractor.extractText(file.toString());
+            String textContents = extractor.extractText(file.toString());
 
             // Store the string contents
             FieldType contentsType = new FieldType();

@@ -1,5 +1,6 @@
 package access_utils;
 
+import access_utils.data.TermLocations;
 import common.Constants;
 import org.apache.lucene.index.LeafReader;
 import org.apache.lucene.index.PostingsEnum;
@@ -18,7 +19,7 @@ import java.util.List;
  * Created by chris on 12/16/15.
  */
 public class TermLocationsSearcher extends LuceneReader {
-    LeafReader lReader;
+    private final LeafReader lReader;
 
     public TermLocationsSearcher(IndexReader reader) throws LuceneSearchException {
         super(reader);
@@ -85,24 +86,5 @@ public class TermLocationsSearcher extends LuceneReader {
         }
 
         return locationsList;
-    }
-
-
-    class TermLocations {
-        public final int docId;
-        public final List<Integer> locations;
-
-        public TermLocations(int docId) {
-            this.docId = docId;
-            locations = new ArrayList<>();
-        }
-
-        public void addTermLocation(int loc) {
-            locations.add(loc);
-        }
-
-        public List<Integer> getLocations() {
-            return new ArrayList<>(locations);
-        }
     }
 }

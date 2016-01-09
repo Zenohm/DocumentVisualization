@@ -139,6 +139,52 @@
         <url-pattern>/term_locs</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <servlet-name>CompoundRelatedTermsServlet</servlet-name>
+        <servlet-class>servlets.CompoundRelatedTermsServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>CompoundRelatedTermsServlet</servlet-name>
+        <url-pattern>/compound_related_terms</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>CombinedTerms</servlet-name>
+        <servlet-class>servlets.CombinedRelatedTermsServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>CombinedTerms</servlet-name>
+        <url-pattern>/combined_terms</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>LastQueryServlet</servlet-name>
+        <servlet-class>servlets.LastQueryServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>LastQueryServlet</servlet-name>
+        <url-pattern>/last_query</url-pattern>
+    </servlet-mapping>
+
+    <!-- Second Tier Servlet -->
+    <servlet>
+        <servlet-name>SecondTier</servlet-name>
+        <servlet-class>servlets.SecondTierServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>SecondTier</servlet-name>
+        <url-pattern>/second_tier</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>LastDocServlet</servlet-name>
+        <servlet-class>servlets.LastDocumentQuery</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>LastDocServlet</servlet-name>
+        <url-pattern>/last_doc</url-pattern>
+    </servlet-mapping>
+
     <welcome-file-list>
         <welcome-file>index.html</welcome-file>
     </welcome-file-list>
