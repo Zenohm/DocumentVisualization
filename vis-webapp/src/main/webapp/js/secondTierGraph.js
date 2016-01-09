@@ -30,7 +30,7 @@
 
 function forceChart() {
     // "Constant" Variables
-    var FIXED_NODE_SIZE = 80,
+    var LINK_SIZE = 40,
         FONT_SIZE = "16px";
     // "Class" Variables
     var width = 400,
@@ -59,9 +59,9 @@ function forceChart() {
 
             force = d3.layout.force()
                 .charge(-150)
-                .linkDistance(FIXED_NODE_SIZE + 15) // Minimum link length
+                .linkDistance(LINK_SIZE) // Minimum link length
                 .linkStrength(function (d) {
-                    return d.link_power;
+                    return d.link_power * 5;
                 })
                 .size([width, height]);
 
@@ -255,7 +255,6 @@ function forceChart() {
 
     function getTranslate(d){
         var translate = "translate(" + d.x + "," + d.y + ")";
-        console.log(d.name + ": " + translate);
         return translate;
     }
 

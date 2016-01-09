@@ -53,7 +53,7 @@ public class CombinedRelatedTermsConverter {
         double maxScore = 0;
         Map<String, Double> scoreMap = new HashMap<>();
         for(FixedNode n : fixedNodes){
-            double score = scorer.getScore(n.name, results[0].docId);
+            double score = scorer.getScore(n.name, results[0].docId, TermQueryScore.QueryType.Basic);
             maxScore = score > maxScore ? score : maxScore;
             scoreMap.put(n.name, score);
         }
@@ -66,27 +66,34 @@ public class CombinedRelatedTermsConverter {
             jsonObject.nodes.add(sn);
         }
 
-//        // Get the results
-//        for(RelatedTermResult result : results){
-//            // Add the related terms as nodes
-//            int sourceIndex = termIndexes.get(result.term);
-//            for(RelatedTerm rTerm : result.getResults()){
-//                int myIndex = jsonObject.nodes.size() - 1;
-//                int id = rTerm.getText().hashCode();
-//                String color = determineColor(rTerm);
-//                double linkPower = rTerm.getScore();
-//                double size = scorer.getScore(rTerm.getText(), result.docId);
-//                jsonObject.nodes.add(TermNode.of(TermNode.NOT_FIXED, rTerm.getText(), id, color, rTerm.type, size));
-//                if(linkPower >= .001){
-//                    jsonObject.links.add(Link.of(sourceIndex, myIndex, linkPower));
-//                }
-//            }
-//        }
+        // Get the results
+        int numNodes = 0;
+        int removedNodes = 0;
+        for(RelatedTermResult result : results){
+            // Add the related terms as nodes
+            int sourceIndex = termIndexes.get(result.term);
+            for(RelatedTerm rTerm : result.getResults()){
+                double size = scorer.getScore(rTerm.getText(), result.docId, TermQueryScore.QueryType.Basic);
+                if(size < .05){
+                    removedNodes++;
+                    continue;
+                }
+                int myIndex = jsonObject.nodes.size() - 1;
+                int id = rTerm.getText().hashCode();
+                String color = fixedNodes.get(sourceIndex).color; // Get the color of the source
+                double linkPower = rTerm.getScore();
+                numNodes++;
+                if(linkPower >= .01){
+                    jsonObject.nodes.add(TermNode.of(TermNode.NOT_FIXED, rTerm.getText(), id, color, rTerm.type, size, result.term));
+                    jsonObject.links.add(Link.of(sourceIndex, myIndex, linkPower));
+                }else{
+                    removedNodes++;
+                }
+            }
+        }
+        System.out.println("Number of nodes: " + numNodes);
+        System.out.println("Removed Nodes:" + removedNodes);
         return jsonObject;
-    }
-
-    private static String determineColor(RelatedTerm rTerm){
-        return "orange";
     }
 
 }

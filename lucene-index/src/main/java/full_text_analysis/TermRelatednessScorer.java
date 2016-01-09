@@ -31,6 +31,7 @@ import common.data.ScoredTerm;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.*;
 import reader.LuceneIndexReader;
+import searcher.QueryUtils;
 
 import java.io.IOException;
 import java.util.*;
@@ -152,17 +153,7 @@ public class TermRelatednessScorer {
             return 0;
         }
 
-        // The words ALL MUST contain the terms.
-        BooleanQuery q = new BooleanQuery();
-        for (String word : words) {
-            PhraseQuery query = new PhraseQuery();
-            Arrays.asList(word.split(" ")).stream()
-                    .map(term -> new Term(Constants.FIELD_CONTENTS, term))
-                    .forEach(query::add);
-
-            query.setSlop(0);
-            q.add(query, BooleanClause.Occur.MUST);
-        }
+        Query q = QueryUtils.mustContainWords(words);
 
         // Get the search call
         Callable<Integer> search = () -> {

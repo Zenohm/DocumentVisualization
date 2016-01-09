@@ -18,7 +18,23 @@ public class TermQueryScore extends Searcher {
         super(reader, new SearchAnalyzer(WhitespaceTokenizer.class));
     }
 
-    public double getScore(String term, int docId){
+    /**
+     * Gets the score for a term if all the words inside a term must be present.
+     * @param term Term to look for (might have spaces)
+     * @param docId The document id to search
+     * @return The score for the search
+     */
+    public double getMultiwordScore(String term, int docId){
+        Query myQuery = QueryUtils.mustContainWords(term);
+        try {
+            return searcher.explain(myQuery, docId).getValue();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return 0;
+        }
+    }
+
+    public double getBasicScore(String term, int docId){
         Query myQuery;
         try {
             myQuery = parser.parse(term);
@@ -32,5 +48,21 @@ public class TermQueryScore extends Searcher {
             e.printStackTrace();
             return 0;
         }
+    }
+
+    public double getScore(String term, int docId, QueryType type){
+        switch(type){
+            case Basic:
+                return getBasicScore(term, docId);
+            case Multiword:
+                return getMultiwordScore(term, docId);
+            default:
+                return getBasicScore(term, docId);
+        }
+    }
+
+
+    public enum QueryType{
+        Basic, Multiword
     }
 }

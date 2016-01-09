@@ -41,6 +41,7 @@ public class FixedNodeGenerator {
             // Give the term a unique id
             int termId = (-1 * i) - 1;
 
+
             termIndexes.put(currentTerm, i);
             fixedNodes.add(FixedNode.of(currentTerm, termId, color, x, y, currentTerm));
         }
