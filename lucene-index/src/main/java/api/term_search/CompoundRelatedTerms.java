@@ -1,46 +1,40 @@
-package full_text_analysis;
+package api.term_search;
 
-import access_utils.FullTextTokenizer;
 import access_utils.TermLocationsSearcher;
-import access_utils.data.TermLocations;
+import common.data.TermLocations;
 import analyzers.filters.NumberFilter;
 import analyzers.search.SearchAnalyzer;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import common.Constants;
 import common.data.ScoredTerm;
 import common.StopwordsProvider;
+import full_text_analysis.TermRelatednessScorer;
 import full_text_analysis.data.TextTokenizer;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.lucene.analysis.core.KeywordTokenizer;
-import org.apache.lucene.document.Document;
 import reader.IndexReader;
 import searcher.exception.LuceneSearchException;
+import term_search.RelatedTermsSearcher;
 import util.Searcher;
 
-import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutionException;
 import java.util.stream.Stream;
 
 /**
  * This class implements a compound related terms search.
  * Created by chris on 12/16/15.
  */
-public class CompoundRelatedTerms extends Searcher{
-    private static Cache<Integer, String[]> tokenCache = CacheBuilder.newBuilder().maximumSize(10000).build();
+public class CompoundRelatedTerms extends Searcher implements RelatedTermsSearcher {
 
-    private Set<String> stopwords =
-            StopwordsProvider.getProvider().getStopwords();
+    private Set<String> stopwords = StopwordsProvider.getProvider().getStopwords();
     public CompoundRelatedTerms(IndexReader reader, String stopwordFile) throws LuceneSearchException {
         super(reader, new SearchAnalyzer(KeywordTokenizer.class));
         stopwords = StopwordsProvider.getProvider(stopwordFile).getStopwords();
     }
 
-    public List<ScoredTerm> getCompoundRelatedTerms(String term) throws LuceneSearchException{
-        // TODO: Potentially stem the term that we are looking for?
+    @Override
+    public List<ScoredTerm> getRelatedTerms(String term) throws LuceneSearchException{
         TermLocationsSearcher tlSearcher = new TermLocationsSearcher(reader);
         List<TermLocations> termLocations = tlSearcher.getLocationsOfTerm(term);
 

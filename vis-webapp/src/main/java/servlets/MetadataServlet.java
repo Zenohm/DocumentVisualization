@@ -1,7 +1,6 @@
 package servlets;
 
-import access_utils.MetadataRetriever;
-import com.google.gson.GsonBuilder;
+import api.document_access.MetadataRetriever;
 import common.data.DocumentMetadata;
 import reader.LuceneIndexReader;
 import searcher.exception.LuceneSearchException;

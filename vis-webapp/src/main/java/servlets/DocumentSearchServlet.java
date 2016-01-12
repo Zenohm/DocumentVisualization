@@ -1,8 +1,9 @@
 package servlets;
 
-import com.google.gson.GsonBuilder;
+import document_search.DocumentSearcher;
+import exception.SearchException;
 import reader.LuceneIndexReader;
-import searcher.DocumentSearcher;
+import searcher.LuceneDocumentSearcher;
 import searcher.DocumentSearcherFactory;
 import searcher.TokenizerType;
 import searcher.exception.LuceneSearchException;
@@ -21,7 +22,7 @@ import java.io.IOException;
  * Created by Chris on 10/7/2015.
  */
 @WebServlet(value = "/term_search", name = "termSearchServlet")
-public class TermSearchServlet extends GenericServlet {
+public class DocumentSearchServlet extends GenericServlet {
 
     /**
      * Searches the document database for a term
@@ -40,7 +41,7 @@ public class TermSearchServlet extends GenericServlet {
                     .getDocumentSearcher(LuceneIndexReader.getInstance(), TokenizerType.WHITESPACE_TOKENIZER);
             String response = JsonCreator.toJson(searcher.searchForTerm(term));
             ResponseUtils.printResponse(res, response);
-        } catch (LuceneSearchException e) {
+        } catch (SearchException e) {
             System.err.println("There was an error with the index searcher.");
             e.printStackTrace();
         }

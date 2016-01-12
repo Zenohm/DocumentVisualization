@@ -4,6 +4,7 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import common.Constants;
 import common.data.ScoredDocument;
+import document_search.DocumentSearcher;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.search.Query;
@@ -22,10 +23,10 @@ import java.util.stream.Collectors;
  * Searches the index for documents
  * Created by chris on 10/5/15.
  */
-public class DocumentSearcher extends Searcher {
+public class LuceneDocumentSearcher extends Searcher implements DocumentSearcher {
     private static Cache<String, TopDocs> cache = CacheBuilder.newBuilder().maximumSize(Constants.MAX_CACHE_SIZE).build();
 
-    public DocumentSearcher(IndexReader reader, Analyzer analyzer) throws LuceneSearchException {
+    public LuceneDocumentSearcher(IndexReader reader, Analyzer analyzer) throws LuceneSearchException {
         super(reader, analyzer);
     }
 

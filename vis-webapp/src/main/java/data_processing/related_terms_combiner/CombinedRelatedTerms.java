@@ -4,7 +4,7 @@ import common.Constants;
 import common.data.ScoredTerm;
 import data_processing.related_terms_combiner.data.RelatedTerm;
 import data_processing.related_terms_combiner.data.RelatedTermType;
-import full_text_analysis.CompoundRelatedTerms;
+import api.term_search.CompoundRelatedTerms;
 import full_text_analysis.TermsAnalyzer;
 import reader.LuceneIndexReader;
 import searcher.exception.LuceneSearchException;
@@ -54,7 +54,7 @@ public class CombinedRelatedTerms {
             long crtStart = System.nanoTime();
             try {
                 if(crt != null){
-                    compoundRelatedTerms = crt.getCompoundRelatedTerms(term);
+                    compoundRelatedTerms = crt.getRelatedTerms(term);
                 }else{
                     System.err.println("ERROR: Compound related terms generator was not initialized");
                     compoundRelatedTerms = null;

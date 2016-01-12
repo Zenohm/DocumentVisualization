@@ -127,8 +127,11 @@ public class IndexerStartup extends HttpServlet {
         System.out.println("DONE!");
         System.out.println("-----------------");
         lock.release();
-        LuceneIndexReader.getInstance()
-                .initializeIndexReader(getServletContext().getRealPath(Constants.INDEX_DIRECTORY));
+        if(!LuceneIndexReader.getInstance().isInitialized()){
+            System.out.println("Initializing IndexReader from directory.");
+            LuceneIndexReader.getInstance()
+                    .initializeIndexReader(getServletContext().getRealPath(Constants.INDEX_DIRECTORY));
+        }
         System.out.println("Warming the Text Tokenizer");
         TextTokenizerWarmer.tokenizeAllText();
     }

@@ -45,6 +45,7 @@
         <module>synonyms</module>
         <module>vis-webapp</module>
         <module>mc-utils</module>
+        <module>index-interface</module>
     </modules>
 
     <reporting>

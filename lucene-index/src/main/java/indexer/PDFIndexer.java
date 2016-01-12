@@ -32,13 +32,11 @@ import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.*;
-import org.apache.lucene.index.IndexOptions;
-import org.apache.lucene.index.IndexWriter;
-import org.apache.lucene.index.IndexWriterConfig;
-import org.apache.lucene.index.Term;
+import org.apache.lucene.index.*;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import pdfs.PDFTextExtractor;
+import reader.LuceneIndexReader;
 
 import java.io.FileReader;
 import java.io.IOException;
@@ -55,7 +53,7 @@ import java.util.concurrent.Executors;
 /**
  * Created by Chris on 8/19/2015.
  */
-public class PDFIndexer {
+public class PDFIndexer{
 
     public final String indexDirectory;
     public final String resourceDirectory;
@@ -165,12 +163,14 @@ public class PDFIndexer {
             indexDocs(writer, resourcesDir);
             writer.close();
             long endTime = System.nanoTime();
+            LuceneIndexReader.getInstance().initializeIndexReader(writer);
             System.out.println("Took: " + (endTime - startTime) / Math.pow(10, 6) + " milliseconds to generate the index.");
         } catch (IOException e) {
             // TODO: Implement better error handling
             System.out.println("IO Exception Thrown while updating index " + e.getMessage() + "\n");
 //            e.printStackTrace();
         }
+
     }
 
 }

@@ -1,6 +1,7 @@
-package access_utils;
+package api.document_access;
 
 import common.Constants;
+import document_access.DocumentRetriever;
 import reader.IndexReader;
 import searcher.exception.LuceneSearchException;
 import util.LuceneReader;
@@ -12,7 +13,7 @@ import java.io.IOException;
  * Gets a PDF file
  * Created by Chris on 10/8/2015.
  */
-public class PDFRetriever extends LuceneReader {
+public class PDFRetriever extends LuceneReader implements DocumentRetriever{
     public PDFRetriever(IndexReader reader) throws LuceneSearchException {
         super(reader);
     }
@@ -24,7 +25,7 @@ public class PDFRetriever extends LuceneReader {
      * @return The PDF file
      * @throws LuceneSearchException
      */
-    public File getPDFFile(int docId) throws LuceneSearchException {
+    public File getDocument(int docId) throws LuceneSearchException {
         try {
             String path = reader.getReader().document(docId).get(Constants.FIELD_PATH);
             return new File(path);

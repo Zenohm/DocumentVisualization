@@ -1,4 +1,4 @@
-package access_utils.data;
+package common.data;
 
 import java.util.ArrayList;
 import java.util.List;

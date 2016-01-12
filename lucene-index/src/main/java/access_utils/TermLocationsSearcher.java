@@ -1,6 +1,6 @@
 package access_utils;
 
-import access_utils.data.TermLocations;
+import common.data.TermLocations;
 import common.Constants;
 import org.apache.lucene.index.LeafReader;
 import org.apache.lucene.index.PostingsEnum;

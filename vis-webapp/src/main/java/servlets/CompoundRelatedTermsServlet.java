@@ -1,9 +1,8 @@
 package servlets;
 
-import com.google.gson.GsonBuilder;
 import common.Constants;
 import common.data.ScoredTerm;
-import full_text_analysis.CompoundRelatedTerms;
+import api.term_search.CompoundRelatedTerms;
 import reader.LuceneIndexReader;
 import searcher.exception.LuceneSearchException;
 import servlets.servlet_util.ResponseUtils;
@@ -43,7 +42,7 @@ public class CompoundRelatedTermsServlet extends GenericServlet{
         try{
             long start = System.nanoTime();
             String term = req.getParameter("term");
-            List<ScoredTerm> terms = termsGenerator.getCompoundRelatedTerms(term);
+            List<ScoredTerm> terms = termsGenerator.getRelatedTerms(term);
             System.out.println("Took: " + (System.nanoTime() - start)/Math.pow(10, 9) +
                     " seconds to generate related terms");
 

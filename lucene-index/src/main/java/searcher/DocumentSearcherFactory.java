@@ -23,18 +23,18 @@ public class DocumentSearcherFactory {
      * @return A document searcher with the needed parameters. Returns a whitespace tokenizer by default.
      * @throws LuceneSearchException
      */
-    public static DocumentSearcher getDocumentSearcher(IndexReader reader, TokenizerType type) throws LuceneSearchException {
+    public static LuceneDocumentSearcher getDocumentSearcher(IndexReader reader, TokenizerType type) throws LuceneSearchException {
         switch (type) {
             case WHITESPACE_TOKENIZER:
-                return new DocumentSearcher(reader, new SearchAnalyzer(WhitespaceTokenizer.class));
+                return new LuceneDocumentSearcher(reader, new SearchAnalyzer(WhitespaceTokenizer.class));
             case KEYWORD_TOKENIZER:
-                return new DocumentSearcher(reader, new SearchAnalyzer(KeywordTokenizer.class));
+                return new LuceneDocumentSearcher(reader, new SearchAnalyzer(KeywordTokenizer.class));
             default:
-                return new DocumentSearcher(reader, new SearchAnalyzer(WhitespaceTokenizer.class));
+                return new LuceneDocumentSearcher(reader, new SearchAnalyzer(WhitespaceTokenizer.class));
         }
     }
 
-    public static DocumentSearcher defaultDocumentSearcher(IndexReader reader) throws LuceneSearchException{
-        return new DocumentSearcher(reader, new SearchAnalyzer(WhitespaceTokenizer.class));
+    public static LuceneDocumentSearcher defaultDocumentSearcher(IndexReader reader) throws LuceneSearchException{
+        return new LuceneDocumentSearcher(reader, new SearchAnalyzer(WhitespaceTokenizer.class));
     }
 }

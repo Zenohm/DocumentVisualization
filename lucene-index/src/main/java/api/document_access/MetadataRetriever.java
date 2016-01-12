@@ -1,7 +1,8 @@
-package access_utils;
+package api.document_access;
 
 import common.Constants;
 import common.data.DocumentMetadata;
+import document_access.DocumentInfoRetriever;
 import org.apache.lucene.document.Document;
 import reader.IndexReader;
 import searcher.exception.LuceneSearchException;
@@ -13,7 +14,7 @@ import java.io.IOException;
  * Class for getting metadata from the document database
  * Created by chris on 10/6/15.
  */
-public class MetadataRetriever extends LuceneReader {
+public class MetadataRetriever extends LuceneReader implements DocumentInfoRetriever {
     public MetadataRetriever(IndexReader reader) throws LuceneSearchException {
         super(reader);
     }
@@ -26,7 +27,7 @@ public class MetadataRetriever extends LuceneReader {
      * @throws LuceneSearchException
      */
     public DocumentMetadata getMetadata(int documentId) throws LuceneSearchException {
-        Document document = null;
+        Document document;
         try {
             document = reader.getReader().document(documentId);
         } catch (IOException e) {

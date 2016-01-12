@@ -26,6 +26,7 @@ package reader;
 
 import common.Constants;
 import org.apache.lucene.index.DirectoryReader;
+import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.store.FSDirectory;
 
 import java.io.IOException;
@@ -72,6 +73,17 @@ public class LuceneIndexReader implements IndexReader {
             e.printStackTrace(); // TODO: Remove stacktrace print from here
             READER = null;
             System.err.println("Failed to instantiate the index reader with directory: " + filename);
+        }
+        return isInitialized();
+    }
+
+    public boolean initializeIndexReader(IndexWriter writer){
+        try{
+            READER = DirectoryReader.open(writer, true);
+        } catch (IOException e) {
+            e.printStackTrace();
+            READER = null;
+            System.err.println("Failed to instantiate index reader from writer");
         }
         return isInitialized();
     }
