@@ -1,4 +1,4 @@
-package searcher.results;
+package common.results;
 
 /**
  * Query Results from a search

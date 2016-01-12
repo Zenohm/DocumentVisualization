@@ -1,4 +1,4 @@
-package searcher.results;
+package common.results;
 
 import java.util.ArrayList;
 import java.util.List;

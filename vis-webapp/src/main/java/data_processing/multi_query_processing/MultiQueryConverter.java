@@ -7,8 +7,8 @@ import util.data.FixedNode;
 import util.data.Link;
 import full_text_analysis.FullTextExtractor;
 import reader.LuceneIndexReader;
-import searcher.results.MultiQueryResults;
-import searcher.results.QueryResults;
+import common.results.MultiQueryResults;
+import common.results.QueryResults;
 
 import java.util.ArrayList;
 import java.util.HashMap;
