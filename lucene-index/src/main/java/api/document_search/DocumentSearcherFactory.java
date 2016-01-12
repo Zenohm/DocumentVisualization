@@ -1,9 +1,10 @@
-package searcher;
+package api.document_search;
 
 import analyzers.search.SearchAnalyzer;
 import org.apache.lucene.analysis.core.KeywordTokenizer;
 import org.apache.lucene.analysis.core.WhitespaceTokenizer;
 import reader.IndexReader;
+import searcher.TokenizerType;
 import searcher.exception.LuceneSearchException;
 
 /**

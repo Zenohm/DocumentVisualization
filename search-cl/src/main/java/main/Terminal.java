@@ -5,8 +5,8 @@ import common.Constants;
 import common.data.ScoredDocument;
 import indexer.PDFIndexer;
 import reader.LuceneIndexReader;
-import searcher.LuceneDocumentSearcher;
-import searcher.DocumentSearcherFactory;
+import api.document_search.LuceneDocumentSearcher;
+import api.document_search.DocumentSearcherFactory;
 import searcher.TokenizerType;
 import searcher.exception.LuceneSearchException;
 

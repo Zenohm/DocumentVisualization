@@ -3,10 +3,8 @@ package servlets;
 import document_search.DocumentSearcher;
 import exception.SearchException;
 import reader.LuceneIndexReader;
-import searcher.LuceneDocumentSearcher;
-import searcher.DocumentSearcherFactory;
+import api.document_search.DocumentSearcherFactory;
 import searcher.TokenizerType;
-import searcher.exception.LuceneSearchException;
 import servlets.servlet_util.ResponseUtils;
 import util.JsonCreator;
 

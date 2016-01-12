@@ -1,4 +1,4 @@
-package searcher;
+package api.document_search;
 
 import analyzers.search.SearchAnalyzer;
 import com.google.common.collect.Maps;

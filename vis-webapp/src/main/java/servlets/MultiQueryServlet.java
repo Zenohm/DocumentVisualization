@@ -6,7 +6,7 @@ import document_search.MultiQuerySearch;
 import servlets.servlet_util.RequestUtils;
 import util.data.D3ConvertibleJson;
 import reader.LuceneIndexReader;
-import searcher.MultiQuerySearcher;
+import api.document_search.MultiQuerySearcher;
 import searcher.exception.LuceneSearchException;
 import common.results.MultiQueryResults;
 
