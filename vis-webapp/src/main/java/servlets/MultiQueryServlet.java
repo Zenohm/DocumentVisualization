@@ -2,6 +2,7 @@ package servlets;
 
 import com.google.gson.GsonBuilder;
 import data_processing.multi_query_processing.MultiQueryConverter;
+import document_search.MultiQuerySearch;
 import servlets.servlet_util.RequestUtils;
 import util.data.D3ConvertibleJson;
 import reader.LuceneIndexReader;
@@ -43,7 +44,7 @@ public class MultiQueryServlet extends HttpServlet {
             req.getSession().setAttribute("queries", queries); // TODO: Remove the magic string
             String[] queryStringArray = new String[queries.size()];
             queryStringArray = queries.toArray(queryStringArray);
-            MultiQuerySearcher searcher =
+            MultiQuerySearch searcher =
                     new MultiQuerySearcher(LuceneIndexReader.getInstance());
             List<MultiQueryResults> queryResults =
                     searcher.searchForResults(queryStringArray);
