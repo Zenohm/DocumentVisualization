@@ -73,18 +73,20 @@ public class TermsAnalyzer {
 
         TermDocument td = TermDocument.of(docId, term);
         try {
-            relatedTerms = cache.get(td, () -> {
-                String fullText = FullTextExtractor.extractText(reader, docId);
-                if (fullText.equals(FullTextExtractor.FAILED_TEXT))
-                    throw new LuceneSearchException("Failed to extract fulltext");
-                return getRelatedTerms(fullText, term);
-            });
+            relatedTerms = cache.get(td, () -> getRelatedTerms(reader, docId, term));
         } catch (ExecutionException e) {
             throw new LuceneSearchException("[TermsAnalyzer] ERROR: Error while getting related terms");
         }
 
         // Don't return null, return an empty list!
         return relatedTerms != null ? relatedTerms : Collections.EMPTY_LIST;
+    }
+
+    private static List<ScoredTerm> getRelatedTerms(IndexReader reader, int docId, String term) throws LuceneSearchException{
+        String fullText = FullTextExtractor.extractText(reader, docId);
+        if (fullText.equals(FullTextExtractor.FAILED_TEXT))
+            throw new LuceneSearchException("Failed to extract fulltext");
+        return getRelatedTerms(fullText, term);
     }
 
     /**
