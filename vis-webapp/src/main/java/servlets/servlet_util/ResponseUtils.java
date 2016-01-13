@@ -1,5 +1,8 @@
 package servlets.servlet_util;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import javax.servlet.ServletResponse;
 import java.io.IOException;
 
@@ -7,13 +10,14 @@ import java.io.IOException;
  * Created by chris on 12/31/15.
  */
 public class ResponseUtils {
+    private static final Log log = LogFactory.getLog(ResponseUtils.class);
     private ResponseUtils() {} // can't create me!
     public static void printResponse(ServletResponse res, String responseText){
         try{
             res.getWriter().println(responseText);
         }catch(IOException e){
             e.printStackTrace();
-            System.err.println("Error, could not get writer while attempting to send: " + responseText);
+            log.error("Could not get writer while attempting to send: " + responseText, e);
         }
     }
 

@@ -47,14 +47,14 @@ public class CompoundRelatedTermsServlet extends GenericServlet{
             long start = System.nanoTime();
             String term = req.getParameter("term");
             List<ScoredTerm> terms = termsGenerator.getRelatedTerms(term);
-            System.out.println("Took: " + (System.nanoTime() - start)/Math.pow(10, 9) +
+            log.info("Took: " + (System.nanoTime() - start)/Math.pow(10, 9) +
                     " seconds to generate related terms");
 
             String response = JsonCreator.getPrettyJson(terms);
             ResponseUtils.printResponse(res, response);
 
         }catch (LuceneSearchException e){
-            e.printStackTrace();
+            log.error("Exception thrown while getting compound terms", e);
             res.getWriter().println("<h1>ERROR</h1>" + e.toString()); // TODO: Better logging and debugging
         }
     }
