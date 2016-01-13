@@ -78,7 +78,7 @@
 
     <servlet>
         <servlet-name>termSearchServlet</servlet-name>
-        <servlet-class>servlets.TermSearchServlet</servlet-class>
+        <servlet-class>servlets.DocumentSearchServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>termSearchServlet</servlet-name>

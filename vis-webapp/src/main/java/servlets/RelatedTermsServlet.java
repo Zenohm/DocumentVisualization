@@ -1,13 +1,12 @@
 package servlets;
 
-import com.google.gson.GsonBuilder;
 import common.data.ScoredTerm;
-import full_text_analysis.TermsAnalyzer;
-import reader.LuceneIndexReader;
-import searcher.exception.LuceneSearchException;
+import internal.static_util.TermsAnalyzer;
+import api.reader.LuceneIndexReader;
+import api.exception.LuceneSearchException;
 import servlets.servlet_util.RequestUtils;
 import servlets.servlet_util.ServletConstant;
-import util.JsonCreator;
+import server_utils.JsonCreator;
 
 import javax.servlet.GenericServlet;
 import javax.servlet.ServletException;

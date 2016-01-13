@@ -1,6 +1,6 @@
 package data_processing.related_terms_combiner.data;
 
-import util.data.Node;
+import server_utils.data.Node;
 
 /**
  * Created by chris on 12/30/15.

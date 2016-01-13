@@ -3,11 +3,10 @@ package servlets;
 import data_processing.related_terms_combiner.CombinedRelatedTerms;
 import data_processing.related_terms_combiner.CombinedRelatedTermsConverter;
 import data_processing.related_terms_combiner.data.RelatedTermResult;
-import searcher.exception.LuceneSearchException;
 import servlets.servlet_util.RequestUtils;
 import servlets.servlet_util.ResponseUtils;
 import servlets.servlet_util.ServletConstant;
-import util.data.D3ConvertibleJson;
+import server_utils.data.D3ConvertibleJson;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;

@@ -1,9 +1,11 @@
 package servlets;
 
-import access_utils.PDFRetriever;
+import api.document_access.PDFRetriever;
+import document_access.DocumentRetriever;
+import exception.SearchException;
 import org.apache.commons.io.FileUtils;
-import reader.LuceneIndexReader;
-import searcher.exception.LuceneSearchException;
+import api.reader.LuceneIndexReader;
+import api.exception.LuceneSearchException;
 import servlets.servlet_util.RequestUtils;
 import servlets.servlet_util.ServletConstant;
 
@@ -33,18 +35,19 @@ public class DocumentServlet extends GenericServlet {
     @Override
     public void service(ServletRequest req, ServletResponse res) throws ServletException, IOException {
         int docId = RequestUtils.getIntegerParameter(req, ServletConstant.DOC_ID);
-        PDFRetriever retriever = null;
+        DocumentRetriever retriever;
         try {
             retriever = new PDFRetriever(LuceneIndexReader.getInstance());
         } catch (LuceneSearchException e) {
             e.printStackTrace();
+            return;
         }
 
         try {
             res.setContentType("application/pdf");
-            File document = retriever.getPDFFile(docId);
+            File document = retriever.getDocument(docId);
             FileUtils.copyFile(document, res.getOutputStream());
-        } catch (LuceneSearchException |
+        } catch (SearchException |
                 NullPointerException e) {
             e.printStackTrace();
         }

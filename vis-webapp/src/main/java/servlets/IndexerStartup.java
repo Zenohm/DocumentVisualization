@@ -25,12 +25,11 @@
 package servlets;
 
 import common.Constants;
-import full_text_analysis.data.TextTokenizer;
-import indexer.PDFIndexer;
-import indexer.TextTokenizerWarmer;
+import api.indexer.PDFIndexer;
+import api.indexer.TextTokenizerWarmer;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import reader.LuceneIndexReader;
+import api.reader.LuceneIndexReader;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -127,8 +126,11 @@ public class IndexerStartup extends HttpServlet {
         System.out.println("DONE!");
         System.out.println("-----------------");
         lock.release();
-        LuceneIndexReader.getInstance()
-                .initializeIndexReader(getServletContext().getRealPath(Constants.INDEX_DIRECTORY));
+        if(!LuceneIndexReader.getInstance().isInitialized()){
+            System.out.println("Initializing IndexReader from directory.");
+            LuceneIndexReader.getInstance()
+                    .initializeIndexReader(getServletContext().getRealPath(Constants.INDEX_DIRECTORY));
+        }
         System.out.println("Warming the Text Tokenizer");
         TextTokenizerWarmer.tokenizeAllText();
     }

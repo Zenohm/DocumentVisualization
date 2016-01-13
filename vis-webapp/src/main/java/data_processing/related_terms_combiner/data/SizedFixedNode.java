@@ -1,6 +1,6 @@
 package data_processing.related_terms_combiner.data;
 
-import util.data.FixedNode;
+import server_utils.data.FixedNode;
 
 /**
  * Created by chris on 1/6/16.

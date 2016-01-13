@@ -1,13 +1,14 @@
 package data_processing.related_terms_combiner;
 
+import api.term_search.SentenceRelatedTerms;
 import common.Constants;
 import common.data.ScoredTerm;
 import data_processing.related_terms_combiner.data.RelatedTerm;
 import data_processing.related_terms_combiner.data.RelatedTermType;
-import full_text_analysis.CompoundRelatedTerms;
-import full_text_analysis.TermsAnalyzer;
-import reader.LuceneIndexReader;
-import searcher.exception.LuceneSearchException;
+import api.term_search.CompoundRelatedTerms;
+import exception.SearchException;
+import api.reader.LuceneIndexReader;
+import api.exception.LuceneSearchException;
 import synonyms.SynonymAdapter;
 
 import java.util.ArrayList;
@@ -23,6 +24,7 @@ import java.util.stream.Collectors;
 public class CombinedRelatedTerms {
 
     private CompoundRelatedTerms crt;
+    private SentenceRelatedTerms srt;
 
     public CombinedRelatedTerms(){
         String resourceDirectory = System.getenv(Constants.RESOURCE_FOLDER_VAR);
@@ -37,6 +39,7 @@ public class CombinedRelatedTerms {
     private void instantiate(String stopwordsFile){
         try {
             crt = new CompoundRelatedTerms(LuceneIndexReader.getInstance(), stopwordsFile);
+            srt = new SentenceRelatedTerms();
         } catch (LuceneSearchException e) {
             System.err.println("ERROR: Compound Related Terms Generator Could Not be Created");
             e.printStackTrace();
@@ -49,47 +52,13 @@ public class CombinedRelatedTerms {
 
         long startTime = System.nanoTime();
         // Compound Related Terms
-        Future <List<ScoredTerm>> crtFuture = pool.submit(()->{
-            List<ScoredTerm> compoundRelatedTerms;
-            long crtStart = System.nanoTime();
-            try {
-                if(crt != null){
-                    compoundRelatedTerms = crt.getCompoundRelatedTerms(term);
-                }else{
-                    System.err.println("ERROR: Compound related terms generator was not initialized");
-                    compoundRelatedTerms = null;
-                }
-            } catch (LuceneSearchException e) {
-                e.printStackTrace();
-                compoundRelatedTerms = null;
-            }
-            System.out.println("Total Time to produce compound related terms to " + term + ": " + (System.nanoTime() - crtStart)/Math.pow(10,9));
-            return compoundRelatedTerms;
-        });
+        Future <List<ScoredTerm>> crtFuture = pool.submit(()-> getCompoundRelatedTerms(term));
 
         // Sentence Related Terms
-        Future<List<ScoredTerm>> srtFuture = pool.submit(()->{
-            // Get the sentence related terms
-            List<ScoredTerm> sentenceRelatedTerms = null;
-            long srtStart = System.nanoTime();
-            try {
-                sentenceRelatedTerms = TermsAnalyzer.getRelatedTermsInDocument(LuceneIndexReader.getInstance().getReader(), docId, term);
-            } catch (LuceneSearchException e) {
-                System.err.println("ERROR: Sentence Related Terms Could not be obtained");
-                e.printStackTrace();
-            }
-            System.out.println("Total Time to produce sentence related terms to " + term + " in document # " + docId + ": " + (System.nanoTime() - srtStart)/Math.pow(10, 9) +
-                    ". Got " + sentenceRelatedTerms.size() + " sentence related terms");
-            return sentenceRelatedTerms;
-        });
+        Future<List<ScoredTerm>> srtFuture = pool.submit(()-> getSentenceRelatedTerms(term, docId));
 
         // Synonym related terms
-        Future<List<ScoredTerm>> synFuture = pool.submit(()-> {
-            long synStart = System.nanoTime();
-            List<ScoredTerm> synTerms = SynonymAdapter.getScoredSynonymsWithMinimalRelation(term);
-            System.out.println("Total time to produce synonyms to " + term + ": " + (System.nanoTime() - synStart)/Math.pow(10, 9));
-            return synTerms;
-        });
+        Future<List<ScoredTerm>> synFuture = pool.submit(()-> getSynonyms(term));
 
         // Combine related terms
         List<RelatedTerm> combinedTerms;
@@ -105,6 +74,46 @@ public class CombinedRelatedTerms {
         combinedTerms.sort(Comparator.reverseOrder());
 
         return combinedTerms;
+    }
+
+    private List<ScoredTerm> getCompoundRelatedTerms(String term){
+        List<ScoredTerm> compoundRelatedTerms;
+        long crtStart = System.nanoTime();
+        try {
+            if(crt != null){
+                compoundRelatedTerms = crt.getRelatedTerms(term);
+            }else{
+                System.err.println("ERROR: Compound related terms generator was not initialized");
+                compoundRelatedTerms = null;
+            }
+        } catch (LuceneSearchException e) {
+            e.printStackTrace();
+            compoundRelatedTerms = null;
+        }
+        System.out.println("Total Time to produce compound related terms to " + term + ": " + (System.nanoTime() - crtStart)/Math.pow(10,9));
+        return compoundRelatedTerms;
+    }
+
+    private List<ScoredTerm> getSentenceRelatedTerms(String term, int docId){
+        // Get the sentence related terms
+        List<ScoredTerm> sentenceRelatedTerms = null;
+        long srtStart = System.nanoTime();
+        try {
+            sentenceRelatedTerms = srt.getDocumentRelatedTerms(docId, term);
+        } catch (SearchException e) {
+            System.err.println("ERROR: Sentence Related Terms Could not be obtained");
+            e.printStackTrace();
+        }
+        System.out.println("Total Time to produce sentence related terms to " + term + " in document # " + docId + ": " + (System.nanoTime() - srtStart)/Math.pow(10, 9) +
+                ". Got " + sentenceRelatedTerms.size() + " sentence related terms");
+        return sentenceRelatedTerms;
+    }
+
+    private List<ScoredTerm> getSynonyms(String term){
+        long synStart = System.nanoTime();
+        List<ScoredTerm> synTerms = SynonymAdapter.getScoredSynonymsWithMinimalRelation(term);
+        System.out.println("Total time to produce synonyms to " + term + ": " + (System.nanoTime() - synStart)/Math.pow(10, 9));
+        return synTerms;
     }
 
     private List<RelatedTerm> combineRelatedTerms(List<ScoredTerm> compound, List<ScoredTerm> sentence, List<ScoredTerm> synonyms){

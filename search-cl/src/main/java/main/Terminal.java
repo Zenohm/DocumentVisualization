@@ -1,14 +1,13 @@
 package main;
 
-import access_utils.MetadataRetriever;
+import api.document_access.MetadataRetriever;
 import common.Constants;
 import common.data.ScoredDocument;
-import indexer.PDFIndexer;
-import reader.LuceneIndexReader;
-import searcher.DocumentSearcher;
-import searcher.DocumentSearcherFactory;
-import searcher.TokenizerType;
-import searcher.exception.LuceneSearchException;
+import api.indexer.PDFIndexer;
+import api.reader.LuceneIndexReader;
+import api.document_search.LuceneDocumentSearcher;
+import api.document_search.DocumentSearcherFactory;
+import api.exception.LuceneSearchException;
 
 import java.util.List;
 import java.util.Scanner;
@@ -28,8 +27,8 @@ public class Terminal {
             System.err.println("Initializer Error: Could Not Initialize IndexReader");
         }
 
-        DocumentSearcher searcher = DocumentSearcherFactory
-                .getDocumentSearcher(LuceneIndexReader.getInstance(), TokenizerType.WHITESPACE_TOKENIZER);
+        LuceneDocumentSearcher searcher = DocumentSearcherFactory
+                .getDocumentSearcher(LuceneIndexReader.getInstance(), DocumentSearcherFactory.TokenizerType.WHITESPACE_TOKENIZER);
         MetadataRetriever retriever = new MetadataRetriever(LuceneIndexReader.getInstance());
 
         Scanner kb = new Scanner(System.in);

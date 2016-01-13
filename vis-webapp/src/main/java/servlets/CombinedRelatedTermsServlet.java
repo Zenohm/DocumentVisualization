@@ -1,15 +1,11 @@
 package servlets;
 
-import com.google.gson.GsonBuilder;
-import common.data.ScoredTerm;
 import data_processing.related_terms_combiner.CombinedRelatedTerms;
-import full_text_analysis.TermsAnalyzer;
-import reader.LuceneIndexReader;
-import searcher.exception.LuceneSearchException;
+import api.exception.LuceneSearchException;
 import servlets.servlet_util.RequestUtils;
 import servlets.servlet_util.ResponseUtils;
 import servlets.servlet_util.ServletConstant;
-import util.JsonCreator;
+import server_utils.JsonCreator;
 
 import javax.servlet.GenericServlet;
 import javax.servlet.ServletException;
@@ -17,7 +13,6 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebServlet;
 import java.io.IOException;
-import java.util.List;
 
 /**
  * Created by chris on 12/30/15.

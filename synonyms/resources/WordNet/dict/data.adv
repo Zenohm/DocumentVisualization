@@ -1326,7 +1326,7 @@
 00190959 02 r 01 intensely 0 001 \ 01509527 a 0101 | in an intense manner; "he worked intensely"  
 00191058 02 r 03 et_al. 1 et_al 1 et_alibi 0 000 | and elsewhere (used when referring to other occurrences in a text)  
 00191178 02 r 05 et_al. 0 et_al 0 et_alii 0 et_aliae 0 et_alia 0 000 | and others ('et al.' is used as an abbreviation of `et alii' (masculine plural) or `et aliae' (feminine plural) or `et alia' (neuter plural) when referring to a number of people); "the data reported by Smith et al."  
-00191467 02 r 02 cf. 0 cf 0 000 | compare (used in texts to point the reader to another location in the text)  
+00191467 02 r 02 cf. 0 cf 0 000 | compare (used in texts to point the api.reader to another location in the text)
 00191579 02 r 03 i.e. 0 ie 0 id_est 0 000 | that is to say; in other words  
 00191656 02 r 01 continuously 0 001 \ 00597424 a 0101 | at every point; "The function is continuously differentiable"  
 00191776 02 r 01 reflexly 0 001 \ 02522669 a 0102 | in a reflex manner; "such effects can be induced reflexly"  

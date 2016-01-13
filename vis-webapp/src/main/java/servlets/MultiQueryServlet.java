@@ -2,24 +2,20 @@ package servlets;
 
 import com.google.gson.GsonBuilder;
 import data_processing.multi_query_processing.MultiQueryConverter;
+import document_search.MultiQuerySearch;
 import servlets.servlet_util.RequestUtils;
-import util.data.D3ConvertibleJson;
-import reader.LuceneIndexReader;
-import searcher.MultiQuerySearcher;
-import searcher.exception.LuceneSearchException;
-import searcher.results.MultiQueryResults;
+import server_utils.data.D3ConvertibleJson;
+import api.reader.LuceneIndexReader;
+import api.document_search.MultiQuerySearcher;
+import api.exception.LuceneSearchException;
+import common.results.MultiQueryResults;
 
-import javax.servlet.GenericServlet;
 import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -48,7 +44,7 @@ public class MultiQueryServlet extends HttpServlet {
             req.getSession().setAttribute("queries", queries); // TODO: Remove the magic string
             String[] queryStringArray = new String[queries.size()];
             queryStringArray = queries.toArray(queryStringArray);
-            MultiQuerySearcher searcher =
+            MultiQuerySearch searcher =
                     new MultiQuerySearcher(LuceneIndexReader.getInstance());
             List<MultiQueryResults> queryResults =
                     searcher.searchForResults(queryStringArray);
