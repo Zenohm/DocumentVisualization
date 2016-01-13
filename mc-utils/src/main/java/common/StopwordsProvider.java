@@ -1,5 +1,8 @@
 package common;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.*;
@@ -9,6 +12,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * Created by chris on 1/3/16.
  */
 public class StopwordsProvider {
+    private static final Log log = LogFactory.getLog(StopwordsProvider.class);
     private final Set<String> stopwords = Collections.newSetFromMap(new ConcurrentHashMap<String, Boolean>());
     private static String filename;
     private static StopwordsProvider provider;
@@ -16,11 +20,11 @@ public class StopwordsProvider {
     private StopwordsProvider(String filename) {
         Scanner s = null;
         StopwordsProvider.filename = filename;
-        System.err.println("Rebuilding stopwords for: " + filename);
+        log.info("Rebuilding stopwords for: " + filename);
         try{
             s = new Scanner(new File(filename));
         }catch(FileNotFoundException e){
-            e.printStackTrace();
+            log.error("Could not find stopwords file: " + filename, e);
         }
 
         while (s != null && s.hasNextLine()){
@@ -29,7 +33,7 @@ public class StopwordsProvider {
         if(s != null){
             s.close();
         }else{
-            System.err.println("Stopwords file not found! File: " + filename);
+            log.error("Stopwords file not found! File: " + filename);
         }
     }
 
