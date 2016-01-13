@@ -11,6 +11,8 @@ import data_processing.FixedNodeGenerator;
 import data_processing.data.D3ConvertibleJson;
 import data_processing.data.FixedNode;
 import data_processing.data.Link;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,6 +22,7 @@ import java.util.Map;
  * Created by chris on 12/30/15.
  */
 public class CombinedRelatedTermsConverter {
+    private static final Log log = LogFactory.getLog(CombinedRelatedTermsConverter.class);
     private static TermQueryScore scorer;
     static{
         try {
@@ -33,8 +36,7 @@ public class CombinedRelatedTermsConverter {
         try {
             scorer = new TermQueryScore(LuceneIndexReader.getInstance());
         } catch (LuceneSearchException e) {
-            e.printStackTrace();
-            System.err.println("Cannot initialize scorer");
+            log.error("Cannot initialize scorer", e);
             return null; // Null because cannot score
         }
         D3ConvertibleJson jsonObject = new D3ConvertibleJson();
@@ -89,8 +91,8 @@ public class CombinedRelatedTermsConverter {
                 }
             }
         }
-        System.out.println("Number of nodes: " + numNodes);
-        System.out.println("Removed Nodes:" + removedNodes);
+        log.info("Number of nodes: " + numNodes);
+        log.info("Removed Nodes:" + removedNodes);
         return jsonObject;
     }
 
