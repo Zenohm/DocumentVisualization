@@ -80,10 +80,10 @@ public class CombinedRelatedTermsConverter {
                 int id = rTerm.getText().hashCode();
                 String color = fixedNodes.get(sourceIndex).color; // Get the color of the source
                 double linkPower = rTerm.getScore();
-                numNodes++;
                 if(linkPower >= .01){
                     jsonObject.nodes.add(TermNode.of(TermNode.NOT_FIXED, rTerm.getText(), id, color, rTerm.type, size, result.term));
                     jsonObject.links.add(Link.of(sourceIndex, myIndex, linkPower));
+                    numNodes++;
                 }else{
                     removedNodes++;
                 }
