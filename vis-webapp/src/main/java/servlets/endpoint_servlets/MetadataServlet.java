@@ -1,4 +1,4 @@
-package servlets;
+package servlets.endpoint_servlets;
 
 import api.document_access.MetadataRetriever;
 import common.data.DocumentMetadata;

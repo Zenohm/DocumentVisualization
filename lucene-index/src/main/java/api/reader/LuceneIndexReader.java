@@ -62,7 +62,7 @@ public class LuceneIndexReader implements IndexReader {
     }
 
     /**
-     * This is called as a part of the startup for the indexer.
+     * This is called as a part of the startup for the startup.
      * When running an application that is on the web application, the api.reader is started by the startup script.
      *
      * @param filename The index directory

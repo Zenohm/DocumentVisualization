@@ -1,4 +1,4 @@
-package servlets;
+package servlets.test_servlets;
 
 import document_search.DocumentSearcher;
 import exception.SearchException;

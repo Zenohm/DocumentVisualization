@@ -3,7 +3,7 @@ package main;
 import api.document_access.MetadataRetriever;
 import common.Constants;
 import common.data.ScoredDocument;
-import api.indexer.PDFIndexer;
+import api.startup.PDFIndexer;
 import api.reader.LuceneIndexReader;
 import api.document_search.LuceneDocumentSearcher;
 import api.document_search.DocumentSearcherFactory;
@@ -21,7 +21,7 @@ public class Terminal {
     public static void main(String[] args) throws Exception {
         // Initialize the index
         PDFIndexer indexer = new PDFIndexer(INDEX_OUT, System.getenv(Constants.RESOURCE_FOLDER_VAR));
-//        indexer.updateIndex();
+//        startup.updateIndex();
 
         if (!LuceneIndexReader.getInstance().initializeIndexReader(INDEX_OUT)) {
             System.err.println("Initializer Error: Could Not Initialize IndexReader");

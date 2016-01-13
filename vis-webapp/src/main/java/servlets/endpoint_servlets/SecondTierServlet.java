@@ -1,4 +1,4 @@
-package servlets;
+package servlets.endpoint_servlets;
 
 import data_processing.related_terms_combiner.CombinedRelatedTerms;
 import data_processing.related_terms_combiner.CombinedRelatedTermsConverter;

@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 
-package api.indexer;
+package api.startup;
 
 import internal.analyzers.indexing.PDFAnalyzer;
 import common.Constants;

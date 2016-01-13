@@ -22,11 +22,11 @@
  * THE SOFTWARE.
  */
 
-package servlets;
+package servlets.startup_servlets;
 
 import common.Constants;
-import api.indexer.PDFIndexer;
-import api.indexer.TextTokenizerWarmer;
+import api.startup.PDFIndexer;
+import api.startup.TextTokenizerWarmer;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.Level;
@@ -46,9 +46,17 @@ import java.util.concurrent.Semaphore;
  * Starts up the servlet. Initializes logging and completes indexing if needed.
  * Created by Chris on 8/19/2015.
  */
-public class IndexerStartup extends HttpServlet {
-    private static final Log log = LogFactory.getLog(IndexerStartup.class);
+public class Startup extends HttpServlet {
+    private Log log;
     public static Semaphore lock = new Semaphore(0);
+
+    public Startup(){
+        super();
+        org.apache.log4j.BasicConfigurator.configure();
+        Logger.getRootLogger().setLevel(Level.INFO);
+        log = LogFactory.getLog(Startup.class);
+        log.info("Logging system online");
+    }
 
     /**
      * Initialization Service, starts up the server
@@ -56,10 +64,6 @@ public class IndexerStartup extends HttpServlet {
      * @throws ServletException
      */
     public void init() throws ServletException {
-        log.info("Starting Up the Logging System");
-        // TODO: Better configuration for loggers
-        org.apache.log4j.BasicConfigurator.configure();
-        Logger.getRootLogger().setLevel(Level.INFO);
         log.info("Disabling PDF Box Logging");
         String[] annoyingLoggers = {"org.apache.pdfbox.pdmodel.font.PDType0Font",
                 "org.apache.pdfbox.pdmodel.font.PDType1Font",
@@ -86,9 +90,9 @@ public class IndexerStartup extends HttpServlet {
             return;
         }
 
-        // Create the indexer
-        // indexer output is INDEX_DIRECTORY, local to the application
-        // indexer input is RESOURCE_FOLDER_VAR which can be anywhere on the system and is specified by
+        // Create the startup
+        // startup output is INDEX_DIRECTORY, local to the application
+        // startup input is RESOURCE_FOLDER_VAR which can be anywhere on the system and is specified by
         // an environment variable
         PDFIndexer indexer = new PDFIndexer(getServletContext().getRealPath(Constants.INDEX_DIRECTORY),
                 System.getenv(Constants.RESOURCE_FOLDER_VAR));

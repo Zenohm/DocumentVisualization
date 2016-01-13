@@ -1,4 +1,4 @@
-package servlets;
+package servlets.test_servlets;
 
 import common.data.ScoredTerm;
 import internal.static_util.TermsAnalyzer;

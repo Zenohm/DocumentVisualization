@@ -1,4 +1,4 @@
-package servlets;
+package servlets.endpoint_servlets;
 
 import com.google.gson.GsonBuilder;
 import data_processing.multi_query_processing.MultiQueryConverter;

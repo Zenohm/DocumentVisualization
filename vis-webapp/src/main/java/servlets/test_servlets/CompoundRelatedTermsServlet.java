@@ -7,7 +7,6 @@ import api.reader.LuceneIndexReader;
 import api.exception.LuceneSearchException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import servlets.CommonTermsServlet;
 import servlets.servlet_util.ResponseUtils;
 import servlets.servlet_util.JsonCreator;
 

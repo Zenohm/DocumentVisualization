@@ -1,4 +1,4 @@
-package api.indexer;
+package api.startup;
 
 import internal.static_util.tokenizer.DocumentTokenizer;
 import org.apache.commons.logging.Log;

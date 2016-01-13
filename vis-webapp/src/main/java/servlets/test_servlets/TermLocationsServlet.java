@@ -1,4 +1,4 @@
-package servlets;
+package servlets.test_servlets;
 
 import internal.term_utils.TermLocationsSearcher;
 import org.apache.commons.lang.StringUtils;

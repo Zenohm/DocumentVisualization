@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package servlets;
+package servlets.test_servlets;
 
 import common.data.ScoredTerm;
 import org.apache.commons.lang.StringUtils;

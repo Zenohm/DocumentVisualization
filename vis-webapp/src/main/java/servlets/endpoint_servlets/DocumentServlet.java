@@ -1,4 +1,4 @@
-package servlets;
+package servlets.endpoint_servlets;
 
 import api.document_access.PDFRetriever;
 import document_access.DocumentRetriever;
