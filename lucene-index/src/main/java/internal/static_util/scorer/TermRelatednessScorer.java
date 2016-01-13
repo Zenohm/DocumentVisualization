@@ -28,6 +28,8 @@ import com.google.common.cache.CacheBuilder;
 import common.Constants;
 import common.data.ScoredTerm;
 import internal.static_util.QueryUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.search.*;
 import api.reader.LuceneIndexReader;
 
@@ -47,11 +49,9 @@ public class TermRelatednessScorer {
      * The minimum a synonym must score to avoid being eliminated
      */
     private static final double DEFAULT_CUTOFF_RATIO = .50;
+    private static final Log log = LogFactory.getLog(TermRelatednessScorer.class);
 
-    private static IndexSearcher searcher;
-    static{
-        searcher = new IndexSearcher(LuceneIndexReader.getInstance().getReader());
-    }
+    private static IndexSearcher searcher = new IndexSearcher(LuceneIndexReader.getInstance().getReader());
 
     /**
      * Caching utilized to speed up the processing of scores.
@@ -151,26 +151,22 @@ public class TermRelatednessScorer {
         }
 
         Query q = QueryUtils.mustContainWords(words);
-
-        // Get the search call
-        Callable<Integer> search = () -> {
-            try {
-                return searcher.count(q);
-            } catch (IOException e) {
-                System.err.println(TermRelatednessScorer.class.toString() + ": ERROR: Could not get term count for query " +
-                        q.toString() + ".");
-                return 0; // Assume no documents then.
-            }
-        };
-
         // Get the number of documents from the cache.
         int numDocuments = 0;
         try {
-            numDocuments = cache.get(q.toString(), search);
+            numDocuments = cache.get(q.toString(), () -> getSearchCount(q));
         } catch (ExecutionException e) {
-            System.err.println("[TermRelatednessScorer] ERROR: There was an error while populating the cache.");
-            e.printStackTrace();
+            log.error("Could not get number of documents from the cache");
         }
         return numDocuments;
+    }
+
+    private static int getSearchCount(Query q){
+        try {
+            return searcher.count(q);
+        } catch (IOException e) {
+            log.error("Could not get term count for query" + q.toString() + ".");
+            return 0; // Assume no documents if it fails.
+        }
     }
 }

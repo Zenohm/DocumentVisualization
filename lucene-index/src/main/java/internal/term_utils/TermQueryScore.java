@@ -2,6 +2,8 @@ package internal.term_utils;
 
 import internal.analyzers.search.SearchAnalyzer;
 import internal.static_util.QueryUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.analysis.core.WhitespaceTokenizer;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.search.Query;
@@ -15,6 +17,7 @@ import java.io.IOException;
  * Created by chris on 1/6/16.
  */
 public class TermQueryScore extends Searcher {
+    private static final Log log = LogFactory.getLog(TermQueryScore.class);
     public TermQueryScore(IndexReader reader) throws LuceneSearchException {
         super(reader, new SearchAnalyzer(WhitespaceTokenizer.class));
     }
@@ -30,7 +33,7 @@ public class TermQueryScore extends Searcher {
         try {
             return searcher.explain(myQuery, docId).getValue();
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("Could not get score for " + myQuery.toString() + " for document " + docId);
             return 0;
         }
     }
@@ -40,13 +43,13 @@ public class TermQueryScore extends Searcher {
         try {
             myQuery = parser.parse(term);
         } catch (ParseException e) {
-            e.printStackTrace();
+            log.error("Query parser could not parse " + term);
             return 0;
         }
         try {
             return searcher.explain(myQuery, docId).getValue();
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("Could not explain " + myQuery.toString() + " for document " + docId);
             return 0;
         }
     }

@@ -32,6 +32,8 @@ import common.StopwordsProvider;
 import internal.static_util.data.TermDocument;
 import internal.analyzers.search.StemmingTermAnalyzer;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
@@ -50,6 +52,7 @@ import java.util.stream.Collectors;
  * Created by Chris on 9/24/2015.
  */
 public class TermsAnalyzer {
+    private static final Log log = LogFactory.getLog(TermsAnalyzer.class);
     private static final Set<String> stopwords;
     static {
         // Ensure stopwords are initialized before stopword regex
@@ -118,8 +121,7 @@ public class TermsAnalyzer {
         try {
             sTerm = TermStemmer.stemTerm(term);
         } catch (ParseException e) {
-            e.printStackTrace();
-            System.err.println("ERROR: Could not stem term");
+            log.error("Could not stem term due to a parsing exception.");
         }
         final String stemmedTerm = sTerm;
 

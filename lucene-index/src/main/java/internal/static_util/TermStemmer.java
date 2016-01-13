@@ -7,6 +7,7 @@ import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.queryparser.classic.QueryParser;
 
 /**
+ * Class designed to stem a single term.
  * Created by chris on 1/5/16.
  */
 public class TermStemmer {

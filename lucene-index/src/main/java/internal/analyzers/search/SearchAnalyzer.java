@@ -1,5 +1,7 @@
 package internal.analyzers.search;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.Tokenizer;
@@ -22,6 +24,7 @@ import java.lang.reflect.InvocationTargetException;
 public class SearchAnalyzer extends Analyzer {
 
     private Class<? extends Tokenizer> tokenizerClass;
+    private static final Log log = LogFactory.getLog(SearchAnalyzer.class);
 
     /**
      * Constructor that allows for picking a tokenizer that will be used
@@ -37,15 +40,14 @@ public class SearchAnalyzer extends Analyzer {
         StringReader reader = new StringReader(s);
         Tokenizer tokenizer = getTokenizer();
         if (tokenizer == null) {
-            System.err.println("Reverting to whitespace tokenizer");
+            log.error("Reverting to whitespace tokenizer because tokenizer is not set");
             tokenizer = new WhitespaceTokenizer();
         }
 
         try {
             tokenizer.setReader(reader);
         } catch (IOException e) {
-            // TODO: Better error handling
-            e.printStackTrace();
+            log.warn("Could not set reader on tokenizer");
         }
         TokenStream filter = new StandardFilter(tokenizer);
         filter = new LowerCaseFilter(filter);
@@ -62,10 +64,8 @@ public class SearchAnalyzer extends Analyzer {
         try {
             return tokenizerClass.getConstructor().newInstance();
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-            System.err.println("There was an error getting the tokenizer");
-            e.printStackTrace();
+            log.error("Tokenizer could not be obtained or constructed");
         }
-        System.err.println("Get Tokenizer returned null");
         return null;
     }
 

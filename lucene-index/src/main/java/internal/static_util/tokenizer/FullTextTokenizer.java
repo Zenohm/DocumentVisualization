@@ -15,7 +15,7 @@ import java.util.ArrayList;
 public class FullTextTokenizer {
 
     /**
-     * Returns tokenized version of full text
+     * Returns tokenized version of full text.
      * @param text The Full text
      * @return The tokenized text
      * @throws IOException
@@ -29,7 +29,6 @@ public class FullTextTokenizer {
         while(tokenizer.incrementToken()){
             tokens.add(tokenizer.getAttribute(CharTermAttribute.class).toString().trim());
         }
-
         String[] tokeArray = new String[tokens.size()];
         return tokens.toArray(tokeArray);
     }

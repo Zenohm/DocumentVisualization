@@ -2,6 +2,8 @@ package internal.term_utils;
 
 import common.data.TermLocations;
 import common.Constants;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.index.LeafReader;
 import org.apache.lucene.index.PostingsEnum;
 import org.apache.lucene.index.SlowCompositeReaderWrapper;
@@ -19,6 +21,7 @@ import java.util.List;
  * Created by chris on 12/16/15.
  */
 public class TermLocationsSearcher extends LuceneReader {
+    private static final Log log = LogFactory.getLog(TermLocationsSearcher.class);
     private final LeafReader lReader;
 
     public TermLocationsSearcher(IndexReader reader) throws LuceneSearchException {
@@ -31,7 +34,7 @@ public class TermLocationsSearcher extends LuceneReader {
     }
 
     public List<TermLocations> getLocationsOfTerm(String term) throws LuceneSearchException {
-        // TODO: Possibly need to stem term
+        // TODO: Possibly need to stem term??
         Term searchTerm = new Term(Constants.FIELD_CONTENTS, term);
 
         PostingsEnum postings;
@@ -41,7 +44,7 @@ public class TermLocationsSearcher extends LuceneReader {
             throw new LuceneSearchException("There was an error getting the postings: " + e.getMessage());
         }
         if (postings == null) {
-            System.err.println("No Postings Found!");
+            log.error("Could not get postings. Postings were probably not included in indexing. Update your indexer.");
             return new ArrayList<>();
         }
 
@@ -52,16 +55,17 @@ public class TermLocationsSearcher extends LuceneReader {
             throw new LuceneSearchException("Next doc threw an exception while getting initial doc: " + e.getMessage());
         }
 
+        // Overall list of all locations
         List<TermLocations> locationsList = new ArrayList<>();
-
         while (docId != DocIdSetIterator.NO_MORE_DOCS) {
+            // The term locations within a single document.
             TermLocations locations = new TermLocations(docId);
 
             int numHits = 0;
             try {
                 numHits = postings.freq();
             } catch (IOException e) {
-                System.err.println("Num Hits threw an exception: " + e.getMessage());
+                log.error("Could not get the frequency of the postings! Were frequencies stored?");
             }
 
             int i = 0;
@@ -69,8 +73,7 @@ public class TermLocationsSearcher extends LuceneReader {
                 try {
                     locations.addTermLocation(postings.nextPosition());
                 } catch (IOException e) {
-                    System.err.println("There was an error getting a term location for " + docId +
-                            "Message: " + e.getMessage());
+                    log.error("There was an error getting term location for " + docId);
                 }
                 i++;
             }
@@ -78,7 +81,7 @@ public class TermLocationsSearcher extends LuceneReader {
             try {
                 docId = postings.nextDoc();
             } catch (IOException e) {
-                System.err.println("No more documents were found.");
+                log.error("No more documents!");
                 docId = DocIdSetIterator.NO_MORE_DOCS;
             }
 
