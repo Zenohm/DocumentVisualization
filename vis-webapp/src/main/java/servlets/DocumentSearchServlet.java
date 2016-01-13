@@ -2,11 +2,10 @@ package servlets;
 
 import document_search.DocumentSearcher;
 import exception.SearchException;
-import reader.LuceneIndexReader;
+import api.reader.LuceneIndexReader;
 import api.document_search.DocumentSearcherFactory;
-import searcher.TokenizerType;
 import servlets.servlet_util.ResponseUtils;
-import util.JsonCreator;
+import server_utils.JsonCreator;
 
 import javax.servlet.GenericServlet;
 import javax.servlet.ServletException;
@@ -36,7 +35,7 @@ public class DocumentSearchServlet extends GenericServlet {
         String term = req.getParameter("term");
         try {
             DocumentSearcher searcher = DocumentSearcherFactory
-                    .getDocumentSearcher(LuceneIndexReader.getInstance(), TokenizerType.WHITESPACE_TOKENIZER);
+                    .getDocumentSearcher(LuceneIndexReader.getInstance(), DocumentSearcherFactory.TokenizerType.WHITESPACE_TOKENIZER);
             String response = JsonCreator.toJson(searcher.searchForTerm(term));
             ResponseUtils.printResponse(res, response);
         } catch (SearchException e) {

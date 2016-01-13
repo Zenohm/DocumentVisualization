@@ -3,10 +3,10 @@ package servlets;
 import common.Constants;
 import common.data.ScoredTerm;
 import api.term_search.CompoundRelatedTerms;
-import reader.LuceneIndexReader;
-import searcher.exception.LuceneSearchException;
+import api.reader.LuceneIndexReader;
+import api.exception.LuceneSearchException;
 import servlets.servlet_util.ResponseUtils;
-import util.JsonCreator;
+import server_utils.JsonCreator;
 
 import javax.servlet.GenericServlet;
 import javax.servlet.ServletException;

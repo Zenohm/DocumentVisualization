@@ -4,9 +4,9 @@ import common.Constants;
 import common.data.DocumentMetadata;
 import document_access.DocumentInfoRetriever;
 import org.apache.lucene.document.Document;
-import reader.IndexReader;
-import searcher.exception.LuceneSearchException;
-import util.LuceneReader;
+import api.reader.IndexReader;
+import api.exception.LuceneSearchException;
+import internal.lucene_intf.LuceneReader;
 
 import java.io.IOException;
 

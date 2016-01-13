@@ -7,9 +7,8 @@ import data_processing.related_terms_combiner.data.RelatedTerm;
 import data_processing.related_terms_combiner.data.RelatedTermType;
 import api.term_search.CompoundRelatedTerms;
 import exception.SearchException;
-import full_text_analysis.TermsAnalyzer;
-import reader.LuceneIndexReader;
-import searcher.exception.LuceneSearchException;
+import api.reader.LuceneIndexReader;
+import api.exception.LuceneSearchException;
 import synonyms.SynonymAdapter;
 
 import java.util.ArrayList;

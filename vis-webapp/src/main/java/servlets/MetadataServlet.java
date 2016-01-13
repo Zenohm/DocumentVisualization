@@ -2,12 +2,12 @@ package servlets;
 
 import api.document_access.MetadataRetriever;
 import common.data.DocumentMetadata;
-import reader.LuceneIndexReader;
-import searcher.exception.LuceneSearchException;
+import api.reader.LuceneIndexReader;
+import api.exception.LuceneSearchException;
 import servlets.servlet_util.RequestUtils;
 import servlets.servlet_util.ResponseUtils;
 import servlets.servlet_util.ServletConstant;
-import util.JsonCreator;
+import server_utils.JsonCreator;
 
 import javax.servlet.GenericServlet;
 import javax.servlet.ServletException;

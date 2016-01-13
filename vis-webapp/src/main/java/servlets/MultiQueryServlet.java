@@ -4,10 +4,10 @@ import com.google.gson.GsonBuilder;
 import data_processing.multi_query_processing.MultiQueryConverter;
 import document_search.MultiQuerySearch;
 import servlets.servlet_util.RequestUtils;
-import util.data.D3ConvertibleJson;
-import reader.LuceneIndexReader;
+import server_utils.data.D3ConvertibleJson;
+import api.reader.LuceneIndexReader;
 import api.document_search.MultiQuerySearcher;
-import searcher.exception.LuceneSearchException;
+import api.exception.LuceneSearchException;
 import common.results.MultiQueryResults;
 
 import javax.servlet.ServletException;

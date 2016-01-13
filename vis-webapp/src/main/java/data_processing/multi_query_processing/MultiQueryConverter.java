@@ -1,12 +1,12 @@
 package data_processing.multi_query_processing;
 
-import util.FixedNodeGenerator;
-import util.data.D3ConvertibleJson;
+import server_utils.FixedNodeGenerator;
+import server_utils.data.D3ConvertibleJson;
 import data_processing.multi_query_processing.data.DocumentNode;
-import util.data.FixedNode;
-import util.data.Link;
-import full_text_analysis.FullTextExtractor;
-import reader.LuceneIndexReader;
+import server_utils.data.FixedNode;
+import server_utils.data.Link;
+import internal.static_util.FullTextExtractor;
+import api.reader.LuceneIndexReader;
 import common.results.MultiQueryResults;
 import common.results.QueryResults;
 

@@ -4,8 +4,8 @@ import api.document_access.PDFRetriever;
 import document_access.DocumentRetriever;
 import exception.SearchException;
 import org.apache.commons.io.FileUtils;
-import reader.LuceneIndexReader;
-import searcher.exception.LuceneSearchException;
+import api.reader.LuceneIndexReader;
+import api.exception.LuceneSearchException;
 import servlets.servlet_util.RequestUtils;
 import servlets.servlet_util.ServletConstant;
 

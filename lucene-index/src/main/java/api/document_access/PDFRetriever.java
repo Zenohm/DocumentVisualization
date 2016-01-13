@@ -2,9 +2,9 @@ package api.document_access;
 
 import common.Constants;
 import document_access.DocumentRetriever;
-import reader.IndexReader;
-import searcher.exception.LuceneSearchException;
-import util.LuceneReader;
+import api.reader.IndexReader;
+import api.exception.LuceneSearchException;
+import internal.lucene_intf.LuceneReader;
 
 import java.io.File;
 import java.io.IOException;

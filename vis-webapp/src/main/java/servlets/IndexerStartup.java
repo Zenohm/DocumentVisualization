@@ -25,12 +25,11 @@
 package servlets;
 
 import common.Constants;
-import full_text_analysis.data.TextTokenizer;
-import indexer.PDFIndexer;
-import indexer.TextTokenizerWarmer;
+import api.indexer.PDFIndexer;
+import api.indexer.TextTokenizerWarmer;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import reader.LuceneIndexReader;
+import api.reader.LuceneIndexReader;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;

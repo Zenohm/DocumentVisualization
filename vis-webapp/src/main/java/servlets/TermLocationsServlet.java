@@ -1,12 +1,11 @@
 package servlets;
 
-import access_utils.TermLocationsSearcher;
-import com.google.gson.GsonBuilder;
+import internal.term_utils.TermLocationsSearcher;
 import org.apache.commons.lang.StringUtils;
-import reader.LuceneIndexReader;
-import searcher.exception.LuceneSearchException;
+import api.reader.LuceneIndexReader;
+import api.exception.LuceneSearchException;
 import servlets.servlet_util.ResponseUtils;
-import util.JsonCreator;
+import server_utils.JsonCreator;
 
 import javax.servlet.GenericServlet;
 import javax.servlet.ServletException;

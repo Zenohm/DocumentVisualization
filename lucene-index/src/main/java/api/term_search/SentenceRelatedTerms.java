@@ -2,8 +2,8 @@ package api.term_search;
 
 import common.data.ScoredTerm;
 import exception.SearchException;
-import full_text_analysis.TermsAnalyzer;
-import reader.LuceneIndexReader;
+import internal.static_util.TermsAnalyzer;
+import api.reader.LuceneIndexReader;
 import term_search.DocumentRelatedTermsSearcher;
 
 import java.util.List;

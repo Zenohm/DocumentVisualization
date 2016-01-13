@@ -1,21 +1,19 @@
 package api.term_search;
 
-import access_utils.TermLocationsSearcher;
+import internal.term_utils.TermLocationsSearcher;
 import common.data.TermLocations;
-import analyzers.filters.NumberFilter;
-import analyzers.search.SearchAnalyzer;
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
+import internal.analyzers.filters.NumberFilter;
+import internal.analyzers.search.SearchAnalyzer;
 import common.data.ScoredTerm;
 import common.StopwordsProvider;
-import full_text_analysis.TermRelatednessScorer;
-import full_text_analysis.data.TextTokenizer;
+import internal.static_util.scorer.TermRelatednessScorer;
+import internal.static_util.tokenizer.DocumentTokenizer;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.lucene.analysis.core.KeywordTokenizer;
-import reader.IndexReader;
-import searcher.exception.LuceneSearchException;
+import api.reader.IndexReader;
+import api.exception.LuceneSearchException;
 import term_search.RelatedTermsSearcher;
-import util.Searcher;
+import internal.lucene_intf.Searcher;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -41,7 +39,7 @@ public class CompoundRelatedTerms extends Searcher implements RelatedTermsSearch
         // Goes through terms list to determine the potential compound terms.
         Set<String> potentialCompoundTerms = Collections.newSetFromMap(new ConcurrentHashMap<>());
         getStream(termLocations).forEach(loc ->{
-            String[] contents = TextTokenizer.getInstance().getTokenizedText(loc.docId);
+            String[] contents = DocumentTokenizer.getInstance().getTokenizedText(loc.docId);
             if(contents == null){
                 System.err.println("Error Getting Tokenized Contents for: " + loc.docId);
                 return;

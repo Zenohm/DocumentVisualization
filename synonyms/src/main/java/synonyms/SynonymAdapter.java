@@ -26,7 +26,7 @@ package synonyms;
 import common.data.ScoredTerm;
 import edu.smu.tspell.wordnet.Synset;
 import edu.smu.tspell.wordnet.WordNetDatabase;
-import full_text_analysis.TermRelatednessScorer;
+import internal.static_util.scorer.TermRelatednessScorer;
 
 import java.util.*;
 import java.util.stream.Collectors;

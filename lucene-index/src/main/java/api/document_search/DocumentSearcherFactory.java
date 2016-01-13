@@ -1,11 +1,10 @@
 package api.document_search;
 
-import analyzers.search.SearchAnalyzer;
+import internal.analyzers.search.SearchAnalyzer;
 import org.apache.lucene.analysis.core.KeywordTokenizer;
 import org.apache.lucene.analysis.core.WhitespaceTokenizer;
-import reader.IndexReader;
-import searcher.TokenizerType;
-import searcher.exception.LuceneSearchException;
+import api.reader.IndexReader;
+import api.exception.LuceneSearchException;
 
 /**
  * Creates instances of DocumentSearchers
@@ -17,9 +16,9 @@ public class DocumentSearcherFactory {
     }
 
     /**
-     * Returns a Document Searcher Object, given an index reader and a Tokenizer type
+     * Returns a Document Searcher Object, given an index api.reader and a Tokenizer type
      *
-     * @param reader The index reader that should be used for the document searcher
+     * @param reader The index api.reader that should be used for the document searcher
      * @param type   The type of Tokenizer that the document searcher should use
      * @return A document searcher with the needed parameters. Returns a whitespace tokenizer by default.
      * @throws LuceneSearchException
@@ -37,5 +36,10 @@ public class DocumentSearcherFactory {
 
     public static LuceneDocumentSearcher defaultDocumentSearcher(IndexReader reader) throws LuceneSearchException{
         return new LuceneDocumentSearcher(reader, new SearchAnalyzer(WhitespaceTokenizer.class));
+    }
+
+    public enum TokenizerType{
+        WHITESPACE_TOKENIZER,
+        KEYWORD_TOKENIZER
     }
 }

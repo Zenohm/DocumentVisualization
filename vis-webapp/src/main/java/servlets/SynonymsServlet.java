@@ -23,12 +23,11 @@
  */
 package servlets;
 
-import com.google.gson.GsonBuilder;
 import common.data.ScoredTerm;
 import org.apache.commons.lang.StringUtils;
 import servlets.servlet_util.ResponseUtils;
 import synonyms.SynonymAdapter;
-import util.JsonCreator;
+import server_utils.JsonCreator;
 
 import javax.servlet.GenericServlet;
 import javax.servlet.ServletException;

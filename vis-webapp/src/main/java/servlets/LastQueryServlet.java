@@ -1,14 +1,13 @@
 package servlets;
 
 import servlets.servlet_util.ResponseUtils;
-import util.JsonCreator;
+import server_utils.JsonCreator;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.List;
 
 /**
  * Created by chris on 12/31/15.

@@ -1,6 +1,6 @@
 package api.document_search;
 
-import analyzers.search.SearchAnalyzer;
+import internal.analyzers.search.SearchAnalyzer;
 import com.google.common.collect.Maps;
 import document_search.MultiQuerySearch;
 import org.apache.lucene.analysis.core.WhitespaceTokenizer;
@@ -9,11 +9,11 @@ import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TopDocs;
-import reader.IndexReader;
-import searcher.exception.LuceneSearchException;
+import api.reader.IndexReader;
+import api.exception.LuceneSearchException;
 import common.results.MultiQueryResults;
 import common.results.QueryResults;
-import util.Searcher;
+import internal.lucene_intf.Searcher;
 
 import java.io.IOException;
 import java.util.Arrays;
