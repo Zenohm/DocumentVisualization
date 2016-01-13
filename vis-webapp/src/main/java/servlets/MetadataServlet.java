@@ -4,10 +4,12 @@ import api.document_access.MetadataRetriever;
 import common.data.DocumentMetadata;
 import api.reader.LuceneIndexReader;
 import api.exception.LuceneSearchException;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import servlets.servlet_util.RequestUtils;
 import servlets.servlet_util.ResponseUtils;
 import servlets.servlet_util.ServletConstant;
-import server_utils.JsonCreator;
+import servlets.servlet_util.JsonCreator;
 
 import javax.servlet.GenericServlet;
 import javax.servlet.ServletException;
@@ -22,7 +24,7 @@ import java.io.IOException;
  */
 @WebServlet(value = "/metadata", name = "metadataServlet")
 public class MetadataServlet extends GenericServlet {
-
+    public static final Log log = LogFactory.getLog(MetadataServlet.class);
     /**
      * Servlet Service for getting Metadata
      *
@@ -39,8 +41,7 @@ public class MetadataServlet extends GenericServlet {
         try {
             retriever = new MetadataRetriever(LuceneIndexReader.getInstance());
         } catch (LuceneSearchException e) {
-            e.printStackTrace();
-            System.err.println("MetadataServlet: Metadata retriever could not be created");
+            log.error("Metadata retriever could not be created");
             return;
         }
 
@@ -49,8 +50,7 @@ public class MetadataServlet extends GenericServlet {
             String response = JsonCreator.toJson(metadata);
             ResponseUtils.printResponse(res, response);
         } catch (LuceneSearchException e) {
-            e.printStackTrace();
+            log.error("Error searching");
         }
-
     }
 }

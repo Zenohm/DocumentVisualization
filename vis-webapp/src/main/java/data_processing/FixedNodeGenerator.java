@@ -1,6 +1,6 @@
-package server_utils;
+package data_processing;
 
-import server_utils.data.FixedNode;
+import data_processing.data.FixedNode;
 
 import java.util.ArrayList;
 import java.util.Map;

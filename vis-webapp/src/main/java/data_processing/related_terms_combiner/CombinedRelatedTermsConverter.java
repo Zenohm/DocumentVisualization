@@ -7,10 +7,10 @@ import data_processing.related_terms_combiner.data.TermNode;
 import api.reader.LuceneIndexReader;
 import internal.term_utils.TermQueryScore;
 import api.exception.LuceneSearchException;
-import server_utils.FixedNodeGenerator;
-import server_utils.data.D3ConvertibleJson;
-import server_utils.data.FixedNode;
-import server_utils.data.Link;
+import data_processing.FixedNodeGenerator;
+import data_processing.data.D3ConvertibleJson;
+import data_processing.data.FixedNode;
+import data_processing.data.Link;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -27,6 +27,8 @@ package servlets;
 import common.Constants;
 import api.indexer.PDFIndexer;
 import api.indexer.TextTokenizerWarmer;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import api.reader.LuceneIndexReader;
@@ -45,6 +47,7 @@ import java.util.concurrent.Semaphore;
  * Created by Chris on 8/19/2015.
  */
 public class IndexerStartup extends HttpServlet {
+    private static final Log log = LogFactory.getLog(IndexerStartup.class);
     public static Semaphore lock = new Semaphore(0);
 
     /**
@@ -77,10 +80,9 @@ public class IndexerStartup extends HttpServlet {
             logPdfEngine.setLevel(Level.FATAL);
         }
 
-        System.out.println("-----------------");
-        System.out.println("Running Initial Indexing Operation...");
+        log.info("Running Initial Indexing Operation...");
         if (System.getenv(Constants.RESOURCE_FOLDER_VAR) == null) {
-            System.err.println("CRITICAL: Indexer: RESOURCE Environment variable was not set.");
+            log.fatal("RESOURCE Environment variable was not set.");
             return;
         }
 
@@ -106,8 +108,7 @@ public class IndexerStartup extends HttpServlet {
                 updateIndex = false;
             }
         } catch (IOException e) {
-            System.err.println("IndexerStartup: Could not find configuration file. " +
-                    "Defaulting to update index.\n" +
+            log.warn("Could not find configuration file. Defaulting to update index.\n" +
                     "Configuration file should be placed in RESOURCE_DIR/config/index-config.cfg");
         }
 
@@ -115,23 +116,21 @@ public class IndexerStartup extends HttpServlet {
             try {
                 indexer.updateIndex();
             } catch (IOException e) {
-                e.printStackTrace();
+                log.error("Updating index error", e);
             }
         } else {
-            System.out.println("Skipping Re-indexing.");
+            log.info("Skipping Re-indexing.");
         }
 
 
         // Complete Updating the index
-        System.out.println("DONE!");
-        System.out.println("-----------------");
+        log.info("Indexing Complete");
         lock.release();
         if(!LuceneIndexReader.getInstance().isInitialized()){
-            System.out.println("Initializing IndexReader from directory.");
-            LuceneIndexReader.getInstance()
-                    .initializeIndexReader(getServletContext().getRealPath(Constants.INDEX_DIRECTORY));
+            log.info("Initializing IndexReader from directory.");
+            LuceneIndexReader.getInstance().initializeIndexReader(getServletContext().getRealPath(Constants.INDEX_DIRECTORY));
         }
-        System.out.println("Warming the Text Tokenizer");
+        log.info("Warming the Text Tokenizer");
         TextTokenizerWarmer.tokenizeAllText();
     }
 }

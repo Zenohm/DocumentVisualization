@@ -1,7 +1,5 @@
 package servlets.servlet_util;
 
-import server_utils.JsonCreator;
-
 import javax.servlet.ServletResponse;
 import java.io.IOException;
 

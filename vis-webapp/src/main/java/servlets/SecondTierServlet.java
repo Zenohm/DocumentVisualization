@@ -3,10 +3,12 @@ package servlets;
 import data_processing.related_terms_combiner.CombinedRelatedTerms;
 import data_processing.related_terms_combiner.CombinedRelatedTermsConverter;
 import data_processing.related_terms_combiner.data.RelatedTermResult;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import servlets.servlet_util.RequestUtils;
 import servlets.servlet_util.ResponseUtils;
 import servlets.servlet_util.ServletConstant;
-import server_utils.data.D3ConvertibleJson;
+import data_processing.data.D3ConvertibleJson;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -20,7 +22,7 @@ import java.util.List;
  */
 @WebServlet(value = "/second_tier", name = "SecondTier")
 public class SecondTierServlet extends HttpServlet {
-
+    private static final Log log = LogFactory.getLog(SecondTierServlet.class);
     private CombinedRelatedTerms crt;
     public SecondTierServlet(){
         super();
@@ -39,14 +41,14 @@ public class SecondTierServlet extends HttpServlet {
             if(obj != null){
                 queries = (List<String>)obj;
             }else{
-                System.err.println("ERROR: Requested to use previous with no previous queries");
+                log.error("Requested to use previous with no previous queries");
                 return;
             }
         }else{
             queries = RequestUtils.getQueries(req);
         }
         if(queries.size() == 0){
-            System.err.println("ERROR: Could not get queries.");
+            log.error("Could not get queries.");
             return;
         }
 
@@ -54,7 +56,7 @@ public class SecondTierServlet extends HttpServlet {
         if(req.getParameterMap().containsKey(ServletConstant.DOC_ID)){
             docId = RequestUtils.getIntegerParameter(req, ServletConstant.DOC_ID);
         }else{
-            System.err.println("ERROR: Could not get queries");
+            log.error("Could not get queries");
             return;
         }
 
@@ -68,6 +70,6 @@ public class SecondTierServlet extends HttpServlet {
         D3ConvertibleJson json = CombinedRelatedTermsConverter
                 .convertToLinksAndNodes(results.toArray(resArray));
         ResponseUtils.printPrettyJsonResponse(res, json);
-        System.out.println("Total time to produce second tier results: " + (System.nanoTime() - startTime)/Math.pow(10, 9));
+        log.info("Total time to produce second tier results: " + (System.nanoTime() - startTime)/Math.pow(10, 9));
     }
 }

@@ -20,4 +20,11 @@ public class RelatedTerm extends ScoredTerm{
     public static RelatedTerm convertScoredTerm(ScoredTerm term, RelatedTermType type){
         return RelatedTerm.of(term.getText(), term.getScore(), type);
     }
+
+    /**
+     * Created by chris on 12/30/15.
+     */
+    public enum RelatedTermType {
+        Compound, Sentence, Synonym
+    }
 }

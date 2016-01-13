@@ -1,4 +1,4 @@
-package server_utils;
+package servlets.servlet_util;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

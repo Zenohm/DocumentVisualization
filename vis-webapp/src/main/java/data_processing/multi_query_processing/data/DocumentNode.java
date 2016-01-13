@@ -1,6 +1,6 @@
 package data_processing.multi_query_processing.data;
 
-import server_utils.data.Node;
+import data_processing.data.Node;
 
 /**
  * Document node, this node contains a document.

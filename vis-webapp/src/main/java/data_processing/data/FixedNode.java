@@ -1,4 +1,4 @@
-package server_utils.data;
+package data_processing.data;
 
 /**
  * Node that does not move, has a set position relative to the total width.

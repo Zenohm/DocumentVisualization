@@ -3,8 +3,10 @@ package servlets;
 import com.google.gson.GsonBuilder;
 import data_processing.multi_query_processing.MultiQueryConverter;
 import document_search.MultiQuerySearch;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import servlets.servlet_util.RequestUtils;
-import server_utils.data.D3ConvertibleJson;
+import data_processing.data.D3ConvertibleJson;
 import api.reader.LuceneIndexReader;
 import api.document_search.MultiQuerySearcher;
 import api.exception.LuceneSearchException;
@@ -24,8 +26,7 @@ import java.util.List;
  */
 @WebServlet(value = "/multi_term_search", name = "multiTermSearch")
 public class MultiQueryServlet extends HttpServlet {
-
-
+    private static final Log log = LogFactory.getLog(MultiQueryServlet.class);
     /**
      * Servlet Service for doing multi query searches
      *
@@ -57,8 +58,7 @@ public class MultiQueryServlet extends HttpServlet {
 
 
         } catch (LuceneSearchException e) {
-            System.err.println("There was an error with the multi query servlet");
-            e.printStackTrace();
+            log.error("Error with multi-query servlet", e);
         }
     }
 

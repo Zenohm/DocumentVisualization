@@ -4,8 +4,10 @@ import internal.term_utils.TermLocationsSearcher;
 import org.apache.commons.lang.StringUtils;
 import api.reader.LuceneIndexReader;
 import api.exception.LuceneSearchException;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import servlets.servlet_util.ResponseUtils;
-import server_utils.JsonCreator;
+import servlets.servlet_util.JsonCreator;
 
 import javax.servlet.GenericServlet;
 import javax.servlet.ServletException;
@@ -19,6 +21,7 @@ import java.io.IOException;
  */
 @WebServlet(value = "/term_locs", name = "TermLocationsServlet")
 public class TermLocationsServlet extends GenericServlet {
+    private static final Log log = LogFactory.getLog(TermLocationsServlet.class);
     @Override
     public void service(ServletRequest req, ServletResponse res) throws ServletException, IOException {
         try {
@@ -29,8 +32,7 @@ public class TermLocationsServlet extends GenericServlet {
             String response = JsonCreator.toJson(searcher.getLocationsOfTerm(term));
             ResponseUtils.printResponse(res, response);
         } catch (LuceneSearchException e) {
-            System.err.println("There was an error with the Term Locations servlet");
-            e.printStackTrace();
+            log.error("There was an error with the Term Locations servlet", e);
         }
 
     }

@@ -141,7 +141,7 @@
 
     <servlet>
         <servlet-name>CompoundRelatedTermsServlet</servlet-name>
-        <servlet-class>servlets.CompoundRelatedTermsServlet</servlet-class>
+        <servlet-class>servlets.test_servlets.CompoundRelatedTermsServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>CompoundRelatedTermsServlet</servlet-name>

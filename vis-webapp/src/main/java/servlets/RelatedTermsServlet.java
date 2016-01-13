@@ -4,9 +4,11 @@ import common.data.ScoredTerm;
 import internal.static_util.TermsAnalyzer;
 import api.reader.LuceneIndexReader;
 import api.exception.LuceneSearchException;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import servlets.servlet_util.RequestUtils;
 import servlets.servlet_util.ServletConstant;
-import server_utils.JsonCreator;
+import servlets.servlet_util.JsonCreator;
 
 import javax.servlet.GenericServlet;
 import javax.servlet.ServletException;
@@ -22,7 +24,7 @@ import java.util.List;
  */
 @WebServlet(value = "/related_terms", name = "relatedTermsServlet")
 public class RelatedTermsServlet extends GenericServlet {
-
+    private static final Log log = LogFactory.getLog(RelatedTermsServlet.class);
     /**
      * Related Terms Service
      *
@@ -64,8 +66,7 @@ public class RelatedTermsServlet extends GenericServlet {
             res.getWriter().println(JsonCreator.toJson(terms));
 
         } catch (LuceneSearchException | NumberFormatException e) {
-            e.printStackTrace();
-            // TODO: Better logging for debugging
+            log.error("Problem with obtaining related terms.", e);
             res.getWriter().println("<h1>ERROR</h1><p>" + e.toString() + "</p>");
         }
     }

@@ -6,6 +6,8 @@ import exception.SearchException;
 import org.apache.commons.io.FileUtils;
 import api.reader.LuceneIndexReader;
 import api.exception.LuceneSearchException;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import servlets.servlet_util.RequestUtils;
 import servlets.servlet_util.ServletConstant;
 
@@ -23,6 +25,7 @@ import java.io.IOException;
  */
 @WebServlet(value = "/docs", name = "docServlet")
 public class DocumentServlet extends GenericServlet {
+    private static final Log log = LogFactory.getLog(DocumentServlet.class);
     /**
      * Servlet Service for getting Documents
      *
@@ -39,7 +42,7 @@ public class DocumentServlet extends GenericServlet {
         try {
             retriever = new PDFRetriever(LuceneIndexReader.getInstance());
         } catch (LuceneSearchException e) {
-            e.printStackTrace();
+            log.error("Could not get document for document ID: " + docId, e);
             return;
         }
 
@@ -49,7 +52,7 @@ public class DocumentServlet extends GenericServlet {
             FileUtils.copyFile(document, res.getOutputStream());
         } catch (SearchException |
                 NullPointerException e) {
-            e.printStackTrace();
+            log.error("Error while getting document for document ID: " + docId, e);
         }
     }
 }
