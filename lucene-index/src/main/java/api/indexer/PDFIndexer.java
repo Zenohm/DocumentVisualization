@@ -84,7 +84,6 @@ public class PDFIndexer{
             pool.invokeAll(tasks);
         } catch (InterruptedException e) {
             log.error("Indexing was interrupted " + e.getMessage());
-            System.err.println("Indexing was interrupted: " + e.getMessage());
         }
 
     }
