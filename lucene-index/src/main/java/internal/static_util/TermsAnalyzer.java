@@ -24,13 +24,14 @@
 
 package internal.static_util;
 
+import api.exception.LuceneSearchException;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import common.Constants;
-import common.data.ScoredTerm;
 import common.StopwordsProvider;
-import internal.static_util.data.TermDocument;
+import common.data.ScoredTerm;
 import internal.analyzers.search.StemmingTermAnalyzer;
+import internal.static_util.data.TermDocument;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -39,7 +40,6 @@ import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.queryparser.classic.ParseException;
-import api.exception.LuceneSearchException;
 import utilities.ListUtils;
 import utilities.StringManip;
 
@@ -128,13 +128,13 @@ public class TermsAnalyzer {
         List<String> sentences = Arrays.asList(StringManip.splitSentences(fullText));
 
         // Get sentences
-        // TODO: Remove numbers and quotation marks in this stream.
         List<String> filteredSentences = sentences.parallelStream()
                 .filter(s -> s.contains(stemmedTerm))
                 .map(s -> s.replaceAll("\\p{Punct}", " ")) // Remove punctuation
                 .map(s -> StringUtils.remove(s, term))
                 .map(s -> StringUtils.remove(s, stemmedTerm))
                 .map(s -> StringManip.removeStopwords(s, stopwords)) // Remove stop words
+                .map(StringFilters::removeNumbers)
                 .map(s -> s.replaceAll("\\s+", " ")) // Remove excessive spaces
                 .map(s -> s.replaceAll("^\\s", "")) // Remove starting spaces
                 .collect(Collectors.toList());

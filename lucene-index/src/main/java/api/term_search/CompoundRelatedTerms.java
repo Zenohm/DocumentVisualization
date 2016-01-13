@@ -1,23 +1,25 @@
 package api.term_search;
 
-import internal.term_utils.TermLocationsSearcher;
-import common.data.TermLocations;
-import internal.analyzers.filters.NumberFilter;
-import internal.analyzers.search.SearchAnalyzer;
-import common.data.ScoredTerm;
+import api.exception.LuceneSearchException;
+import api.reader.IndexReader;
 import common.StopwordsProvider;
+import common.data.ScoredTerm;
+import common.data.TermLocations;
+import internal.analyzers.search.SearchAnalyzer;
+import internal.lucene_intf.Searcher;
+import internal.static_util.StringFilters;
 import internal.static_util.scorer.TermRelatednessScorer;
 import internal.static_util.tokenizer.DocumentTokenizer;
+import internal.term_utils.TermLocationsSearcher;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.analysis.core.KeywordTokenizer;
-import api.reader.IndexReader;
-import api.exception.LuceneSearchException;
 import term_search.RelatedTermsSearcher;
-import internal.lucene_intf.Searcher;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Stream;
 
@@ -60,7 +62,7 @@ public class CompoundRelatedTerms extends Searcher implements RelatedTermsSearch
                 .map(location -> new ImmutablePair<>(contents[location].toLowerCase().trim(),
                         contents[location + 1].toLowerCase().trim()))
                 .filter(content -> !stopwords.contains(content.getRight()))
-                .filter(content -> !NumberFilter.isNumeric(content.getRight()))
+                .filter(content -> !StringFilters.isNumeric(content.getRight()))
                 .map(content -> content.getLeft() + " " + content.getRight())
                 .forEach(potentialCompoundTerms::add);
 
@@ -69,7 +71,7 @@ public class CompoundRelatedTerms extends Searcher implements RelatedTermsSearch
                 .map(location -> new ImmutablePair<>(contents[location].toLowerCase().trim(),
                         contents[location - 1].toLowerCase().trim()))
                 .filter(content -> !stopwords.contains(content.getRight()))
-                .filter(content -> !NumberFilter.isNumeric(content.getRight()))
+                .filter(content -> !StringFilters.isNumeric(content.getRight()))
                 .map(content -> content.getRight() + " " + content.getLeft())
                 .forEach(potentialCompoundTerms::add);
 
