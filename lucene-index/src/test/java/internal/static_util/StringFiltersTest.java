@@ -54,6 +54,7 @@ public void testRemoveNumbers() throws Exception {
     assertEquals("abc", StringFilters.removeNumbers("abc 123"));
     assertEquals("abc", StringFilters.removeNumbers("123 abc"));
     assertEquals("abc abc", StringFilters.removeNumbers("abc 123 abc"));
+    assertEquals("abc abc", StringFilters.removeNumbers("abc abc"));
 } 
 
 
