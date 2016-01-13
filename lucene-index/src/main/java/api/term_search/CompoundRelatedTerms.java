@@ -9,6 +9,8 @@ import common.StopwordsProvider;
 import internal.static_util.scorer.TermRelatednessScorer;
 import internal.static_util.tokenizer.DocumentTokenizer;
 import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.analysis.core.KeywordTokenizer;
 import api.reader.IndexReader;
 import api.exception.LuceneSearchException;
@@ -24,7 +26,7 @@ import java.util.stream.Stream;
  * Created by chris on 12/16/15.
  */
 public class CompoundRelatedTerms extends Searcher implements RelatedTermsSearcher {
-
+    private static final Log log = LogFactory.getLog(CompoundRelatedTerms.class);
     private Set<String> stopwords = StopwordsProvider.getProvider().getStopwords();
     public CompoundRelatedTerms(IndexReader reader, String stopwordFile) throws LuceneSearchException {
         super(reader, new SearchAnalyzer(KeywordTokenizer.class));
@@ -38,33 +40,40 @@ public class CompoundRelatedTerms extends Searcher implements RelatedTermsSearch
 
         // Goes through terms list to determine the potential compound terms.
         Set<String> potentialCompoundTerms = Collections.newSetFromMap(new ConcurrentHashMap<>());
-        getStream(termLocations).forEach(loc ->{
-            String[] contents = DocumentTokenizer.getInstance().getTokenizedText(loc.docId);
-            if(contents == null){
-                System.err.println("Error Getting Tokenized Contents for: " + loc.docId);
-                return;
-            }
 
-            getStream(loc.getLocations())
-                    .filter(location -> location + 1 < contents.length)
-                    .map(location -> new ImmutablePair<>(contents[location].toLowerCase().trim(),
-                            contents[location + 1].toLowerCase().trim()))
-                    .filter(content -> !stopwords.contains(content.getRight()))
-                    .filter(content -> !NumberFilter.isNumeric(content.getRight()))
-                    .map(content -> content.getLeft() + " " + content.getRight())
-                    .forEach(potentialCompoundTerms::add);
-
-            getStream(loc.getLocations())
-                    .filter(location -> location - 1 >= 0)
-                    .map(location -> new ImmutablePair<>(contents[location].toLowerCase().trim(),
-                            contents[location - 1].toLowerCase().trim()))
-                    .filter(content -> !stopwords.contains(content.getRight()))
-                    .filter(content -> !NumberFilter.isNumeric(content.getRight()))
-                    .map(content -> content.getRight() + " " + content.getLeft())
-                    .forEach(potentialCompoundTerms::add);
-        });
+        // For each term location, get its potential compound terms.
+        getStream(termLocations).forEach(loc -> potentialCompoundTerms.addAll(getPotentialCompoundTerms(loc)));
 
         return TermRelatednessScorer.getRankedTermsWithScores(term, potentialCompoundTerms, 0);
+    }
+
+    private Set<String> getPotentialCompoundTerms(TermLocations loc){
+        Set<String> potentialCompoundTerms = Collections.newSetFromMap(new ConcurrentHashMap<>());
+        String[] contents = DocumentTokenizer.getInstance().getTokenizedText(loc.docId);
+        if(contents == null){
+            log.error("Error Getting Tokenized Contents for: " + loc.docId);
+            return Collections.EMPTY_SET;
+        }
+
+        getStream(loc.getLocations())
+                .filter(location -> location + 1 < contents.length)
+                .map(location -> new ImmutablePair<>(contents[location].toLowerCase().trim(),
+                        contents[location + 1].toLowerCase().trim()))
+                .filter(content -> !stopwords.contains(content.getRight()))
+                .filter(content -> !NumberFilter.isNumeric(content.getRight()))
+                .map(content -> content.getLeft() + " " + content.getRight())
+                .forEach(potentialCompoundTerms::add);
+
+        getStream(loc.getLocations())
+                .filter(location -> location - 1 >= 0)
+                .map(location -> new ImmutablePair<>(contents[location].toLowerCase().trim(),
+                        contents[location - 1].toLowerCase().trim()))
+                .filter(content -> !stopwords.contains(content.getRight()))
+                .filter(content -> !NumberFilter.isNumeric(content.getRight()))
+                .map(content -> content.getRight() + " " + content.getLeft())
+                .forEach(potentialCompoundTerms::add);
+
+        return potentialCompoundTerms;
     }
 
     private <E> Stream<E> getStream(List<E> list){

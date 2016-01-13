@@ -30,6 +30,8 @@ import common.data.DocumentMetadata;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.*;
 import org.apache.lucene.index.*;
@@ -54,7 +56,7 @@ import java.util.concurrent.Executors;
  * Created by Chris on 8/19/2015.
  */
 public class PDFIndexer{
-
+    private static final Log log = LogFactory.getLog(PDFIndexer.class);
     public final String indexDirectory;
     public final String resourceDirectory;
 
@@ -68,7 +70,7 @@ public class PDFIndexer{
         CSVParser parser = CSVFormat.RFC4180.withHeader().parse(in);
         List<Callable<Object>> tasks = new ArrayList<>();
         int threadPoolSize = Runtime.getRuntime().availableProcessors();
-        System.out.println("Indexing with " + threadPoolSize + " processors");
+        log.info("Indexing with " + threadPoolSize + " processors");
         ExecutorService pool = Executors.newFixedThreadPool(threadPoolSize);
         for (CSVRecord record : parser) {
             DocumentMetadata meta = new DocumentMetadata(record);
@@ -81,8 +83,8 @@ public class PDFIndexer{
         try {
             pool.invokeAll(tasks);
         } catch (InterruptedException e) {
+            log.error("Indexing was interrupted " + e.getMessage());
             System.err.println("Indexing was interrupted: " + e.getMessage());
-//            e.printStackTrace();
         }
 
     }
@@ -124,17 +126,17 @@ public class PDFIndexer{
 
             if (writer.getConfig().getOpenMode() == IndexWriterConfig.OpenMode.CREATE) {
                 // New index, so we just add the document (no old document can be there):
-                System.out.println("adding " + file);
+                log.info("adding "  + file + " to index");
                 writer.addDocument(doc);
             } else {
                 // Existing index (an old copy of this document may have been indexed) so
                 // we use updateDocument instead to replace the old one matching the exact
                 // path, if present:
-                System.out.println("updating " + file);
+                log.info("updating " + file + " in index");
                 writer.updateDocument(new Term(Constants.FIELD_PATH, file.toString()), doc);
             }
         } catch (IOException e) {
-            System.out.println("Failed to read file " + metadata.getFilename());
+            log.error("Failed to read file " + metadata.getFilename());
         }
 
     }
@@ -164,11 +166,9 @@ public class PDFIndexer{
             writer.close();
             long endTime = System.nanoTime();
             LuceneIndexReader.getInstance().initializeIndexReader(writer);
-            System.out.println("Took: " + (endTime - startTime) / Math.pow(10, 6) + " milliseconds to generate the index.");
+            log.info("Took: " + (endTime - startTime) / Math.pow(10, 6) + " milliseconds to generate the index.");
         } catch (IOException e) {
-            // TODO: Implement better error handling
-            System.out.println("IO Exception Thrown while updating index " + e.getMessage() + "\n");
-//            e.printStackTrace();
+            log.error("IO Exception Thrown while updating index " + e.getMessage() + "\n");
         }
 
     }

@@ -1,6 +1,8 @@
 package api.indexer;
 
 import internal.static_util.tokenizer.DocumentTokenizer;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.index.IndexReader;
 import api.reader.LuceneIndexReader;
 import java.util.concurrent.Executors;
@@ -10,6 +12,7 @@ import java.util.concurrent.ThreadPoolExecutor;
  * Created by chris on 1/5/16.
  */
 public class TextTokenizerWarmer {
+    private static final Log log  = LogFactory.getLog(TextTokenizerWarmer.class);
     private TextTokenizerWarmer(){}
     public static void tokenizeAllText(){
         IndexReader reader = LuceneIndexReader.getInstance().getReader();
@@ -20,9 +23,11 @@ public class TextTokenizerWarmer {
             final int docId = i;
             pool.submit(() -> tokenizer.populateCache(docId));
         }
-        new Thread(() -> {
+        Thread numDocsCounter = new Thread(() -> {
             while(reader.numDocs() > pool.getCompletedTaskCount());
-            System.out.println("Tokenizer Warm Time:  " + (System.nanoTime() - startTime)/Math.pow(10, 9));
-        }).start();
+            log.info("Tokenizer Warm Time:  " + (System.nanoTime() - startTime)/Math.pow(10, 9));
+        });
+        numDocsCounter.setName("TokenizerWarmerWaitThread");
+        numDocsCounter.start();
     }
 }

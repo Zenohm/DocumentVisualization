@@ -56,7 +56,7 @@ public class IndexerStartup extends HttpServlet {
         System.out.println("Starting Up the Logging System");
         // TODO: Better configuration for loggers
         org.apache.log4j.BasicConfigurator.configure();
-        Logger.getRootLogger().setLevel(Level.WARN);
+        Logger.getRootLogger().setLevel(Level.INFO);
         System.out.println("Disabling PDF Box Logging");
         String[] annoyingLoggers = {"org.apache.pdfbox.pdmodel.font.PDType0Font",
                 "org.apache.pdfbox.pdmodel.font.PDType1Font",
