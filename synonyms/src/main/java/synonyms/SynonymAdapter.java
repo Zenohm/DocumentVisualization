@@ -28,7 +28,14 @@ import edu.smu.tspell.wordnet.Synset;
 import edu.smu.tspell.wordnet.WordNetDatabase;
 import internal.static_util.scorer.TermRelatednessScorer;
 
-import java.util.*;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Scanner;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -55,7 +62,7 @@ public class SynonymAdapter {
                     System.out.println(scoredTerms);
                 }
             } catch (Exception e) {
-                System.out.println(e.getLocalizedMessage());
+                log.error(e.getLocalizedMessage());
                 // Swallow exceptions, keep going.
             }
         }

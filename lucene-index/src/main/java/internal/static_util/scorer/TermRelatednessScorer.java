@@ -23,16 +23,23 @@
  */
 package internal.static_util.scorer;
 
+import api.reader.LuceneIndexReader;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import common.Constants;
 import common.data.ScoredTerm;
 import internal.static_util.QueryUtils;
-import org.apache.lucene.search.*;
-import api.reader.LuceneIndexReader;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.search.Query;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
@@ -47,8 +54,9 @@ public class TermRelatednessScorer {
      * The minimum a synonym must score to avoid being eliminated
      */
     private static final double DEFAULT_CUTOFF_RATIO = .50;
-
+    private static final Log log = LogFactory.getLog(TermRelatednessScorer.class);
     private static IndexSearcher searcher;
+
     static{
         searcher = new IndexSearcher(LuceneIndexReader.getInstance().getReader());
     }
@@ -157,7 +165,7 @@ public class TermRelatednessScorer {
             try {
                 return searcher.count(q);
             } catch (IOException e) {
-                System.err.println(TermRelatednessScorer.class.toString() + ": ERROR: Could not get term count for query " +
+                log.error(TermRelatednessScorer.class.toString() + ": ERROR: Could not get term count for query " +
                         q.toString() + ".");
                 return 0; // Assume no documents then.
             }
@@ -168,8 +176,9 @@ public class TermRelatednessScorer {
         try {
             numDocuments = cache.get(q.toString(), search);
         } catch (ExecutionException e) {
-            System.err.println("[TermRelatednessScorer] ERROR: There was an error while populating the cache.");
-            e.printStackTrace();
+            log.error("[TermRelatednessScorer] ERROR: There was an error while populating the cache: "
+                    + e.getLocalizedMessage());
+            log.debug(e.getStackTrace());
         }
         return numDocuments;
     }
