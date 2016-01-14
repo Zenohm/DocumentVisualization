@@ -47,6 +47,8 @@ import java.util.stream.Collectors;
  */
 public class SynonymAdapter {
 
+    private static final Log log = LogFactory.getLog(SynonymAdapter.class);
+
     // TODO: Remove this before shipping
     // Command line version of the servlet.
     public static void main(String[] args) {
