@@ -1,16 +1,15 @@
-package internal.static_util;
+package utilities;
 
 import java.text.NumberFormat;
 import java.text.ParsePosition;
-import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 /**
  * Created by chris on 1/13/16.
  */
 public class StringFilters {
+
     /**
      * Checks if a string is numeric
      *
@@ -28,11 +27,5 @@ public class StringFilters {
         boolean containsNumber = m.matches();
 
         return IsANumber || containsNumber;
-    }
-
-    public static String removeNumbers(String s){
-        return Arrays.asList(s.split(" ")).stream()
-                .filter(str -> !StringFilters.isNumeric(str))
-                .collect(Collectors.joining(" "));
     }
 }

@@ -134,7 +134,7 @@ public class TermsAnalyzer {
                 .map(s -> StringUtils.remove(s, term))
                 .map(s -> StringUtils.remove(s, stemmedTerm))
                 .map(s -> StringManip.removeStopwords(s, stopwords)) // Remove stop words
-                .map(StringFilters::removeNumbers)
+                .map(StringManip::removeNumbers)
                 .map(s -> s.replaceAll("\\s+", " ")) // Remove excessive spaces
                 .map(s -> s.replaceAll("^\\s", "")) // Remove starting spaces
                 .collect(Collectors.toList());

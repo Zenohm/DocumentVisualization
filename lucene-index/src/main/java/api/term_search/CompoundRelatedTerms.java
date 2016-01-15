@@ -7,7 +7,6 @@ import common.data.ScoredTerm;
 import common.data.TermLocations;
 import internal.analyzers.search.SearchAnalyzer;
 import internal.lucene_intf.Searcher;
-import internal.static_util.StringFilters;
 import internal.static_util.scorer.TermRelatednessScorer;
 import internal.static_util.tokenizer.DocumentTokenizer;
 import internal.term_utils.TermLocationsSearcher;
@@ -16,6 +15,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.analysis.core.KeywordTokenizer;
 import term_search.RelatedTermsSearcher;
+import utilities.StringFilters;
 
 import java.util.Collections;
 import java.util.List;

@@ -24,10 +24,10 @@
 
 package internal.analyzers.filters;
 
-import internal.static_util.StringFilters;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.analysis.util.FilteringTokenFilter;
+import utilities.StringFilters;
 
 import java.io.IOException;
 

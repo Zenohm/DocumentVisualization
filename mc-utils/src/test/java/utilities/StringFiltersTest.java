@@ -1,13 +1,13 @@
-package test.internal.static_util;
+package utilities;
 
-import internal.static_util.StringFilters;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 /** 
 * StringFilters Tester. 
@@ -44,18 +44,7 @@ public void testIsNumeric() throws Exception {
     assertFalse(StringFilters.isNumeric("abc1"));
 } 
 
-/** 
-* 
-* Method: removeNumbers(String s) 
-* 
-*/ 
-@Test
-public void testRemoveNumbers() throws Exception {
-    assertEquals("abc", StringFilters.removeNumbers("abc 123"));
-    assertEquals("abc", StringFilters.removeNumbers("123 abc"));
-    assertEquals("abc abc", StringFilters.removeNumbers("abc 123 abc"));
-    assertEquals("abc abc", StringFilters.removeNumbers("abc abc"));
-} 
+
 
 
 } 
