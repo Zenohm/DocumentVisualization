@@ -27,4 +27,9 @@ public class RelatedTerm extends ScoredTerm{
     public enum RelatedTermType {
         Compound, Sentence, Synonym
     }
+
+    @Override
+    public String toString() {
+        return super.toString() + ": " + type.toString();
+    }
 }

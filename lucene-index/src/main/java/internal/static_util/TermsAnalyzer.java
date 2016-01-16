@@ -40,12 +40,14 @@ import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.queryparser.classic.ParseException;
+import utilities.EasyLogger;
 import utilities.ListUtils;
 import utilities.StringManip;
 
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -127,17 +129,22 @@ public class TermsAnalyzer {
 
         List<String> sentences = Arrays.asList(StringManip.splitSentences(fullText));
 
+        EasyLogger.log(term + "_sentences", sentences.stream().collect(Collectors.joining("\n")));
+
+        Pattern p = StopwordsProvider.getProvider().getRegex();
         // Get sentences
         List<String> filteredSentences = sentences.parallelStream()
                 .filter(s -> s.contains(stemmedTerm))
                 .map(s -> s.replaceAll("\\p{Punct}", " ")) // Remove punctuation
-                .map(s -> StringUtils.remove(s, term))
-                .map(s -> StringUtils.remove(s, stemmedTerm))
-                .map(s -> StringManip.removeStopwords(s, stopwords)) // Remove stop words
+                .map(s -> StringUtils.remove(s, " " + term + " "))
+                .map(s -> StringUtils.remove(s, " " + stemmedTerm + " "))
+                .map(s -> p.matcher(s).replaceAll(" ")) // Remove stop words
                 .map(StringManip::removeNumbers)
                 .map(s -> s.replaceAll("\\s+", " ")) // Remove excessive spaces
                 .map(s -> s.replaceAll("^\\s", "")) // Remove starting spaces
                 .collect(Collectors.toList());
+
+        EasyLogger.log(term + "_filt_sentences", filteredSentences.stream().collect(Collectors.joining("\n")));
 
         // Remove all the null or empty strings
         filteredSentences.removeAll(Collections.singletonList(""));

@@ -15,9 +15,9 @@ public class StringManip {
     public static String removeStopwords(String original, Set<String> stopwords){
         String output = original;
         for(String stop : stopwords){
-            output = StringUtils.replace(output, stop + " ", "");
-            output = StringUtils.replace(output, " " + stop + " ", "");
-            output = StringUtils.replace(output, " " + stop, "");
+            output = StringUtils.replace(output, stop + " ", " ");
+            output = StringUtils.replace(output, " " + stop + " ", " ");
+            output = StringUtils.replace(output, " " + stop, " ");
         }
         return output;
     }
