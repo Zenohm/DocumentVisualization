@@ -1,8 +1,8 @@
 package common;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import utilities.StringManip;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -11,7 +11,6 @@ import java.util.Scanner;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 /**
  * Created by chris on 1/3/16.
@@ -41,7 +40,7 @@ public class StopwordsProvider {
         }else{
             log.error("Stopwords file not found! File: " + filename);
         }
-        regex = Pattern.compile(getStopwordRegexString(stopwords));
+        regex = Pattern.compile(StringManip.getMultiwordRegexString(stopwords));
     }
 
     public static synchronized StopwordsProvider getProvider(String filename){
@@ -61,19 +60,6 @@ public class StopwordsProvider {
     }
     public Pattern getRegex(){
         return regex;
-    }
-
-    private static String getStopwordRegexString(Set<String> stopwords) {
-        return StringUtils.join(stopwords.parallelStream()
-                                         .map(StopwordsProvider::blankSurroundedRegex)
-                                         .collect(Collectors.toList()), "|");
-    }
-
-    private static String blankSurroundedRegex(String term){
-        String newRegex = "\\s*\\b";
-        newRegex += term;
-        newRegex += "\\b\\s*";
-        return newRegex;
     }
 
 }
