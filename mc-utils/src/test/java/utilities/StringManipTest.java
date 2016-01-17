@@ -40,7 +40,7 @@ public void after() throws Exception {
 public void testRemoveStopwords() throws Exception {
     Set<String> stop = ImmutableSet.of("test", "thing", "win");
     String result = StringManip.removeStopwords("test of thing and need to win", stop);
-    assertEquals("of and need to", result);
+    assertEquals("of and need to", result.trim());
 } 
 
 /** 

@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 public class StringManip {
     private StringManip(){}
     public static String removeStopwords(String original, Set<String> stopwords){
-        return original.replaceAll(getMultiwordRegexString(StopwordsProvider.getProvider().getStopwords()), " ");
+        return original.replaceAll(getMultiwordRegexString(stopwords), " ");
     }
 
     public static String removeStopwords(String original, Pattern p){
