@@ -1,11 +1,13 @@
-package servlets;
+package servlets.test_servlets;
 
 import document_search.DocumentSearcher;
 import exception.SearchException;
 import api.reader.LuceneIndexReader;
 import api.document_search.DocumentSearcherFactory;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import servlets.servlet_util.ResponseUtils;
-import server_utils.JsonCreator;
+import servlets.servlet_util.JsonCreator;
 
 import javax.servlet.GenericServlet;
 import javax.servlet.ServletException;
@@ -20,7 +22,7 @@ import java.io.IOException;
  */
 @WebServlet(value = "/term_search", name = "termSearchServlet")
 public class DocumentSearchServlet extends GenericServlet {
-
+    private static final Log log = LogFactory.getLog(DocumentSearchServlet.class);
     /**
      * Searches the document database for a term
      *
@@ -39,8 +41,7 @@ public class DocumentSearchServlet extends GenericServlet {
             String response = JsonCreator.toJson(searcher.searchForTerm(term));
             ResponseUtils.printResponse(res, response);
         } catch (SearchException e) {
-            System.err.println("There was an error with the index searcher.");
-            e.printStackTrace();
+            log.error("Index searcher had an error.", e);
         }
     }
 }

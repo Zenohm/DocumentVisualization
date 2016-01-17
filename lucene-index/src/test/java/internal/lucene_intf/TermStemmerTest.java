@@ -1,9 +1,11 @@
 package internal.lucene_intf;
 
 import internal.static_util.TermStemmer;
-import org.junit.Test;
-import org.junit.Before; 
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 import static junit.framework.Assert.assertEquals;
 
@@ -17,7 +19,9 @@ import static junit.framework.Assert.assertEquals;
 public class TermStemmerTest { 
 
 @Before
-public void before() throws Exception { 
+public void before() throws Exception {
+    org.apache.log4j.BasicConfigurator.configure();
+    Logger.getRootLogger().setLevel(Level.INFO);
 } 
 
 @After

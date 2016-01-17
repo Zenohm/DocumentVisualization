@@ -1,16 +1,19 @@
 package data_processing.related_terms_combiner;
 
+import api.exception.LuceneSearchException;
+import api.reader.LuceneIndexReader;
+import data_processing.FixedNodeGenerator;
+import data_processing.data.D3ConvertibleJson;
+import data_processing.data.FixedNode;
+import data_processing.data.Link;
 import data_processing.related_terms_combiner.data.RelatedTerm;
 import data_processing.related_terms_combiner.data.RelatedTermResult;
 import data_processing.related_terms_combiner.data.SizedFixedNode;
 import data_processing.related_terms_combiner.data.TermNode;
-import api.reader.LuceneIndexReader;
 import internal.term_utils.TermQueryScore;
-import api.exception.LuceneSearchException;
-import server_utils.FixedNodeGenerator;
-import server_utils.data.D3ConvertibleJson;
-import server_utils.data.FixedNode;
-import server_utils.data.Link;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import utilities.EasyLogger;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,6 +23,7 @@ import java.util.Map;
  * Created by chris on 12/30/15.
  */
 public class CombinedRelatedTermsConverter {
+    private static final Log log = LogFactory.getLog(CombinedRelatedTermsConverter.class);
     private static TermQueryScore scorer;
     static{
         try {
@@ -33,8 +37,7 @@ public class CombinedRelatedTermsConverter {
         try {
             scorer = new TermQueryScore(LuceneIndexReader.getInstance());
         } catch (LuceneSearchException e) {
-            e.printStackTrace();
-            System.err.println("Cannot initialize scorer");
+            log.error("Cannot initialize scorer", e);
             return null; // Null because cannot score
         }
         D3ConvertibleJson jsonObject = new D3ConvertibleJson();
@@ -71,8 +74,9 @@ public class CombinedRelatedTermsConverter {
             // Add the related terms as nodes
             int sourceIndex = termIndexes.get(result.term);
             for(RelatedTerm rTerm : result.getResults()){
-                double size = scorer.getScore(rTerm.getText(), result.docId, TermQueryScore.QueryType.Basic);
-                if(size < .05){
+                EasyLogger.log(result.term + "_comb_rel_terms", rTerm);
+                double size = scorer.getScore(rTerm.getText(), result.docId, TermQueryScore.QueryType.Multiword);
+                if(size < .0001){
                     removedNodes++;
                     continue;
                 }
@@ -80,7 +84,7 @@ public class CombinedRelatedTermsConverter {
                 int id = rTerm.getText().hashCode();
                 String color = fixedNodes.get(sourceIndex).color; // Get the color of the source
                 double linkPower = rTerm.getScore();
-                if(linkPower >= .01){
+                if(linkPower >= .001){
                     jsonObject.nodes.add(TermNode.of(TermNode.NOT_FIXED, rTerm.getText(), id, color, rTerm.type, size, result.term));
                     jsonObject.links.add(Link.of(sourceIndex, myIndex, linkPower));
                     numNodes++;
@@ -89,8 +93,8 @@ public class CombinedRelatedTermsConverter {
                 }
             }
         }
-        System.out.println("Number of nodes: " + numNodes);
-        System.out.println("Removed Nodes:" + removedNodes);
+        log.info("Number of nodes: " + numNodes);
+        log.info("Removed Nodes:" + removedNodes);
         return jsonObject;
     }
 

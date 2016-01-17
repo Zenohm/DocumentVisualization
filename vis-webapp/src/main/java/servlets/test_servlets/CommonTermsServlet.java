@@ -1,12 +1,14 @@
-package servlets;
+package servlets.test_servlets;
 
 import common.data.ScoredTerm;
 import internal.static_util.TermsAnalyzer;
 import api.reader.LuceneIndexReader;
 import api.exception.LuceneSearchException;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import servlets.servlet_util.RequestUtils;
 import servlets.servlet_util.ResponseUtils;
-import server_utils.JsonCreator;
+import servlets.servlet_util.JsonCreator;
 
 import javax.servlet.GenericServlet;
 import javax.servlet.ServletException;
@@ -22,6 +24,7 @@ import java.util.List;
  */
 @WebServlet(value = "/common_terms", name = "commonTermsServlet")
 public class CommonTermsServlet extends GenericServlet {
+    private static final Log log = LogFactory.getLog(CommonTermsServlet.class);
     /**
      * Servlet Service for common terms
      *
@@ -49,9 +52,7 @@ public class CommonTermsServlet extends GenericServlet {
             ResponseUtils.printResponse(res, response);
 
         } catch (LuceneSearchException | NumberFormatException e) {
-            e.printStackTrace();
-            // TODO: Better logging for debugging
-            res.getWriter().println("<h1>ERROR</h1>" + e.toString());
+            log.error("Error while searching.", e);
         }
     }
 }

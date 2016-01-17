@@ -24,6 +24,8 @@
 
 package pdfs;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
 
@@ -36,13 +38,14 @@ import java.io.Writer;
  * Simple utility class for extracting text from a PDF
  */
 public class PDFTextExtractor {
+    private static final Log log = LogFactory.getLog(PDFTextExtractor.class);
     // Instantiate this so that we can just have it accessable
     private PDFTextStripper stripper;
     public PDFTextExtractor(){
         try{
             stripper = new PDFTextStripper();
         }catch (IOException e){
-            System.err.println("ERROR: Could not create PDF Text Stripper");
+            log.error("Could not create PDF Text Stripper", e);
         }
 
     }

@@ -26,7 +26,6 @@ public class QueryUtils {
             Arrays.asList(word.split(" ")).stream()
                     .map(term -> new Term(Constants.FIELD_CONTENTS, term))
                     .forEach(query::add);
-
             query.setSlop(0);
             q.add(query, BooleanClause.Occur.MUST);
         }

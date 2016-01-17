@@ -4,6 +4,8 @@ import internal.analyzers.filters.AlphaNumericFilter;
 import internal.analyzers.filters.NumberFilter;
 import com.google.common.collect.Lists;
 import common.StopwordsProvider;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.Tokenizer;
@@ -26,6 +28,7 @@ import java.util.Set;
  */
 public class StemmingTermAnalyzer extends Analyzer {
     private CharArraySet stop_set;
+    private static final Log log = LogFactory.getLog(StemmingTermAnalyzer.class);
 
     /**
      * Intialize the StemmingTermAnalyzer with a stopwordFile
@@ -52,8 +55,7 @@ public class StemmingTermAnalyzer extends Analyzer {
         try {
             tokenizer.setReader(reader);
         } catch (IOException e) {
-            // TODO: Better error handling
-            e.printStackTrace();
+            log.error("Could not set reader on tokenizer");
         }
 
         TokenStream filter = new StandardFilter(tokenizer);

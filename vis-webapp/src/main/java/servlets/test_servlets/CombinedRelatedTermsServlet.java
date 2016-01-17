@@ -1,11 +1,13 @@
-package servlets;
+package servlets.test_servlets;
 
 import data_processing.related_terms_combiner.CombinedRelatedTerms;
 import api.exception.LuceneSearchException;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import servlets.servlet_util.RequestUtils;
 import servlets.servlet_util.ResponseUtils;
 import servlets.servlet_util.ServletConstant;
-import server_utils.JsonCreator;
+import servlets.servlet_util.JsonCreator;
 
 import javax.servlet.GenericServlet;
 import javax.servlet.ServletException;
@@ -19,7 +21,7 @@ import java.io.IOException;
  */
 @WebServlet(value = "/combined_terms", name = "CombinedTerms")
 public class CombinedRelatedTermsServlet extends GenericServlet {
-
+    private static final Log log = LogFactory.getLog(CombinedRelatedTerms.class);
     private CombinedRelatedTerms combined;
 
     public CombinedRelatedTermsServlet(){
@@ -48,9 +50,7 @@ public class CombinedRelatedTermsServlet extends GenericServlet {
             ResponseUtils.printResponse(res, response);
 
         } catch (LuceneSearchException | NumberFormatException e) {
-            e.printStackTrace();
-            // TODO: Better logging for debugging
-            res.getWriter().println("<h1>ERROR</h1><p>" + e.toString() + "</p>");
+            log.error("Error doing lucene search", e);
         }
     }
 }

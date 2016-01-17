@@ -24,32 +24,36 @@
 
 package internal.static_util;
 
+import api.exception.LuceneSearchException;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import common.Constants;
-import common.data.ScoredTerm;
 import common.StopwordsProvider;
-import internal.static_util.data.TermDocument;
+import common.data.ScoredTerm;
 import internal.analyzers.search.StemmingTermAnalyzer;
-import org.apache.commons.lang.StringUtils;
+import internal.static_util.data.TermDocument;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.queryparser.classic.ParseException;
-import api.exception.LuceneSearchException;
+import utilities.EasyLogger;
 import utilities.ListUtils;
 import utilities.StringManip;
 
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
  * Created by Chris on 9/24/2015.
  */
 public class TermsAnalyzer {
+    private static final Log log = LogFactory.getLog(TermsAnalyzer.class);
     private static final Set<String> stopwords;
     static {
         // Ensure stopwords are initialized before stopword regex
@@ -118,24 +122,28 @@ public class TermsAnalyzer {
         try {
             sTerm = TermStemmer.stemTerm(term);
         } catch (ParseException e) {
-            e.printStackTrace();
-            System.err.println("ERROR: Could not stem term");
+            log.error("Could not stem term due to a parsing exception.");
         }
         final String stemmedTerm = sTerm;
 
         List<String> sentences = Arrays.asList(StringManip.splitSentences(fullText));
 
+        EasyLogger.log(term + "_sentences", sentences.stream().collect(Collectors.joining("\n")));
+
+        Pattern p = StopwordsProvider.getProvider().getRegex();
         // Get sentences
-        // TODO: Remove numbers and quotation marks in this stream.
         List<String> filteredSentences = sentences.parallelStream()
                 .filter(s -> s.contains(stemmedTerm))
                 .map(s -> s.replaceAll("\\p{Punct}", " ")) // Remove punctuation
-                .map(s -> StringUtils.remove(s, term))
-                .map(s -> StringUtils.remove(s, stemmedTerm))
-                .map(s -> StringManip.removeStopwords(s, stopwords)) // Remove stop words
+                .map(s -> StringManip.removeTerm(s, term))
+                .map(s -> StringManip.removeTerm(s, stemmedTerm))
+                .map(StringManip::removeStopwords) // Remove stop words (:-D)
+                .map(StringManip::removeNumbers)
                 .map(s -> s.replaceAll("\\s+", " ")) // Remove excessive spaces
                 .map(s -> s.replaceAll("^\\s", "")) // Remove starting spaces
                 .collect(Collectors.toList());
+
+        EasyLogger.log(term + "_filt_sentences", filteredSentences.stream().collect(Collectors.joining("\n")));
 
         // Remove all the null or empty strings
         filteredSentences.removeAll(Collections.singletonList(""));

@@ -28,6 +28,8 @@ import internal.analyzers.filters.AlphaNumericFilter;
 import internal.analyzers.filters.NumberFilter;
 import com.google.common.collect.Lists;
 import common.StopwordsProvider;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.Tokenizer;
@@ -49,6 +51,8 @@ import java.util.List;
 public class PDFAnalyzer extends Analyzer {
     private final CharArraySet stop_set; // DO THIS ONCE!
 
+    private static final Log log = LogFactory.getLog(PDFAnalyzer.class);
+
     /**
      * Instantiate a new PDF analyzer
      *
@@ -67,8 +71,7 @@ public class PDFAnalyzer extends Analyzer {
         try {
             tokenizer.setReader(reader);
         } catch (IOException e) {
-            // TODO: Better error handling
-            e.printStackTrace();
+            log.error("Could not set reader on tokenizer. Threw IO exception");
         }
 
         TokenStream filter = new StandardFilter(tokenizer);

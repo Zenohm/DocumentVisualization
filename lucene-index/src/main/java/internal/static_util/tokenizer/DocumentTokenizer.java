@@ -3,6 +3,8 @@ package internal.static_util.tokenizer;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import common.Constants;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.document.Document;
 import api.reader.LuceneIndexReader;
 import api.exception.LuceneSearchException;
@@ -15,6 +17,7 @@ import java.util.concurrent.ExecutionException;
  * Created by chris on 1/5/16.
  */
 public class DocumentTokenizer extends LuceneReader{
+    private static final Log log = LogFactory.getLog(DocumentTokenizer.class);
     private static Cache<Integer, String[]> tokenCache = CacheBuilder.newBuilder().maximumSize(Constants.MAX_CACHE_SIZE).build();
     private static DocumentTokenizer instance;
     private DocumentTokenizer() throws LuceneSearchException{
@@ -25,7 +28,7 @@ public class DocumentTokenizer extends LuceneReader{
             try {
                 instance = new DocumentTokenizer();
             } catch (LuceneSearchException e) {
-                System.err.println("ERROR: Could not create text tokenizer");
+                log.error("Could not create text tokenizer");
                 e.printStackTrace();
             }
         }
@@ -52,7 +55,7 @@ public class DocumentTokenizer extends LuceneReader{
         try {
             doc = reader.getReader().document(docId);
         } catch (IOException e) {
-            System.err.println("There was an error getting document " + docId + ": " + e.getMessage());
+            log.error("There was an error getting document " + docId + ": " + e.getMessage());
             return null;
         }
 
@@ -65,7 +68,7 @@ public class DocumentTokenizer extends LuceneReader{
             }
             contents = FullTextTokenizer.tokenizeText(totalContent);
         } catch (IOException e) {
-            System.err.println("There was an error while tokenizing the text for " + docId + ": " + e.getMessage());
+            log.error("Could not tokenize text for " + docId + ": " + e.getMessage());
             return null;
         }
 

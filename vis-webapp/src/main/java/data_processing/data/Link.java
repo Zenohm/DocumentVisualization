@@ -1,4 +1,4 @@
-package server_utils.data;
+package data_processing.data;
 
 /**
  * Representation of the Link for JSON object

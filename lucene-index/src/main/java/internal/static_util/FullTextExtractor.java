@@ -1,6 +1,8 @@
 package internal.static_util;
 
 import common.Constants;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.index.IndexReader;
 
 import java.io.IOException;
@@ -11,6 +13,8 @@ import java.io.IOException;
  */
 public class FullTextExtractor {
     public static final String FAILED_TEXT = "FAILEDTOEXTRACT";
+
+    private static final Log log = LogFactory.getLog(FullTextExtractor.class);
 
     /**
      * Extracts the full text given the document ID
@@ -25,8 +29,7 @@ public class FullTextExtractor {
             return reader.document(docId).get(Constants.FIELD_CONTENTS)
                     .replaceAll("\\r\\n|\\r|\\n", " ").toLowerCase();
         } catch (IOException e) {
-            System.err.println("FullTextExtractor: Failed to obtain the document with id "
-                    + docId + e.toString());
+            log.error("Could not get document with id: " + docId);
         }
         return FAILED_TEXT;
     }

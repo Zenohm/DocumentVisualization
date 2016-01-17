@@ -1,12 +1,14 @@
-package servlets;
+package servlets.test_servlets;
 
 import common.Constants;
 import common.data.ScoredTerm;
 import api.term_search.CompoundRelatedTerms;
 import api.reader.LuceneIndexReader;
 import api.exception.LuceneSearchException;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import servlets.servlet_util.ResponseUtils;
-import server_utils.JsonCreator;
+import servlets.servlet_util.JsonCreator;
 
 import javax.servlet.GenericServlet;
 import javax.servlet.ServletException;
@@ -21,6 +23,7 @@ import java.util.List;
  */
 @WebServlet(value = "/compound_related_terms", name = "CompoundRelatedTermsServlet")
 public class CompoundRelatedTermsServlet extends GenericServlet{
+    private static final Log log = LogFactory.getLog(CommonTermsServlet.class);
     private CompoundRelatedTerms termsGenerator;
     public CompoundRelatedTermsServlet(){
         super();
@@ -29,7 +32,7 @@ public class CompoundRelatedTermsServlet extends GenericServlet{
         try{
             termsGenerator = new CompoundRelatedTerms(LuceneIndexReader.getInstance(), stopwordsFile);
         }catch (LuceneSearchException e){
-            System.err.println("Error instantiating the compound terms generator");
+            log.error("Could not instantiate compound related terms generator.");
         }
 
     }
@@ -43,14 +46,14 @@ public class CompoundRelatedTermsServlet extends GenericServlet{
             long start = System.nanoTime();
             String term = req.getParameter("term");
             List<ScoredTerm> terms = termsGenerator.getRelatedTerms(term);
-            System.out.println("Took: " + (System.nanoTime() - start)/Math.pow(10, 9) +
+            log.info("Took: " + (System.nanoTime() - start)/Math.pow(10, 9) +
                     " seconds to generate related terms");
 
             String response = JsonCreator.getPrettyJson(terms);
             ResponseUtils.printResponse(res, response);
 
         }catch (LuceneSearchException e){
-            e.printStackTrace();
+            log.error("Exception thrown while getting compound terms", e);
             res.getWriter().println("<h1>ERROR</h1>" + e.toString()); // TODO: Better logging and debugging
         }
     }

@@ -1,10 +1,10 @@
 package data_processing.multi_query_processing;
 
-import server_utils.FixedNodeGenerator;
-import server_utils.data.D3ConvertibleJson;
+import data_processing.FixedNodeGenerator;
+import data_processing.data.D3ConvertibleJson;
 import data_processing.multi_query_processing.data.DocumentNode;
-import server_utils.data.FixedNode;
-import server_utils.data.Link;
+import data_processing.data.FixedNode;
+import data_processing.data.Link;
 import internal.static_util.FullTextExtractor;
 import api.reader.LuceneIndexReader;
 import common.results.MultiQueryResults;
@@ -101,8 +101,6 @@ public class MultiQueryConverter {
         }
 
         String hslString = "hsl(0,0%," + Integer.toString(val) + "%)";
-//        System.out.println("Score: " + result.score);
-//        System.out.println("HSL: " + hslString);
         return hslString;
     }
 
@@ -111,7 +109,6 @@ public class MultiQueryConverter {
                 .extractText(LuceneIndexReader.getInstance().getReader(), result.docId);
 
         int length = fullText.length();
-//        System.out.println("Text Length: " + length);
         double scale = ((double)length)/AVERAGE_COUNT;
         scale = 1 / scale;
 

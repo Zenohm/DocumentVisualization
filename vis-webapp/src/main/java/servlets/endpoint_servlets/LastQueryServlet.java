@@ -1,7 +1,7 @@
-package servlets;
+package servlets.endpoint_servlets;
 
 import servlets.servlet_util.ResponseUtils;
-import server_utils.JsonCreator;
+import servlets.servlet_util.JsonCreator;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;

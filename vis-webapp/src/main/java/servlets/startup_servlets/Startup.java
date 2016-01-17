@@ -22,11 +22,13 @@
  * THE SOFTWARE.
  */
 
-package servlets;
+package servlets.startup_servlets;
 
 import common.Constants;
-import api.indexer.PDFIndexer;
-import api.indexer.TextTokenizerWarmer;
+import api.startup.PDFIndexer;
+import api.startup.TextTokenizerWarmer;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import api.reader.LuceneIndexReader;
@@ -44,8 +46,17 @@ import java.util.concurrent.Semaphore;
  * Starts up the servlet. Initializes logging and completes indexing if needed.
  * Created by Chris on 8/19/2015.
  */
-public class IndexerStartup extends HttpServlet {
+public class Startup extends HttpServlet {
+    private Log log;
     public static Semaphore lock = new Semaphore(0);
+
+    public Startup(){
+        super();
+        org.apache.log4j.BasicConfigurator.configure();
+        Logger.getRootLogger().setLevel(Level.INFO);
+        log = LogFactory.getLog(Startup.class);
+        log.info("Logging system online");
+    }
 
     /**
      * Initialization Service, starts up the server
@@ -53,11 +64,7 @@ public class IndexerStartup extends HttpServlet {
      * @throws ServletException
      */
     public void init() throws ServletException {
-        System.out.println("Starting Up the Logging System");
-        // TODO: Better configuration for loggers
-        org.apache.log4j.BasicConfigurator.configure();
-        Logger.getRootLogger().setLevel(Level.WARN);
-        System.out.println("Disabling PDF Box Logging");
+        log.info("Disabling PDF Box Logging");
         String[] annoyingLoggers = {"org.apache.pdfbox.pdmodel.font.PDType0Font",
                 "org.apache.pdfbox.pdmodel.font.PDType1Font",
                 "org.apache.pdfbox.pdmodel.font.PDSimpleFont",
@@ -77,16 +84,15 @@ public class IndexerStartup extends HttpServlet {
             logPdfEngine.setLevel(Level.FATAL);
         }
 
-        System.out.println("-----------------");
-        System.out.println("Running Initial Indexing Operation...");
+        log.info("Running Initial Indexing Operation...");
         if (System.getenv(Constants.RESOURCE_FOLDER_VAR) == null) {
-            System.err.println("CRITICAL: Indexer: RESOURCE Environment variable was not set.");
+            log.fatal("RESOURCE Environment variable was not set.");
             return;
         }
 
-        // Create the indexer
-        // indexer output is INDEX_DIRECTORY, local to the application
-        // indexer input is RESOURCE_FOLDER_VAR which can be anywhere on the system and is specified by
+        // Create the startup
+        // startup output is INDEX_DIRECTORY, local to the application
+        // startup input is RESOURCE_FOLDER_VAR which can be anywhere on the system and is specified by
         // an environment variable
         PDFIndexer indexer = new PDFIndexer(getServletContext().getRealPath(Constants.INDEX_DIRECTORY),
                 System.getenv(Constants.RESOURCE_FOLDER_VAR));
@@ -106,8 +112,7 @@ public class IndexerStartup extends HttpServlet {
                 updateIndex = false;
             }
         } catch (IOException e) {
-            System.err.println("IndexerStartup: Could not find configuration file. " +
-                    "Defaulting to update index.\n" +
+            log.warn("Could not find configuration file. Defaulting to update index.\n" +
                     "Configuration file should be placed in RESOURCE_DIR/config/index-config.cfg");
         }
 
@@ -115,23 +120,21 @@ public class IndexerStartup extends HttpServlet {
             try {
                 indexer.updateIndex();
             } catch (IOException e) {
-                e.printStackTrace();
+                log.error("Updating index error", e);
             }
         } else {
-            System.out.println("Skipping Re-indexing.");
+            log.info("Skipping Re-indexing.");
         }
 
 
         // Complete Updating the index
-        System.out.println("DONE!");
-        System.out.println("-----------------");
+        log.info("Indexing Complete");
         lock.release();
         if(!LuceneIndexReader.getInstance().isInitialized()){
-            System.out.println("Initializing IndexReader from directory.");
-            LuceneIndexReader.getInstance()
-                    .initializeIndexReader(getServletContext().getRealPath(Constants.INDEX_DIRECTORY));
+            log.info("Initializing IndexReader from directory.");
+            LuceneIndexReader.getInstance().initializeIndexReader(getServletContext().getRealPath(Constants.INDEX_DIRECTORY));
         }
-        System.out.println("Warming the Text Tokenizer");
+        log.info("Warming the Text Tokenizer");
         TextTokenizerWarmer.tokenizeAllText();
     }
 }

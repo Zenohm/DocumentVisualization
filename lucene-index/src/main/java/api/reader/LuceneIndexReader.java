@@ -25,6 +25,8 @@
 package api.reader;
 
 import common.Constants;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.store.FSDirectory;
@@ -39,6 +41,7 @@ import java.nio.file.FileSystems;
  * Created by Chris on 9/24/2015.
  */
 public class LuceneIndexReader implements IndexReader {
+    private static final Log log = LogFactory.getLog(LuceneIndexReader.class);
     private static LuceneIndexReader ourInstance = new LuceneIndexReader();
     private org.apache.lucene.index.IndexReader READER;
 
@@ -59,7 +62,7 @@ public class LuceneIndexReader implements IndexReader {
     }
 
     /**
-     * This is called as a part of the startup for the indexer.
+     * This is called as a part of the startup for the startup.
      * When running an application that is on the web application, the api.reader is started by the startup script.
      *
      * @param filename The index directory
@@ -70,9 +73,8 @@ public class LuceneIndexReader implements IndexReader {
         try {
             READER = DirectoryReader.open(FSDirectory.open(FileSystems.getDefault().getPath(filename)));
         } catch (IOException e) {
-            e.printStackTrace(); // TODO: Remove stacktrace print from here
             READER = null;
-            System.err.println("Failed to instantiate the index api.reader with directory: " + filename);
+            log.error("Failed to instantiate the index api.reader with directory: " + filename);
         }
         return isInitialized();
     }
@@ -81,9 +83,8 @@ public class LuceneIndexReader implements IndexReader {
         try{
             READER = DirectoryReader.open(writer, true);
         } catch (IOException e) {
-            e.printStackTrace();
             READER = null;
-            System.err.println("Failed to instantiate index reader from writer");
+            log.error("Failed to instantiate index reader from writer");
         }
         return isInitialized();
     }
@@ -100,7 +101,7 @@ public class LuceneIndexReader implements IndexReader {
     @Override
     public org.apache.lucene.index.IndexReader getReader() {
         if (READER == null)
-            System.err.println("Error, Indexer Not Initialized! Results will be invalid."); // TODO: Throw an error here
+            log.error("Error, Indexer Not Initialized! Results will be invalid.");
         return READER;
     }
 }

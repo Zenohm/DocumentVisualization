@@ -27,12 +27,9 @@ package internal.analyzers.filters;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.analysis.util.FilteringTokenFilter;
+import utilities.StringFilters;
 
 import java.io.IOException;
-import java.text.NumberFormat;
-import java.text.ParsePosition;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Filters out numbers from the token stream
@@ -44,29 +41,10 @@ public class NumberFilter extends FilteringTokenFilter {
         super(in);
     }
 
-    /**
-     * Checks if a string is numeric
-     *
-     * @param str String to check if it is a number
-     * @return True if the string is a number
-     */
-    public static boolean isNumeric(String str) {
-        NumberFormat formatter = NumberFormat.getInstance();
-        ParsePosition pos = new ParsePosition(0);
-        formatter.parse(str, pos);
-        boolean IsANumber = str.length() == pos.getIndex();
-
-        Pattern p = Pattern.compile("[0-9]");
-        Matcher m = p.matcher(str);
-        boolean containsNumber = m.matches();
-
-        return IsANumber || containsNumber;
-    }
-
     @Override
     protected boolean accept() throws IOException {
         String token =
                 this.input.getAttribute(CharTermAttribute.class).toString().trim();
-        return !isNumeric(token);
+        return !StringFilters.isNumeric(token);
     }
 }

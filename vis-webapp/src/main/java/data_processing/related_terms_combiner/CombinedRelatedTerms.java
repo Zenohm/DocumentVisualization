@@ -4,11 +4,12 @@ import api.term_search.SentenceRelatedTerms;
 import common.Constants;
 import common.data.ScoredTerm;
 import data_processing.related_terms_combiner.data.RelatedTerm;
-import data_processing.related_terms_combiner.data.RelatedTermType;
 import api.term_search.CompoundRelatedTerms;
 import exception.SearchException;
 import api.reader.LuceneIndexReader;
 import api.exception.LuceneSearchException;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import synonyms.SynonymAdapter;
 
 import java.util.ArrayList;
@@ -22,7 +23,7 @@ import java.util.stream.Collectors;
  * Created by chris on 12/30/15.
  */
 public class CombinedRelatedTerms {
-
+    private static final Log log = LogFactory.getLog(CombinedRelatedTerms.class);
     private CompoundRelatedTerms crt;
     private SentenceRelatedTerms srt;
 
@@ -41,8 +42,7 @@ public class CombinedRelatedTerms {
             crt = new CompoundRelatedTerms(LuceneIndexReader.getInstance(), stopwordsFile);
             srt = new SentenceRelatedTerms();
         } catch (LuceneSearchException e) {
-            System.err.println("ERROR: Compound Related Terms Generator Could Not be Created");
-            e.printStackTrace();
+            log.error("Compound Related Terms Generator Could Not be Created: " + e.getMessage());
         }
     }
 
@@ -65,12 +65,11 @@ public class CombinedRelatedTerms {
         try {
             combinedTerms = combineRelatedTerms(crtFuture.get(), srtFuture.get(), synFuture.get());
         } catch (InterruptedException | ExecutionException e) {
-            System.err.println("[CombinedRelatedTerms] : ERROR: There was an error while geting combined related terms");
-            e.printStackTrace();
+            log.error("There was an error combining related terms: " + e.getMessage());
             return Collections.EMPTY_LIST;
         }
 
-        System.out.println("Total Time To Produce combined related terms to " + term + " in document # "+ docId + ": " + Double.toString((System.nanoTime() - startTime)/Math.pow(10, 9)));
+        log.info("Total Time To Produce combined related terms to " + term + " in document # "+ docId + ": " + Double.toString((System.nanoTime() - startTime)/Math.pow(10, 9)));
         combinedTerms.sort(Comparator.reverseOrder());
 
         return combinedTerms;
@@ -83,14 +82,14 @@ public class CombinedRelatedTerms {
             if(crt != null){
                 compoundRelatedTerms = crt.getRelatedTerms(term);
             }else{
-                System.err.println("ERROR: Compound related terms generator was not initialized");
+                log.error("Compound related terms generator was not initialized");
                 compoundRelatedTerms = null;
             }
         } catch (LuceneSearchException e) {
             e.printStackTrace();
             compoundRelatedTerms = null;
         }
-        System.out.println("Total Time to produce compound related terms to " + term + ": " + (System.nanoTime() - crtStart)/Math.pow(10,9));
+        log.info("Total Time to produce compound related terms to " + term + ": " + (System.nanoTime() - crtStart)/Math.pow(10,9));
         return compoundRelatedTerms;
     }
 
@@ -101,10 +100,10 @@ public class CombinedRelatedTerms {
         try {
             sentenceRelatedTerms = srt.getDocumentRelatedTerms(docId, term);
         } catch (SearchException e) {
-            System.err.println("ERROR: Sentence Related Terms Could not be obtained");
+            log.error("Sentence Related Terms Could not be obtained");
             e.printStackTrace();
         }
-        System.out.println("Total Time to produce sentence related terms to " + term + " in document # " + docId + ": " + (System.nanoTime() - srtStart)/Math.pow(10, 9) +
+        log.info("Total Time to produce sentence related terms to " + term + " in document # " + docId + ": " + (System.nanoTime() - srtStart)/Math.pow(10, 9) +
                 ". Got " + sentenceRelatedTerms.size() + " sentence related terms");
         return sentenceRelatedTerms;
     }
@@ -112,26 +111,26 @@ public class CombinedRelatedTerms {
     private List<ScoredTerm> getSynonyms(String term){
         long synStart = System.nanoTime();
         List<ScoredTerm> synTerms = SynonymAdapter.getScoredSynonymsWithMinimalRelation(term);
-        System.out.println("Total time to produce synonyms to " + term + ": " + (System.nanoTime() - synStart)/Math.pow(10, 9));
+        log.info("Total time to produce synonyms to " + term + ": " + (System.nanoTime() - synStart)/Math.pow(10, 9));
         return synTerms;
     }
 
     private List<RelatedTerm> combineRelatedTerms(List<ScoredTerm> compound, List<ScoredTerm> sentence, List<ScoredTerm> synonyms){
-        // TODO: Need to normalize scores!
+        // TODO: Need to normalize scores! Probably...
         List<RelatedTerm> allTerms = new ArrayList<>();
         if(compound != null && !compound.isEmpty()){
             allTerms.addAll(compound.stream()
-                    .map(rt ->  RelatedTerm.convertScoredTerm(rt, RelatedTermType.Compound))
+                    .map(rt ->  RelatedTerm.convertScoredTerm(rt, RelatedTerm.RelatedTermType.Compound))
                     .collect(Collectors.toList()));
         }
         if(sentence != null && !sentence.isEmpty()) {
             allTerms.addAll(sentence.stream()
-                    .map(rt -> RelatedTerm.convertScoredTerm(rt, RelatedTermType.Sentence))
+                    .map(rt -> RelatedTerm.convertScoredTerm(rt, RelatedTerm.RelatedTermType.Sentence))
                     .collect(Collectors.toList()));
         }
         if(synonyms != null && !synonyms.isEmpty()){
             allTerms.addAll(synonyms.stream()
-                    .map(rt -> RelatedTerm.convertScoredTerm(rt, RelatedTermType.Synonym))
+                    .map(rt -> RelatedTerm.convertScoredTerm(rt, RelatedTerm.RelatedTermType.Synonym))
                     .collect(Collectors.toList()));
         }
 
