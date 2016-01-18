@@ -24,14 +24,14 @@
 
 package servlets.startup_servlets;
 
-import common.Constants;
+import api.reader.LuceneIndexReader;
 import api.startup.PDFIndexer;
 import api.startup.TextTokenizerWarmer;
+import common.Constants;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import api.reader.LuceneIndexReader;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;

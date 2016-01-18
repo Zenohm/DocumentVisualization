@@ -1,11 +1,11 @@
 package servlets.endpoint_servlets;
 
 import api.document_access.PDFRetriever;
+import api.exception.LuceneSearchException;
+import api.reader.LuceneIndexReader;
 import document_access.DocumentRetriever;
 import exception.SearchException;
 import org.apache.commons.io.FileUtils;
-import api.reader.LuceneIndexReader;
-import api.exception.LuceneSearchException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import servlets.servlet_util.RequestUtils;

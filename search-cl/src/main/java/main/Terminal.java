@@ -1,13 +1,13 @@
 package main;
 
 import api.document_access.MetadataRetriever;
+import api.document_search.DocumentSearcherFactory;
+import api.document_search.LuceneDocumentSearcher;
+import api.exception.LuceneSearchException;
+import api.reader.LuceneIndexReader;
+import api.startup.PDFIndexer;
 import common.Constants;
 import common.data.ScoredDocument;
-import api.startup.PDFIndexer;
-import api.reader.LuceneIndexReader;
-import api.document_search.LuceneDocumentSearcher;
-import api.document_search.DocumentSearcherFactory;
-import api.exception.LuceneSearchException;
 
 import java.util.List;
 import java.util.Scanner;

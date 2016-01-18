@@ -1,16 +1,16 @@
 package servlets.endpoint_servlets;
 
+import api.document_search.MultiQuerySearcher;
+import api.exception.LuceneSearchException;
+import api.reader.LuceneIndexReader;
 import com.google.gson.GsonBuilder;
+import common.results.MultiQueryResults;
+import data_processing.data.D3ConvertibleJson;
 import data_processing.multi_query_processing.MultiQueryConverter;
 import document_search.MultiQuerySearch;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import servlets.servlet_util.RequestUtils;
-import data_processing.data.D3ConvertibleJson;
-import api.reader.LuceneIndexReader;
-import api.document_search.MultiQuerySearcher;
-import api.exception.LuceneSearchException;
-import common.results.MultiQueryResults;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;

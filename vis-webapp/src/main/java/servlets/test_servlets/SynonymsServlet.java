@@ -25,9 +25,9 @@ package servlets.test_servlets;
 
 import common.data.ScoredTerm;
 import org.apache.commons.lang.StringUtils;
+import servlets.servlet_util.JsonCreator;
 import servlets.servlet_util.ResponseUtils;
 import synonyms.SynonymAdapter;
-import servlets.servlet_util.JsonCreator;
 
 import javax.servlet.GenericServlet;
 import javax.servlet.ServletException;

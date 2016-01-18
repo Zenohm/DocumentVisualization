@@ -1,21 +1,22 @@
 package api.document_search;
 
+import api.exception.LuceneSearchException;
+import api.reader.IndexReader;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import common.Constants;
 import common.data.ScoredDocument;
 import document_search.DocumentSearcher;
+import internal.lucene_intf.Searcher;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TopDocs;
-import api.reader.IndexReader;
-import api.exception.LuceneSearchException;
 import utilities.ListUtils;
-import internal.lucene_intf.Searcher;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 

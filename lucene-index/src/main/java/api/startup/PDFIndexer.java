@@ -24,9 +24,10 @@
 
 package api.startup;
 
-import internal.analyzers.indexing.PDFAnalyzer;
+import api.reader.LuceneIndexReader;
 import common.Constants;
 import common.data.DocumentMetadata;
+import internal.analyzers.indexing.PDFAnalyzer;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
@@ -34,11 +35,13 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.*;
-import org.apache.lucene.index.*;
+import org.apache.lucene.index.IndexOptions;
+import org.apache.lucene.index.IndexWriter;
+import org.apache.lucene.index.IndexWriterConfig;
+import org.apache.lucene.index.Term;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import pdfs.PDFTextExtractor;
-import api.reader.LuceneIndexReader;
 
 import java.io.FileReader;
 import java.io.IOException;

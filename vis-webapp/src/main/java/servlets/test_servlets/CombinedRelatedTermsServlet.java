@@ -1,13 +1,13 @@
 package servlets.test_servlets;
 
-import data_processing.related_terms_combiner.CombinedRelatedTerms;
 import api.exception.LuceneSearchException;
+import data_processing.related_terms_combiner.CombinedRelatedTerms;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import servlets.servlet_util.JsonCreator;
 import servlets.servlet_util.RequestUtils;
 import servlets.servlet_util.ResponseUtils;
 import servlets.servlet_util.ServletConstant;
-import servlets.servlet_util.JsonCreator;
 
 import javax.servlet.GenericServlet;
 import javax.servlet.ServletException;

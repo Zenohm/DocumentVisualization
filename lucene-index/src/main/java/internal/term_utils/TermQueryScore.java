@@ -1,15 +1,15 @@
 package internal.term_utils;
 
+import api.exception.LuceneSearchException;
+import api.reader.IndexReader;
 import internal.analyzers.search.SearchAnalyzer;
+import internal.lucene_intf.Searcher;
 import internal.static_util.QueryUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.analysis.core.WhitespaceTokenizer;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.search.Query;
-import api.reader.IndexReader;
-import api.exception.LuceneSearchException;
-import internal.lucene_intf.Searcher;
 
 import java.io.IOException;
 
