@@ -44,10 +44,13 @@ import utilities.ListUtils;
 import utilities.StringManip;
 
 import java.io.IOException;
+import java.text.Normalizer;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
+import java.util.function.Function;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Created by Chris on 9/24/2015.
@@ -128,37 +131,35 @@ public class TermsAnalyzer {
 
         List<String> sentences = Arrays.asList(StringManip.splitSentences(fullText));
 
-        EasyLogger.log(term + "_sentences", sentences.stream().collect(Collectors.joining("\n")));
+        // Logging for debug
+//        EasyLogger.log(term + "_sentences", sentences.stream().collect(Collectors.joining("\n")));
 
-        Pattern p = StopwordsProvider.getProvider().getRegex();
-        // Get sentences
+        // Get the term scores
         List<String> filteredSentences = sentences.parallelStream()
                 .filter(s -> s.contains(stemmedTerm))
+                .map(StringManip::replaceSmartQuotes) // Handle dumb MS word stuff
+                .map(s -> Normalizer.normalize(s, Normalizer.Form.NFD)) // Normalize the text!
                 .map(s -> s.replaceAll("\\p{Punct}", " ")) // Remove punctuation
+                .map(s -> s.replaceAll("^[\\p{L}\\p{N}]+", " ")) // Remove punctuation, again, just to be sure we got it all.
                 .map(s -> StringManip.removeTerm(s, term))
                 .map(s -> StringManip.removeTerm(s, stemmedTerm))
                 .map(StringManip::removeStopwords) // Remove stop words (:-D)
                 .map(StringManip::removeNumbers)
                 .map(s -> s.replaceAll("\\s+", " ")) // Remove excessive spaces
                 .map(s -> s.replaceAll("^\\s", "")) // Remove starting spaces
+                .filter(s -> !s.isEmpty()) // Remove all the empty strings
                 .collect(Collectors.toList());
 
-        EasyLogger.log(term + "_filt_sentences", filteredSentences.stream().collect(Collectors.joining("\n")));
+        long numSentences =  filteredSentences.size();
+        Map<String, Long> termScores = filteredSentences.stream()
+                .map(s -> s.split("\\s")) // Split by words
+                .flatMap(Arrays::stream) // Map the string arrays to the stream
+                .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
 
-        // Remove all the null or empty strings
-        filteredSentences.removeAll(Collections.singletonList(""));
-
-        // Collect all the scores
-        Map<String, Integer> termScores = new HashMap<>();
-        for (String s : filteredSentences) {
-            String[] tokens = s.split("\\s");
-            for (String t : tokens) {
-                termScores.put(t, termScores.getOrDefault(t, 0) + 1);
-            }
-        }
+        EasyLogger.log(term + "_term_scores", termScores.entrySet().stream().map(e -> e.getKey() + ": " + e.getValue()).collect(Collectors.joining("\n")));
 
         // Convert this to a list of scores
-        List<ScoredTerm> scores = convertToScoredTerm(termScores, filteredSentences.size());
+        List<ScoredTerm> scores = convertToScoredTerm(termScores, numSentences);
 
         // Sort in reverse order
         Collections.sort(scores, Collections.reverseOrder());
@@ -273,9 +274,9 @@ public class TermsAnalyzer {
      * @param normalizer a normalizing constant
      * @return List of scored terms
      */
-    public static List<ScoredTerm> convertToScoredTerm(Map<String, Integer> terms, double normalizer) {
+    public static List<ScoredTerm> convertToScoredTerm(Map<String, ? extends Number> terms, double normalizer) {
         return terms.entrySet().parallelStream()
-                .map(e -> new ScoredTerm(e.getKey(), (double) e.getValue() / normalizer))
+                .map(e -> new ScoredTerm(e.getKey(), e.getValue().doubleValue() / normalizer))
                 .collect(Collectors.toList());
     }
 

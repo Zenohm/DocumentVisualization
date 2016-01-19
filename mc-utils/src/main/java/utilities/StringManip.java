@@ -74,4 +74,11 @@ public class StringManip {
         newRegex += "\\b\\s*";
         return newRegex;
     }
+
+    public static String replaceSmartQuotes(String str) {
+        String retVal = str;
+        retVal = retVal.replaceAll( "[\u2018\u2019\u201A\u201B\u2032\u2035]", "'" );
+        retVal = retVal.replaceAll("[\u201C\u201D\u201E\u201F\u2033\u2036]","\"");
+        return retVal;
+    }
 }
