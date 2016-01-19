@@ -1,15 +1,15 @@
 package servlets.endpoint_servlets;
 
 import api.document_access.MetadataRetriever;
-import common.data.DocumentMetadata;
-import api.reader.LuceneIndexReader;
 import api.exception.LuceneSearchException;
+import api.reader.LuceneIndexReader;
+import common.data.DocumentMetadata;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import servlets.servlet_util.JsonCreator;
 import servlets.servlet_util.RequestUtils;
 import servlets.servlet_util.ResponseUtils;
 import servlets.servlet_util.ServletConstant;
-import servlets.servlet_util.JsonCreator;
 
 import javax.servlet.GenericServlet;
 import javax.servlet.ServletException;

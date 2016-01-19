@@ -1,10 +1,11 @@
 package api.startup;
 
+import api.reader.LuceneIndexReader;
 import internal.static_util.tokenizer.DocumentTokenizer;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.index.IndexReader;
-import api.reader.LuceneIndexReader;
+
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 

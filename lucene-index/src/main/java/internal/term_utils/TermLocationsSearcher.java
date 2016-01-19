@@ -1,7 +1,10 @@
 package internal.term_utils;
 
-import common.data.TermLocations;
+import api.exception.LuceneSearchException;
+import api.reader.IndexReader;
 import common.Constants;
+import common.data.TermLocations;
+import internal.lucene_intf.LuceneReader;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.index.LeafReader;
@@ -9,9 +12,6 @@ import org.apache.lucene.index.PostingsEnum;
 import org.apache.lucene.index.SlowCompositeReaderWrapper;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.DocIdSetIterator;
-import api.reader.IndexReader;
-import api.exception.LuceneSearchException;
-import internal.lucene_intf.LuceneReader;
 
 import java.io.IOException;
 import java.util.ArrayList;

@@ -1,13 +1,13 @@
 package servlets.test_servlets;
 
+import api.document_search.DocumentSearcherFactory;
+import api.reader.LuceneIndexReader;
 import document_search.DocumentSearcher;
 import exception.SearchException;
-import api.reader.LuceneIndexReader;
-import api.document_search.DocumentSearcherFactory;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import servlets.servlet_util.ResponseUtils;
 import servlets.servlet_util.JsonCreator;
+import servlets.servlet_util.ResponseUtils;
 
 import javax.servlet.GenericServlet;
 import javax.servlet.ServletException;

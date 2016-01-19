@@ -1,13 +1,13 @@
 package data_processing.related_terms_combiner;
 
+import api.exception.LuceneSearchException;
+import api.reader.LuceneIndexReader;
+import api.term_search.CompoundRelatedTerms;
 import api.term_search.SentenceRelatedTerms;
 import common.Constants;
 import common.data.ScoredTerm;
 import data_processing.related_terms_combiner.data.RelatedTerm;
-import api.term_search.CompoundRelatedTerms;
 import exception.SearchException;
-import api.reader.LuceneIndexReader;
-import api.exception.LuceneSearchException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import synonyms.SynonymAdapter;
@@ -16,7 +16,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.concurrent.*;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
 /**

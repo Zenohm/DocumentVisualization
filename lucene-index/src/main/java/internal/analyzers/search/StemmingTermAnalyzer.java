@@ -1,9 +1,9 @@
 package internal.analyzers.search;
 
-import internal.analyzers.filters.AlphaNumericFilter;
-import internal.analyzers.filters.NumberFilter;
 import com.google.common.collect.Lists;
 import common.StopwordsProvider;
+import internal.analyzers.filters.AlphaNumericFilter;
+import internal.analyzers.filters.NumberFilter;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.analysis.Analyzer;
@@ -18,7 +18,8 @@ import org.apache.lucene.analysis.standard.StandardTokenizer;
 import org.apache.lucene.analysis.util.CharArraySet;
 import org.tartarus.snowball.ext.EnglishStemmer;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.StringReader;
 import java.util.List;
 import java.util.Set;
 

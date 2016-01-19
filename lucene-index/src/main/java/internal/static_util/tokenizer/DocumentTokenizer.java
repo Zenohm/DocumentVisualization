@@ -1,14 +1,14 @@
 package internal.static_util.tokenizer;
 
+import api.exception.LuceneSearchException;
+import api.reader.LuceneIndexReader;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import common.Constants;
+import internal.lucene_intf.LuceneReader;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.document.Document;
-import api.reader.LuceneIndexReader;
-import api.exception.LuceneSearchException;
-import internal.lucene_intf.LuceneReader;
 
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;

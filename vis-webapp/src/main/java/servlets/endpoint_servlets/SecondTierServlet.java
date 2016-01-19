@@ -1,5 +1,6 @@
 package servlets.endpoint_servlets;
 
+import data_processing.data.D3ConvertibleJson;
 import data_processing.related_terms_combiner.CombinedRelatedTerms;
 import data_processing.related_terms_combiner.CombinedRelatedTermsConverter;
 import data_processing.related_terms_combiner.data.RelatedTermResult;
@@ -8,7 +9,6 @@ import org.apache.commons.logging.LogFactory;
 import servlets.servlet_util.RequestUtils;
 import servlets.servlet_util.ResponseUtils;
 import servlets.servlet_util.ServletConstant;
-import data_processing.data.D3ConvertibleJson;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;

@@ -1,14 +1,14 @@
 package data_processing.multi_query_processing;
 
-import data_processing.FixedNodeGenerator;
-import data_processing.data.D3ConvertibleJson;
-import data_processing.multi_query_processing.data.DocumentNode;
-import data_processing.data.FixedNode;
-import data_processing.data.Link;
-import internal.static_util.FullTextExtractor;
 import api.reader.LuceneIndexReader;
 import common.results.MultiQueryResults;
 import common.results.QueryResults;
+import data_processing.FixedNodeGenerator;
+import data_processing.data.D3ConvertibleJson;
+import data_processing.data.FixedNode;
+import data_processing.data.Link;
+import data_processing.multi_query_processing.data.DocumentNode;
+import internal.static_util.FullTextExtractor;
 
 import java.util.ArrayList;
 import java.util.HashMap;
