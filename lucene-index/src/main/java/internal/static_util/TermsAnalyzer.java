@@ -48,9 +48,7 @@ import java.text.Normalizer;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Function;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * Created by Chris on 9/24/2015.
