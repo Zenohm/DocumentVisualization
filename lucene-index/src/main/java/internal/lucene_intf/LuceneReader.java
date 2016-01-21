@@ -1,7 +1,8 @@
 package internal.lucene_intf;
 
-import api.reader.IndexReader;
 import api.exception.LuceneSearchException;
+import api.reader.IndexReader;
+import api.reader.LuceneIndexReader;
 
 /**
  * Generic super class for ensuring that the api.reader is initialized in any class
@@ -9,6 +10,10 @@ import api.exception.LuceneSearchException;
  */
 public abstract class LuceneReader {
     protected IndexReader reader;
+
+    public LuceneReader() throws LuceneSearchException{
+        this(LuceneIndexReader.getInstance()); // Use the default lucene instance
+    }
 
     public LuceneReader(IndexReader reader) throws LuceneSearchException {
         if (!reader.isInitialized()) {

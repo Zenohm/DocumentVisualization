@@ -44,7 +44,7 @@ public class CombinedRelatedTerms {
         try {
             crt = new CompoundRelatedTerms(LuceneIndexReader.getInstance(), stopwordsFile);
             srt = new SentenceRelatedTerms();
-        } catch (LuceneSearchException e) {
+        } catch (SearchException e) {
             log.error("Compound Related Terms Generator Could Not be Created: " + e.getMessage());
         }
     }

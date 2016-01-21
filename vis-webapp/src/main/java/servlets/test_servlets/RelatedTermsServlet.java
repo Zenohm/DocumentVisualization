@@ -1,14 +1,16 @@
 package servlets.test_servlets;
 
 import api.exception.LuceneSearchException;
-import api.reader.LuceneIndexReader;
+import api.term_search.SentenceRelatedTerms;
 import common.data.ScoredTerm;
-import internal.static_util.TermsAnalyzer;
+import exception.SearchException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import servlets.servlet_util.JsonCreator;
 import servlets.servlet_util.RequestUtils;
+import servlets.servlet_util.ResponseUtils;
 import servlets.servlet_util.ServletConstant;
+import term_search.DocumentRelatedTermsSearcher;
+import utilities.ListUtils;
 
 import javax.servlet.GenericServlet;
 import javax.servlet.ServletException;
@@ -54,20 +56,19 @@ public class RelatedTermsServlet extends GenericServlet {
                 throw new LuceneSearchException("No Term");
             }
 
-
-            List<ScoredTerm> terms;
+            DocumentRelatedTermsSearcher srt = new SentenceRelatedTerms();
+            List<ScoredTerm> terms = srt.getDocumentRelatedTerms(docId, term);
             if (req.getParameterMap().containsKey("limit")) {
                 int limit = RequestUtils.getIntegerParameter(req, "limit");
-                terms = TermsAnalyzer.getRelatedTermsInDocument(LuceneIndexReader.getInstance().getReader(), docId, term, limit);
-            } else {
-                terms = TermsAnalyzer.getRelatedTermsInDocument(LuceneIndexReader.getInstance().getReader(), docId, term);
+                terms = ListUtils.getSublist(terms, limit);
             }
 
-            res.getWriter().println(JsonCreator.toJson(terms));
-
+            ResponseUtils.printJsonResponse(res, terms);
         } catch (LuceneSearchException | NumberFormatException e) {
             log.error("Problem with obtaining related terms.", e);
             res.getWriter().println("<h1>ERROR</h1><p>" + e.toString() + "</p>");
+        } catch (SearchException e) {
+            log.error("There was a problem creating sentence related terms class.");
         }
     }
 }
