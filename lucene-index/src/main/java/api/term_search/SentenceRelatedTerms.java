@@ -121,6 +121,11 @@ public class SentenceRelatedTerms extends LuceneReader implements DocumentRelate
                 .flatMap(Arrays::stream) // Map the string arrays to the stream
                 .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
 
+        // Remove single occurance terms
+        termScores = termScores.entrySet().stream()
+                .filter(e -> e.getValue() != 1)
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
         EasyLogger.log(term + "_term_scores", termScores.entrySet().stream().map(e -> e.getKey() + ": " + e.getValue()).collect(Collectors.joining("\n")));
 
         // Convert this to a list of scores
