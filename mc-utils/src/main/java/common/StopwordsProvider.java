@@ -61,5 +61,11 @@ public class StopwordsProvider {
     public Pattern getRegex(){
         return regex;
     }
+    public boolean isStopword(String word){
+        return stopwords.contains(word);
+    }
+    public boolean notStopword(String word){
+        return !isStopword(word);
+    }
 
 }

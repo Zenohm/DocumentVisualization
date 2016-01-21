@@ -21,9 +21,12 @@ public class FullTextTokenizer {
      * @throws IOException
      */
     public static String[] tokenizeText(String text) throws IOException{
+        return tokenizeText(text, new StandardTokenizer());
+    }
+
+    public static String[] tokenizeText(String text, Tokenizer tokenizer) throws IOException{
         ArrayList<String> tokens = new ArrayList<>();
         Reader stringReader = new StringReader(text);
-        Tokenizer tokenizer = new StandardTokenizer();
         tokenizer.setReader(stringReader);
         tokenizer.reset();
         while(tokenizer.incrementToken()){

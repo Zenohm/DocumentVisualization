@@ -1,14 +1,14 @@
 package servlets.test_servlets;
 
-import api.exception.LuceneSearchException;
-import api.reader.LuceneIndexReader;
+import api.term_search.CommonTerms;
 import common.data.ScoredTerm;
-import internal.static_util.TermsAnalyzer;
+import exception.SearchException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import servlets.servlet_util.JsonCreator;
 import servlets.servlet_util.RequestUtils;
 import servlets.servlet_util.ResponseUtils;
+import utilities.ListUtils;
 
 import javax.servlet.GenericServlet;
 import javax.servlet.ServletException;
@@ -40,18 +40,17 @@ public class CommonTermsServlet extends GenericServlet {
     public void service(ServletRequest req, ServletResponse res) throws ServletException, IOException {
         try {
             int docId = RequestUtils.getIntegerParameter(req, "docId"); // TODO: If docID doesn't exist?
-            List<ScoredTerm> terms;
+            CommonTerms ct = new CommonTerms();
+            List<ScoredTerm> terms = ct.getCommonTerms(docId);
             if (req.getParameterMap().containsKey("limit")) {
                 int limit = RequestUtils.getIntegerParameter(req, "limit");
-                terms = TermsAnalyzer.getTopTerms(LuceneIndexReader.getInstance().getReader(), docId, limit);
-            } else {
-                terms = TermsAnalyzer.getTerms(LuceneIndexReader.getInstance().getReader(), docId);
+                terms = ListUtils.getSublist(terms, limit);
             }
 
             String response = JsonCreator.toJson(terms);
             ResponseUtils.printResponse(res, response);
 
-        } catch (LuceneSearchException | NumberFormatException e) {
+        } catch (SearchException | NumberFormatException e) {
             log.error("Error while searching.", e);
         }
     }

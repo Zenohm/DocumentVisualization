@@ -83,7 +83,7 @@ public class SentenceRelatedTerms extends LuceneReader implements DocumentRelate
      *
      * @param fullText The fulltext of the document
      * @param term     The term to find related terms to
-     * @return A sorted list of scored terms.
+     * @return         A sorted list of scored terms.
      */
     public static List<ScoredTerm> getRelatedTerms(String fullText, String term) {
         String sTerm = term;
@@ -102,7 +102,7 @@ public class SentenceRelatedTerms extends LuceneReader implements DocumentRelate
         // Get the term scores
         List<String> filteredSentences = sentences.parallelStream()
                 .filter(s -> s.contains(stemmedTerm))
-                .map(StringManip::replaceSmartQuotes) // Handle dumb MS word stuff
+                .map(StringManip::removeSmartQuotes) // Handle dumb MS word stuff
                 .map(s -> Normalizer.normalize(s, Normalizer.Form.NFD)) // Normalize the text!
                 .map(s -> s.replaceAll("\\p{Punct}", " ")) // Remove punctuation
                 .map(s -> s.replaceAll("^[\\p{L}\\p{N}]+", " ")) // Remove punctuation, again, just to be sure we got it all.
