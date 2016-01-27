@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Multi Term Search Test</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script src="js/searchUtils.js"></script>
+    <link rel="stylesheet" type="text/css" href="style/text_search.css"/>
+    <script>
+        google.load("visualization", "1", {packages: ["corechart"]});
+        function search() {
+            document.getElementById("results").innerHTML = "";
+            $.getJSON("multi_term_search?" +
+                    "query1=" + document.getElementById("query1").value + "&" +
+                    "query2=" + document.getElementById("query2").value + "&" +
+                    "query3=" + document.getElementById("query3").value,
+                    function (data) {
+                        data.forEach(function (obj) {
+                            var result = document.createElement("div");
+                            result.className = "result";
+                            document.getElementById("results").appendChild(result);
+                            var metadataDiv = document.createElement("div");
+                            metadataDiv.className = "metadata";
+                            result.appendChild(metadataDiv);
+                            appendMetadata(metadataDiv, obj.docId);
+
+                            var data = new google.visualization.DataTable();
+                            data.addColumn('string', 'Term');
+                            data.addColumn('number', 'Score');
+                            var query1Text = obj.results[0].query;
+                            var query1Score = obj.results[0].score;
+                            var query2Text = obj.results[1].query;
+                            var query2Score = obj.results[1].score;
+                            var query3Text = obj.results[2].query;
+                            var query3Score = obj.results[2].score;
+
+                            data.addRows([
+                                [query1Text, query1Score],
+                                [query2Text, query2Score],
+                                [query3Text, query3Score]
+                            ]);
+
+                            var link = document.createElement("a");
+                            link.innerHTML = "Explore Terms";
+                            link.setAttribute("class", "secondTierLink");
+                            link.setAttribute("href", "second_tier_text.html");
+                            link.setAttribute("target", "_blank");
+                            result.appendChild(link);
+
+                            // Option to show scores in the div
+                            if (document.getElementById("analytics").checked) {
+                                var scoreDiv = document.createElement("div");
+                                scoreDiv.id = "scoreDiv";
+                                var scoreTable = document.createElement("table");
+                                scoreTable.className = "scoreTable";
+                                var firstRow = document.createElement("tr");
+                                var secondRow = document.createElement("tr");
+                                result.appendChild(scoreDiv);
+                                var overall = document.createElement("td");
+                                var average = document.createElement("td");
+                                var query1 = document.createElement("td");
+                                var query2 = document.createElement("td");
+                                var query3 = document.createElement("td");
+                                firstRow.appendChild(overall);
+                                firstRow.appendChild(average);
+                                secondRow.appendChild(query1);
+                                secondRow.appendChild(query2);
+                                secondRow.appendChild(query3);
+                                overall.innerHTML = "Overall Score: " + obj.score.toFixed(5);
+                                average.innerHTML += "Average Score:" + ((query1Score + query2Score + query3Score) / 3).toFixed(5);
+                                query1.innerHTML = query1Text + ": " + query1Score.toFixed(5);
+                                query2.innerHTML = query2Text + ": " + query2Score.toFixed(5);
+                                query3.innerHTML = query3Text + ": " + query3Score.toFixed(5);
+                                scoreTable.appendChild(firstRow);
+                                scoreTable.appendChild(secondRow);
+                                scoreDiv.appendChild(scoreTable);
+                            }
+                        })
+                    });
+        }
+
+        $(document).ready(function() {
+            $("#query1").keyup(function (event) {
+                if (event.keyCode == 13) {
+                    $("#searchButton").click();
+                }
+            });
+
+            $("#query2").keyup(function (event) {
+                if (event.keyCode == 13) {
+                    $("#searchButton").click();
+                }
+            });
+
+            $("#query3").keyup(function (event) {
+                if (event.keyCode == 13) {
+                    $("#searchButton").click();
+                }
+            });
+        });
+    </script>
+</head>
+<body id="textSearchBody">
+    <div class="title">
+        <h1 align="center">Tier One Search</h1>
+    </div>
+    <!--<h3>Enter your search terms below.</h3>-->
+    <div class="searchFields">
+        <div class="searchBoxContainer">
+            <input id="query1" type="search" class="searchBox" value="Virtualization"/>
+            <input id="query2" type="search" class="searchBox" value="Visualization"/>
+            <input id="query3" type="search" class="searchBox" value="Default"/><br/><br/>
+        </div>
+        <div class="searchRow">
+            <button onclick="search()" type="submit" class="searchButton" id="searchButton">Search</button>
+            <input id="analytics" type="checkbox"/><label for="analytics" title="Click to include analytical data"><b>Include Analytic Data</b></label>
+        </div>
+    </div>
+    <div id="results"></div>
+    <div id="sidebar" class="side-box-float" style="display: none;"></div>
+</body>
+</html>
