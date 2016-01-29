@@ -5,10 +5,14 @@
 // Appends the metadata to a search result.
 function appendMetadata(result, docId, functions) {
     $.getJSON("metadata?docId=" + docId, function (data) {
-        var title = document.createElement("p");
+        var titleBar = document.createElement("h2");
+        var title = document.createElement("a");
         title.innerHTML = data.title;
         title.className = "res-title";
-        result.appendChild(title);
+        title.href = "docs?docId=" + docId;
+        title.target = "_blank";
+        titleBar.appendChild(title);
+        result.appendChild(titleBar);
         var author = document.createElement("p");
         author.innerHTML = data.author;
         author.className = "res-author";
@@ -17,11 +21,6 @@ function appendMetadata(result, docId, functions) {
         conference.innerHTML = data.conference;
         conference.className = "res-conference";
         result.appendChild(conference);
-        var link = document.createElement('a');
-        link.innerHTML = "[LINK]";
-        link.setAttribute("href", "docs?docId=" + docId);
-        link.setAttribute("target", "_blank");
-        result.appendChild(link);
 
         if(functions != null){
             functions.forEach(function(f){

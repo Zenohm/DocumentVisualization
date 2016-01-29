@@ -36,3 +36,7 @@ hs_err_pid*
 *.iml
 out
 gen
+
+# Index files
+*/RESOURCE_FOLDER
+/indexes

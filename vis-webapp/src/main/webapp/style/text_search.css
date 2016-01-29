@@ -1,12 +1,15 @@
 #results {
-    width: 60%;
+    width: 80%;
 }
 
 .result {
-    background-color: #999999;
+    background-color: #E8E8E8;
     margin: 5px;
-    padding: 5px;
+    padding: 5px 8px;
     width: 100%;
+    border-radius: 25px;
+    border-style: solid;
+    border-width: thin;
 }
 
 .common-terms {
@@ -21,10 +24,46 @@
 
 .side-box-float {
     position: fixed;
-    background: #999999;
+    background: #999;
     width: 30%;
     height: 500px;
     right: 50px;
     top: 100px;
     padding: 10px;
+}
+
+.title {
+    width: 80%;
+}
+
+.searchFields {
+    width: 80%;
+    margin: auto;
+    align: center;
+}
+
+.searchBox {
+    float: left;
+    position: relative;
+    margin: 0 5px;
+    width: 28%;
+    align: left;
+}
+
+.searchRow {
+    margin-left: 4px;
+    align: center;
+}
+
+.scoreTable {
+    width: 75%;
+    margin: auto;
+}
+
+#textSearchBody {
+    background-color: cornflowerblue;
+}
+
+.secondTierLink {
+    border : thin;
 }

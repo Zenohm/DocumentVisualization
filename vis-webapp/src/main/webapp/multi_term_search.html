@@ -46,7 +46,7 @@
                             ]);
 
                             // Option to show scores in the div
-                            if (document.getElementById("showScores").value) {
+                            if (document.getElementById("showScores").checked) {
                                 var scoreDiv = document.createElement("div");
                                 result.appendChild(scoreDiv);
                                 var score = document.createElement("p");
@@ -57,11 +57,12 @@
                                 scoreDiv.appendChild(query1);
                                 scoreDiv.appendChild(query2);
                                 scoreDiv.appendChild(query3);
-                                score.innerHTML = "Overall Score: " + obj.score;
-                                score.innerHTML += "<br> Average Score:" + ((query1Score + query2Score + query3Score) / 3);
-                                query1.innerHTML = query1Text + ": " + query1Score;
-                                query2.innerHTML = query2Text + ": " + query2Score;
-                                query3.innerHTML = query3Text + ": " + query3Score;
+                                score.innerHTML = "Overall Score: " + obj.score.toFixed(5);
+                                score.innerHTML += "<br> Average Score:" +
+                                        ((query1Score + query2Score + query3Score) / 3).toFixed(5);
+                                query1.innerHTML = query1Text + ": " + query1Score.toFixed(5);
+                                query2.innerHTML = query2Text + ": " + query2Score.toFixed(5);
+                                query3.innerHTML = query3Text + ": " + query3Score.toFixed(5);
                             }
 
                             var options = {'width': 400, 'height': 250};
