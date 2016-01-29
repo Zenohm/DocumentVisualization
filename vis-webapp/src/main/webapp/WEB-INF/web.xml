@@ -157,15 +157,6 @@
         <url-pattern>/combined_terms</url-pattern>
     </servlet-mapping>
 
-    <servlet>
-        <servlet-name>LastQueryServlet</servlet-name>
-        <servlet-class>servlets.endpoint_servlets.LastQueryServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>LastQueryServlet</servlet-name>
-        <url-pattern>/last_query</url-pattern>
-    </servlet-mapping>
-
     <!-- Second Tier Servlet -->
     <servlet>
         <servlet-name>SecondTier</servlet-name>
@@ -174,15 +165,6 @@
     <servlet-mapping>
         <servlet-name>SecondTier</servlet-name>
         <url-pattern>/second_tier</url-pattern>
-    </servlet-mapping>
-
-    <servlet>
-        <servlet-name>LastDocServlet</servlet-name>
-        <servlet-class>servlets.endpoint_servlets.LastDocumentQuery</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>LastDocServlet</servlet-name>
-        <url-pattern>/last_doc</url-pattern>
     </servlet-mapping>
 
     <welcome-file-list>

@@ -39,7 +39,7 @@
             if (onHideSidebar != null) onHideSidebar();
             var docInfo = document.getElementById("documentInfo");
             docInfo.innerHTML = "";
-            $.get("last_doc?docId="+docId);
+            localStorage.setItem("docId", docId); // Set the document ID
             displaySidebar();
             var additionalData = [function(resultDiv, docId){
                 var link = document.createElement("a");
@@ -61,6 +61,9 @@
                 var query1 = document.getElementById("query1").value;
                 var query2 = document.getElementById("query2").value;
                 var query3 = document.getElementById("query3").value;
+                localStorage.setItem("query1", query1); // Save the queries in local storage.
+                localStorage.setItem("query2", query2);
+                localStorage.setItem("query3", query3);
                 d3.json("multi_term_search?vis&query1=" + query1 + "&query2=" + query2 + "&query3=" + query3, function (error, data) {
                     if (error) throw error;
                     d3.select("#main").datum(data).call(chart);

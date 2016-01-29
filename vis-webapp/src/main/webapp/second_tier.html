@@ -9,14 +9,32 @@
     <script src="js/secondTierGraph.js"></script>
     <script>
         $(document).ready(function(){
-            $.get("last_doc", function(data, status){
-                var chart = forceChart();
-                data = data.replace(/"/g, "");
-                d3.json("second_tier?prev&docId="+data, function(error, info){
-                   if(error) throw error;
-                   d3.select("#main_second").datum(info).call(chart);
-                });
-            });
+            var chart = forceChart();
+            var docId = localStorage.getItem("docId");
+            var queryString = "query";
+            var queries = [];
+            var queryNum = 1;
+            while(null != localStorage.getItem(queryString+queryNum)){
+                queries.push(localStorage.getItem(queryString+queryNum));
+                queryNum++;
+            }
+
+            if(queries.length != 0){
+                var jsonRequestString = "second_tier?docId="+docId;
+                var num = 1;
+                for (var qNum in queries){
+                    var query = queries[qNum];
+                    jsonRequestString += "&" + queryString + num + "=" + query;
+                    num++;
+                }
+                d3.json(jsonRequestString, function(error, data){
+                    if(error) throw error;
+                    d3.select("#main_second").datum(data).call(chart);
+                })
+
+            }else{
+                console.log("NO QUERIES!");
+            }
         })
     </script>
 </head>

@@ -42,7 +42,6 @@ public class MultiQueryServlet extends HttpServlet {
     public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException{
         try {
             List<String> queries = RequestUtils.getQueries(req);
-            req.getSession().setAttribute("queries", queries); // TODO: Remove the magic string
             String[] queryStringArray = new String[queries.size()];
             queryStringArray = queries.toArray(queryStringArray);
             MultiQuerySearch searcher =

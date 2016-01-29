@@ -24,29 +24,16 @@ import java.util.List;
 public class SecondTierServlet extends HttpServlet {
     private static final Log log = LogFactory.getLog(SecondTierServlet.class);
     private CombinedRelatedTerms crt;
-    public SecondTierServlet(){
+    public SecondTierServlet() {
         super();
         crt = new CombinedRelatedTerms();
     }
-
-    public static final String USE_PREVIOUS = "prev";
 
     @Override
     public void doGet(HttpServletRequest req, HttpServletResponse res){
 
         // We have the option of using the previous or not based on request
-        List<String> queries;
-        if(req.getParameterMap().containsKey(USE_PREVIOUS)){
-            Object obj = req.getSession().getAttribute("queries");
-            if(obj != null){
-                queries = (List<String>)obj;
-            }else{
-                log.error("Requested to use previous with no previous queries");
-                return;
-            }
-        }else{
-            queries = RequestUtils.getQueries(req);
-        }
+        List<String> queries = RequestUtils.getQueries(req);
         if(queries.size() == 0){
             log.error("Could not get queries.");
             return;
