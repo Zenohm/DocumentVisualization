@@ -40,7 +40,6 @@ function forceChart() {
         link = 0,
         node = 0,
         text = 0,
-        quadTree = 0,
         graph = 0,
         me = 0,
         clickedNode = -1;
@@ -57,6 +56,10 @@ function forceChart() {
             height = this.clientHeight;
             width = this.clientWidth;
 
+            for(var i = 0; i < graph.nodes.length; i++){
+                d.nodes[i].radius = d.nodes[i].size;
+            }
+
             force = d3.layout.force()
                 .charge(-150)
                 .linkDistance(FIXED_NODE_SIZE + 15) // Minimum link length
@@ -70,8 +73,6 @@ function forceChart() {
             if (svg.empty()) {
                 svg = d3.select(me).append("svg").attr("width", width).attr("height", height);
             }
-
-            quadTree = d3.geom.quadtree(d.nodes);
 
             // Add the data, start the sim.
             force.nodes(d.nodes)
@@ -89,7 +90,14 @@ function forceChart() {
                 .style("stroke-width", 0);
 
             node = svg.selectAll(".node")
-                .data(d.nodes);
+                      .data(d.nodes)
+                      .attr("radius", function(d){
+                          if(d.fixed){
+                              return FIXED_NODE_SIZE;
+                          }else {
+                              return d.size;
+                          }
+                      });
 
             // Adding the nodes
             node.enter()
@@ -202,23 +210,23 @@ function forceChart() {
      * Function that is called every tick (critical code should run fast)
      */
     function onTick() {
-        var r = 5;
 
-        node.each(collide(.5))
-            .attr("cx", function (d) {
+        node.attr("cx", function (d) {
                 if (d.fixed) {
-                    return d.x = width * d.xLoc;
+                    d.x = width * d.xLoc;
+                    return d.x;
                 } else {
                     return d.x;
                 }
             })
             .attr("cy", function (d) {
                 if (d.fixed) {
-                    return d.y = height * d.yLoc;
+                    d.y = height * d.yLoc;
+                    return d.y;
                 } else {
                     return d.y;
                 }
-            });
+            }).each(collide(.5));
 
         text.attr("x", function (d) {
             return d.x;
@@ -240,30 +248,25 @@ function forceChart() {
             });
     }
 
+    var clusterPadding = 2, // separation between different-color circles
+        maxRadius = 30;
 
-    var clusterPadding = 20, // separation between different-color nodes
-        maxRadius = 50,
-        padding = 1.5;
-
-    /**
-     * This function is used to collide every node. // TODO: I have no idea how this works and I need to figure it out.
-     * @param alpha
-     * @returns {Function}
-     */
-    function collide(alpha) {
+    // Resolves collisions between d and all other circles.
+    function collide(alpha){
+        //console.log(graph.nodes);
         var quadtree = d3.geom.quadtree(graph.nodes);
-        return function (d) {
-            var r = d.radius + maxRadius + Math.max(padding, clusterPadding),
+        return function(d) {
+            var r = d.radius + maxRadius + clusterPadding,
                 nx1 = d.x - r,
                 nx2 = d.x + r,
                 ny1 = d.y - r,
                 ny2 = d.y + r;
-            quadtree.visit(function (quad, x1, y1, x2, y2) {
+            quadtree.visit(function(quad, x1, y1, x2, y2) {
                 if (quad.point && (quad.point !== d)) {
                     var x = d.x - quad.point.x,
                         y = d.y - quad.point.y,
                         l = Math.sqrt(x * x + y * y),
-                        r = d.radius + quad.point.radius + (d.cluster === quad.point.cluster ? padding : clusterPadding);
+                        r = d.radius + quad.point.radius + clusterPadding;
                     if (l < r) {
                         l = (l - r) / l * alpha;
                         d.x -= x *= l;
