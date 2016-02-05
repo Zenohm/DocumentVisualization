@@ -21,11 +21,9 @@ import java.util.Map;
  */
 public class MultiQueryConverter {
 
-    public static final int MAX_SIZE = 25;
-    public static final int NORM_SIZE = 15;
-    public static final int MIN_SIZE = 5;
+    public static final double CONSTANT = 1.0/3000.0;
 
-    public static final int AVERAGE_COUNT = 45000;
+    public static final int MAX_SIZE = 30;
 
     public static final String[] colors = {"red", "blue", "green"};
 
@@ -65,7 +63,7 @@ public class MultiQueryConverter {
 
             String documentName = "doc" + result.docId;
 
-            int nodeSize = NORM_SIZE; //determineNodeSize(result);
+            double nodeSize = determineNodeSize(result);
             String nodeColor = determineColor(result, maxScore);
 
             jsonObject.nodes.add(DocumentNode.of(documentName, result.docId, nodeColor,
@@ -104,18 +102,14 @@ public class MultiQueryConverter {
         return hslString;
     }
 
-    public static int determineNodeSize(MultiQueryResults result){
+    public static double determineNodeSize(MultiQueryResults result){
         String fullText = FullTextExtractor
                 .extractText(LuceneIndexReader.getInstance().getReader(), result.docId);
 
         int length = fullText.length();
-        double scale = ((double)length)/AVERAGE_COUNT;
-        scale = 1 / scale;
 
-        int size = (int)Math.ceil(scale*NORM_SIZE);
-        if(size > MAX_SIZE) size = MAX_SIZE;
-        if(size < MIN_SIZE) size = MIN_SIZE;
+        double size = (length * CONSTANT) + 5;
 
-        return size;
+        return size > 30 ? MAX_SIZE : size;
     }
 }

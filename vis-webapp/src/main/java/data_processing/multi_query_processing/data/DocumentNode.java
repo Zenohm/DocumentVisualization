@@ -9,10 +9,10 @@ import data_processing.data.Node;
  */
 public class DocumentNode extends Node {
     public final int docId;
-    public final int size;
+    public final double size;
     public final double score;
 
-    public DocumentNode(String name, int id, String color, int docId, int size, double score) {
+    public DocumentNode(String name, int id, String color, int docId, double size, double score) {
         super(false, name, id, color);
         this.docId = docId;
         this.size = size;
@@ -30,7 +30,7 @@ public class DocumentNode extends Node {
      * @param score
      * @return new Document node
      */
-    public static DocumentNode of(String name, int id, String color, int docId, int size, double score) {
+    public static DocumentNode of(String name, int id, String color, int docId, double size, double score) {
         return new DocumentNode(name, id, color, docId, size, score);
     }
 }
