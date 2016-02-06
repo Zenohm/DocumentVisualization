@@ -6,6 +6,7 @@
 function appendMetadata(result, docId, functions) {
     $.getJSON("metadata?docId=" + docId, function (data) {
         var titleBar = document.createElement("h2");
+        titleBar.className = "resultHeader";
         var title = document.createElement("a");
         title.innerHTML = data.title;
         title.className = "res-title";

@@ -12,6 +12,16 @@
     border-width: thin;
 }
 
+.tierTwoResult {
+    background-color: #E8E8E8;
+    margin: 5px;
+    padding: 5px 8px 10px;
+    width: 100%;
+    border-radius: 25px;
+    border-style: solid;
+    border-width: thin;
+}
+
 .common-terms {
     /*float: right;*/
     height: 20%;
@@ -60,10 +70,29 @@
     margin: auto;
 }
 
-#textSearchBody {
+#textBody {
     background-color: cornflowerblue;
+}
+
+#scoreDiv {
+
 }
 
 .secondTierLink {
     border : thin;
+    margin-bottom: 10px;
+}
+
+.termInfo {
+    margin: 0px;
+}
+
+.resultHeader {
+    margin-top: 4px;
+    margin-bottom: 0;
+}
+
+.res-author, .res-conference {
+    margin-top: 4px;
+    margin-bottom: 4px;
 }
