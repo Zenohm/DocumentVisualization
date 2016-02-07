@@ -64,7 +64,7 @@ function forceChart() {
                 .charge(-150)
                 .linkDistance(FIXED_NODE_SIZE + 15) // Minimum link length
                 .linkStrength(function (d) {
-                    return d.link_power;
+                    return 10*d.link_power;
                 })
                 .size([width, height]);
 
