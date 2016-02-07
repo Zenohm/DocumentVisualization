@@ -25,8 +25,25 @@ import java.util.stream.Collectors;
  * Created by chris on 11/19/15.
  */
 public class MultiQuerySearcher extends Searcher implements MultiQuerySearch {
+
+    /**
+     * The arbitrary, magical number to default to when no specific number of queries has been given.
+     */
+    private static final int DEFAULT_DOC_LIMIT = 50;
+
     public MultiQuerySearcher(IndexReader reader) throws LuceneSearchException {
         super(reader, new SearchAnalyzer(WhitespaceTokenizer.class));
+    }
+
+    /**
+     * Searches for multiple queries using the default document limit.
+     *
+     * @param queries The query terms to search for
+     * @return A list of results for the multiple queries
+     * @throws IOException
+     */
+    public List<MultiQueryResults> searchForResults(String... queries) throws IOException {
+        return searchForResults(DEFAULT_DOC_LIMIT, queries);
     }
 
     /**
@@ -36,7 +53,7 @@ public class MultiQuerySearcher extends Searcher implements MultiQuerySearch {
      * @return A list of results for the multiple queries
      * @throws IOException
      */
-    public List<MultiQueryResults> searchForResults(String... queries) throws IOException {
+    public List<MultiQueryResults> searchForResults(int docLimit, String... queries) throws IOException {
         // Create a list of queries
         List<Map.Entry<String, Query>> queryList = Arrays.asList(queries).stream() // This cannot be parallel
                 .map(this::parseQuery)
@@ -51,7 +68,7 @@ public class MultiQuerySearcher extends Searcher implements MultiQuerySearch {
         }
 
         // Search the index for the documents.
-        final TopDocs searchResults = searcher.search(overallQuery, 50); // FIXME: Magic number
+        final TopDocs searchResults = searcher.search(overallQuery, docLimit);
 
         return Arrays.asList(searchResults.scoreDocs).stream()
                 .map(doc -> {

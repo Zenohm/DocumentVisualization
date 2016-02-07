@@ -14,6 +14,7 @@
             var query1 = document.getElementById("query1").value;
             var query2 = document.getElementById("query2").value;
             var query3 = document.getElementById("query3").value;
+            var doc_limit = document.getElementById("doc_limit").value;
             localStorage.setItem("query1", query1);
             localStorage.setItem("query2", query2);
             localStorage.setItem("query3", query3);
@@ -22,7 +23,8 @@
             $.getJSON("multi_term_search?" +
                     "query1=" + query1 + "&" +
                     "query2=" + query2 + "&" +
-                    "query3=" + query3,
+                    "query3=" + query3 + "&" +
+                    "doc_limit=" + doc_limit,
                     function (data) {
                         data.forEach(function (obj) {
                             var result = document.createElement("div");
@@ -101,6 +103,10 @@
                 }
             });
         });
+
+        function outputUpdate(limit) {
+            document.querySelector('#limit').value = limit;
+        }
     </script>
 </head>
 <body id="textBody">
@@ -117,6 +123,12 @@
         <div class="searchRow">
             <button onclick="search()" type="submit" class="searchButton" id="searchButton">Search</button>
             <input id="analytics" type="checkbox"/><label for="analytics" title="Click to include analytical data"><b>Include Analytic Data</b></label>
+            <div class="rangeSliderDiv">
+                <label for="doc_limit" id="doc_limit_label" class="rangeLabel">Max number of results</label>
+                <input id="doc_limit" type="range" class="rangeSlider" value=50 max="1000" min="1" oninput="outputUpdate(value);"/>
+                <output for="doc_limit" id="limit" class="rangeOutput">50</output>
+                <p class="disclaimer"><b>WARNING: Exorbitantly high limits may negatively impact performance.</b></p>
+            </div>
         </div>
     </div>
     <div id="results"></div>

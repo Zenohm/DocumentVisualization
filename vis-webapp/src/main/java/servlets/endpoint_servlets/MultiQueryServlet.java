@@ -34,6 +34,8 @@ public class MultiQueryServlet extends HttpServlet {
      *            query*: Queries to be used. This determines what to search for
      *            Optional Parameters:
      *            vis: If this parameter is included, then the output will be in visualization format
+     *            num_queries: If this parameter is included, then the number of documents will be no greater than this.
+     *              (It will revert to the default number otherwise)
      * @param res JSON representation of the query search.
      * @throws ServletException
      * @throws IOException
@@ -46,8 +48,20 @@ public class MultiQueryServlet extends HttpServlet {
             queryStringArray = queries.toArray(queryStringArray);
             MultiQuerySearch searcher =
                     new MultiQuerySearcher(LuceneIndexReader.getInstance());
-            List<MultiQueryResults> queryResults =
-                    searcher.searchForResults(queryStringArray);
+            List<MultiQueryResults> queryResults;
+
+            // TODO: This is fugly.  Beautify.
+            try {
+                 queryResults = req.getParameterMap().containsKey("doc_limit")
+                        ? searcher.searchForResults(Integer.parseInt(req.getParameter("doc_limit")), queryStringArray)
+                        : searcher.searchForResults(queryStringArray);
+            } catch (NumberFormatException ex) {
+                // This shouldn't ever happen unless manual modification of the request string occurs.
+                log.error("Bad input given for doc_limit.  What were you thinking?  It has to be a number." +
+                        "  Going with the default doc_limit");
+                queryResults = searcher.searchForResults(queryStringArray);
+            }
+
             if (req.getParameterMap().containsKey("vis")) {
                 D3ConvertibleJson converted = MultiQueryConverter.convertToLinksAndNodes(queryResults);
                 res.getWriter().println((new GsonBuilder().setPrettyPrinting()).create().toJson(converted));

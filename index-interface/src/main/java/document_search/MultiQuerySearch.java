@@ -9,4 +9,5 @@ import java.util.List;
  */
 public interface MultiQuerySearch {
     List<MultiQueryResults> searchForResults(String... queries) throws IOException;
+    List<MultiQueryResults> searchForResults(int docLimit, String... queries) throws IOException;
 }

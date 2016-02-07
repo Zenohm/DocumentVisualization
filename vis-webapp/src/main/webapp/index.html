@@ -61,10 +61,12 @@
                 var query1 = document.getElementById("query1").value;
                 var query2 = document.getElementById("query2").value;
                 var query3 = document.getElementById("query3").value;
+                var doc_limit = document.getElementById("doc_limit").value;
                 localStorage.setItem("query1", query1); // Save the queries in local storage.
                 localStorage.setItem("query2", query2);
                 localStorage.setItem("query3", query3);
-                d3.json("multi_term_search?vis&query1=" + query1 + "&query2=" + query2 + "&query3=" + query3, function (error, data) {
+                d3.json("multi_term_search?vis&query1=" + query1 + "&query2=" + query2 + "&query3=" + query3 +
+                        "&doc_limit=" + doc_limit, function (error, data) {
                     if (error) throw error;
                     d3.select("#main").datum(data).call(chart);
                 });
@@ -103,7 +105,9 @@
             document.getElementById("infoBar").style.display = '';
         }
 
-
+        function outputUpdate(limit) {
+            document.querySelector('#limit').value = limit;
+        }
     </script>
 </head>
 <body>
@@ -121,6 +125,11 @@
         <div class="term red"><input class="input" id="query1" type="search" value="visualization"/></div>
         <div class="term green"><input class="input" id="query3" type="search" value="test"/></div>
         <button style="width:99%; margin: 0 auto;" id="searchButton">Search</button>
+        <div class="rangeSliderDiv">
+            <label for="doc_limit" id="doc_limit_label" class="rangeLabel">Max number of results</label>
+            <input id="doc_limit" type="range" class="rangeSlider" value=50 max="1000" min="1" oninput="outputUpdate(value);"/>
+            <output for="doc_limit" id="limit" class="rangeOutput">50</output>
+        </div>
     </div>
 
 
