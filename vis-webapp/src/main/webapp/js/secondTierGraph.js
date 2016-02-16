@@ -25,7 +25,7 @@
 /**
  * Created by Chris on 7/18/2015.
  * This is an attempt at a complete rewrite of the code from the bottom up, so that it is more reusable and works
- * well with more dynamic data.
+ * well with more dynamic data. (Actually, this is a shittily writen piece of crap, but LOLJAVASCRIPT)
  */
 
 function forceChart() {
@@ -40,7 +40,6 @@ function forceChart() {
         link = 0,
         node = 0,
         text = 0,
-        quadTree = 0,
         graph = 0,
         me = 0,
         clickedNode = -1;
@@ -57,6 +56,10 @@ function forceChart() {
             height = this.clientHeight;
             width = this.clientWidth;
 
+            for(var j = 0; j < graph.nodes.length; j++){
+                d.nodes[j].radius = d.nodes[j].size;
+            }
+
             force = d3.layout.force()
                 .charge(-150)
                 .linkDistance(LINK_SIZE) // Minimum link length
@@ -70,8 +73,6 @@ function forceChart() {
             if (svg.empty()) {
                 svg = d3.select(me).append("svg").attr("width", width).attr("height", height);
             }
-
-            quadTree = d3.geom.quadtree(d.nodes);
 
             // Add the data, start the sim.
             force.nodes(d.nodes)
@@ -89,7 +90,14 @@ function forceChart() {
                 .style("stroke-width", 0);
 
             node = svg.selectAll(".node")
-                .data(d.nodes);
+                .data(d.nodes)
+                .attr("radius", function(d){
+                    if(d.fixed){
+                        return FIXED_NODE_SIZE;
+                    }else {
+                        return d.size * 3;
+                    }
+                });
 
             // Adding the nodes
             node.enter()
@@ -124,20 +132,19 @@ function forceChart() {
                         // A clever trick to save the node and the original color
                         var originalColor = d3.select(this).style("fill");
                         var node = d3.select(this);
-                        if(clickedNode != d.docId){
+                        if(clickedNode != d.name){
                             // change the color of the node to purple
-                            node.style("fill", function () {
-                                return d3.rgb(255, 0, 255);
-                            });
+                            node.style("fill", d3.rgb(255, 0, 255));
 
                             var colorCallback = function(){
                                 node.style("fill", originalColor);
+                                clickedNode = null;
                             };
 
-                            clickedNode = d.docId;
+                            clickedNode = d.name;
 
                             // Have a callback function to change the color back
-                            displayDocument(d.docId, colorCallback);
+                            displayTerm(d.name, colorCallback);
                         }
                     }
                 });
@@ -179,20 +186,23 @@ function forceChart() {
             function onTick() {
                 node.attr("cx", function (d) {
                         if (d.fixed) {
-                            return d.x = width * d.xLoc;
+                            d.x = width * d.xLoc;
+                            return d.x;
                         } else {
                             return d.x;
                         }
                     })
                     .attr("cy", function (d) {
                         if (d.fixed) {
-                            return d.y = height * d.yLoc;
+                            d.y = height * d.yLoc;
+                            return d.y;
                         } else {
                             return d.y;
                         }
                     })
                     .attr("x", function(d){return d.x;})
-                    .attr("y", function(d){return d.y});
+                    .attr("y", function(d){return d.y})
+                    .each(collide(.5));
 
                 svg.selectAll(".node").attr("transform", function(d) { return getTranslate(d); });
 
@@ -215,8 +225,39 @@ function forceChart() {
                         return d.target.y;
                     });
             }
-
         });
+    }
+
+    var maxRadius = 30,
+        clusterPadding = 5;
+
+    // Resolves collisions between d and all other circles.
+    function collide(alpha){
+        //console.log(graph.nodes);
+        var quadtree = d3.geom.quadtree(graph.nodes);
+        return function(d) {
+            var r = d.radius + maxRadius + clusterPadding,
+                nx1 = d.x - r,
+                nx2 = d.x + r,
+                ny1 = d.y - r,
+                ny2 = d.y + r;
+            quadtree.visit(function(quad, x1, y1, x2, y2) {
+                if (quad.point && (quad.point !== d)) {
+                    var x = d.x - quad.point.x,
+                        y = d.y - quad.point.y,
+                        l = Math.sqrt(x * x + y * y),
+                        r = d.radius + quad.point.radius + clusterPadding;
+                    if (l < r) {
+                        l = (l - r) / l * alpha;
+                        d.x -= x *= l;
+                        d.y -= y *= l;
+                        quad.point.x += x;
+                        quad.point.y += y;
+                    }
+                }
+                return x1 > nx2 || x2 < nx1 || y1 > ny2 || y2 < ny1;
+            });
+        };
     }
 
     // Functions for setting the chart height and width.
@@ -254,8 +295,7 @@ function forceChart() {
     }
 
     function getTranslate(d){
-        var translate = "translate(" + d.x + "," + d.y + ")";
-        return translate;
+        return"translate(" + d.x + "," + d.y + ")";
     }
 
     return chart;

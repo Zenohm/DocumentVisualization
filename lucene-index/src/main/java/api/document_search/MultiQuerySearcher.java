@@ -1,21 +1,22 @@
 package api.document_search;
 
-import internal.analyzers.search.SearchAnalyzer;
+import api.exception.LuceneSearchException;
+import api.reader.IndexReader;
 import com.google.common.collect.Maps;
+import common.results.MultiQueryResults;
+import common.results.QueryResults;
 import document_search.MultiQuerySearch;
+import internal.analyzers.search.SearchAnalyzer;
+import internal.lucene_intf.Searcher;
 import org.apache.lucene.analysis.core.WhitespaceTokenizer;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TopDocs;
-import api.reader.IndexReader;
-import api.exception.LuceneSearchException;
-import common.results.MultiQueryResults;
-import common.results.QueryResults;
-import internal.lucene_intf.Searcher;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -55,7 +56,8 @@ public class MultiQuerySearcher extends Searcher implements MultiQuerySearch {
      */
     public List<MultiQueryResults> searchForResults(int docLimit, String... queries) throws IOException {
         // Create a list of queries
-        List<Map.Entry<String, Query>> queryList = Arrays.asList(queries).stream() // This cannot be parallel
+        ArrayList<Map.Entry<String, Query>> queryList = (ArrayList<Map.Entry<String, Query>>) Arrays
+                .asList(queries).stream() // This cannot be parallel
                 .map(this::parseQuery)
                 .filter(query -> query != null) // Handle potential nulls.
                 .collect(Collectors.toList());

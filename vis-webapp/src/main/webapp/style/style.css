@@ -33,9 +33,18 @@ body {
 
 #main_second{
     width: 100%;
-    height: 100%;
+    height: 75%;
     float: left;
     background-color: cornflowerblue;
+}
+
+.footer_second {
+    float: left;
+    width: 96%;
+    height: 21%;
+    padding: 1% 2% 2%;
+    background-color: darkgray;
+    background-size: cover;
 }
 
 .content {
@@ -55,6 +64,23 @@ body {
     background-color: darkgrey;
     overflow-y: auto;
     border: 1px black solid;
+}
+
+.term_info {
+    width: 200px;
+    height: 100px;
+    position: fixed;
+    left: 10px;
+    top: 10px;
+    padding: 10px;
+    background-color: darkgray;
+    overflow-y: auto;
+    border: 1px black solid;
+    text-align: center;
+}
+
+#term-info-div{
+    vertical-align: center;
 }
 
 .footer {

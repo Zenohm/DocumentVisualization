@@ -15,7 +15,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.queryparser.classic.ParseException;
 import term_search.DocumentRelatedTermsSearcher;
-import utilities.EasyLogger;
 import utilities.StringManip;
 
 import java.text.Normalizer;
@@ -126,7 +125,7 @@ public class SentenceRelatedTerms extends LuceneReader implements DocumentRelate
                 .filter(e -> e.getValue() != 1)
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
-        EasyLogger.log(term + "_term_scores", termScores.entrySet().stream().map(e -> e.getKey() + ": " + e.getValue()).collect(Collectors.joining("\n")));
+//        EasyLogger.log(term + "_term_scores", termScores.entrySet().stream().map(e -> e.getKey() + ": " + e.getValue()).collect(Collectors.joining("\n")));
 
         // Convert this to a list of scores
         List<ScoredTerm> scores = ScoredTermConverter.convertToScoredTerm(termScores, numSentences);

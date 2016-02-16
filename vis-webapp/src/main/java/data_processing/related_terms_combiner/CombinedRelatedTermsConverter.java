@@ -13,7 +13,6 @@ import data_processing.related_terms_combiner.data.TermNode;
 import internal.term_utils.TermQueryScore;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import utilities.EasyLogger;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -74,7 +73,7 @@ public class CombinedRelatedTermsConverter {
             // Add the related terms as nodes
             int sourceIndex = termIndexes.get(result.term);
             for(RelatedTerm rTerm : result.getResults()){
-                EasyLogger.log(result.term + "_comb_rel_terms", rTerm);
+//                EasyLogger.log(result.term + "_comb_rel_terms", rTerm);
                 double size = scorer.getScore(rTerm.getText(), result.docId, TermQueryScore.QueryType.Multiword);
                 if(size < .0001){
                     removedNodes++;

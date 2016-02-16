@@ -7,7 +7,23 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script src="js/secondTierGraph.js"></script>
+    <script src="js/searchUtils.js"></script>
     <script>
+        var currentlyClickedTerm = null;
+        var onHideSidebar = null;
+        function displayTerm(term, callback){
+            if(currentlyClickedTerm == term){
+                return;
+            }
+            currentlyClickedTerm = term;
+            if(onHideSidebar != null) onHideSidebar();
+            var termDoc = document.getElementById("term-info");
+            displaySidebar();
+            termDoc.innerHTML = term;
+            onHideSidebar = callback;
+        }
+
+
         $(document).ready(function(){
             var chart = forceChart();
             var docId = localStorage.getItem("docId");
@@ -18,6 +34,8 @@
                 queries.push(localStorage.getItem(queryString+queryNum));
                 queryNum++;
             }
+
+            appendMetadata(document.getElementById("documentData"), docId);
 
             if(queries.length != 0){
                 var jsonRequestString = "second_tier?docId="+docId;
@@ -35,10 +53,28 @@
             }else{
                 console.log("NO QUERIES!");
             }
-        })
+        });
+
+        function displaySidebar() {
+            document.getElementById("infoBar").style.display = '';
+        }
+
+        function hideSidebar() {
+            document.getElementById("infoBar").style.display = 'none';
+            if(onHideSidebar != null){
+                onHideSidebar();
+                currentlyClickedTerm = null;
+            }
+        }
+
     </script>
 </head>
 <body>
+<div class="term_info" id="infoBar" style="display:none;">
+    <input alt="Close" type="image" src="imgs/closeBtn.png" id="close" onclick="hideSidebar()">
+    <div id="term-info-div"><p id="term-info"></p></div>
+</div>
 <div id="main_second"></div>
+<div class="footer_second" id="documentData"></div>
 </body>
 </html>

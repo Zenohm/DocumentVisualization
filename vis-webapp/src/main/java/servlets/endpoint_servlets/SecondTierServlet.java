@@ -49,7 +49,7 @@ public class SecondTierServlet extends HttpServlet {
 
         long startTime = System.nanoTime();
         List<RelatedTermResult> results = new ArrayList<>();
-        queries.parallelStream()
+        queries.stream()
                 .map(q -> RelatedTermResult.createResult(crt, q, docId))
                 .forEach(results::add);
 

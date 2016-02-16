@@ -57,7 +57,11 @@ function forceChart() {
             width = this.clientWidth;
 
             for(var i = 0; i < graph.nodes.length; i++){
-                d.nodes[i].radius = d.nodes[i].size;
+                if(d.nodes[i].fixed){
+                    d.nodes[i].radius = FIXED_NODE_SIZE;
+                }else{
+                    d.nodes[i].radius = d.nodes[i].size;
+                }
             }
 
             force = d3.layout.force()
@@ -90,14 +94,7 @@ function forceChart() {
                 .style("stroke-width", 0);
 
             node = svg.selectAll(".node")
-                      .data(d.nodes)
-                      .attr("radius", function(d){
-                          if(d.fixed){
-                              return FIXED_NODE_SIZE;
-                          }else {
-                              return d.size;
-                          }
-                      });
+                      .data(d.nodes);
 
             // Adding the nodes
             node.enter()

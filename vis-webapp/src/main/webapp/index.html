@@ -35,8 +35,14 @@
     <script src="js/searchUtils.js"></script>
     <script>
         var onHideSidebar = null;
+        var currentlyClickedDoc = null;
         function displayDocument(docId, callback) {
+            if (currentlyClickedDoc == docId){
+                return;
+            }
+            currentlyClickedDoc = docId;
             if (onHideSidebar != null) onHideSidebar();
+
             var docInfo = document.getElementById("documentInfo");
             docInfo.innerHTML = "";
             localStorage.setItem("docId", docId); // Set the document ID
