@@ -39,6 +39,10 @@
                                 if (!node.fixed) {
                                     var nodeName = node.name;
 
+                                    if (nodeName == 'length') {
+                                        // FUCK YOU JS!
+                                        continue;
+                                    }
                                     // If there's not already a node for that term, make one.
                                     if (!nodes[nodeName]) {
                                         nodes[nodeName] = new Object();
