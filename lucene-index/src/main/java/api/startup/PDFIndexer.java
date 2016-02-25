@@ -165,9 +165,9 @@ public class PDFIndexer{
             IndexWriter writer = new IndexWriter(dir, iwc);
             // Index the documents
             indexDocs(writer, resourcesDir);
-            writer.close();
             long endTime = System.nanoTime();
             LuceneIndexReader.getInstance().initializeIndexReader(writer);
+            writer.close();
             log.info("Took: " + (endTime - startTime) / Math.pow(10, 6) + " milliseconds to generate the index.");
         } catch (IOException e) {
             log.error("IO Exception Thrown while updating index " + e.getMessage() + "\n");
