@@ -5,6 +5,7 @@
     <title>Second Tier Text</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript" src="js/searchUtils.js"></script>
     <link rel="stylesheet" type="text/css" href="style/text_search.css"/>
     <script>
         $(document).ready(function(){
@@ -18,6 +19,7 @@
                 queryNum++;
             }
 
+            appendMetadata(document.getElementById("documentData"), docId);
             if(queries.length != 0){
                 var jsonRequestString = "second_tier?docId=" + docId;
                 var num = 1;
@@ -152,6 +154,7 @@
     <div class="title">
         <h1 align="center">Tier Two</h1>
     </div>
+    <div id="documentData"></div>
     <div id="options">
 
     </div>
