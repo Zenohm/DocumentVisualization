@@ -93,7 +93,7 @@ public class CombinedRelatedTermsConverter {
             }
         }
         log.info("Number of nodes: " + numNodes);
-        log.info("Removed Nodes:" + removedNodes);
+        log.info("Removed Nodes: " + removedNodes);
         return jsonObject;
     }
 

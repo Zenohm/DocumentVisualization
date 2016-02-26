@@ -11,7 +11,8 @@
     <script>
         var currentlyClickedTerm = null;
         var onHideSidebar = null;
-        function displayTerm(term, callback){
+        function displayTerm(term_node, callback){
+            var term = term_node.name;
             if(currentlyClickedTerm == term){
                 return;
             }
@@ -20,6 +21,14 @@
             var termDoc = document.getElementById("term-info");
             displaySidebar();
             termDoc.innerHTML = term;
+            var div = document.getElementById("term-info");
+            var button = document.createElement("button");
+            button.innerHTML = "Refine search with " + term;
+            div.appendChild(button);
+
+            localStorage.setItem("oldTerm", term_node.relatedTo);
+            localStorage.setItem("newTerm", term_node.name);
+
             onHideSidebar = callback;
         }
 

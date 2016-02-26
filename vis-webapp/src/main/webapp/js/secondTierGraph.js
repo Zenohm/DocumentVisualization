@@ -144,7 +144,7 @@ function forceChart() {
                             clickedNode = d.name;
 
                             // Have a callback function to change the color back
-                            displayTerm(d.name, colorCallback);
+                            displayTerm(d, colorCallback);
                         }
                     }
                 });
