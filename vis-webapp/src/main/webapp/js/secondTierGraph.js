@@ -57,7 +57,7 @@ function forceChart() {
             width = this.clientWidth;
 
             for(var j = 0; j < graph.nodes.length; j++){
-                d.nodes[j].radius = d.nodes[j].size;
+                d.nodes[j].radius = d.nodes[j].size * 20;
             }
 
             force = d3.layout.force()
@@ -123,6 +123,9 @@ function forceChart() {
                     })
                     .size(function(d){return d.size * 2500;})
                 )
+                .attr("radius", function(d){
+                    return d.size * 2500;
+                })
                 .style("fill", function (d) {
                     return d3.hsl(d.color);
                 })
