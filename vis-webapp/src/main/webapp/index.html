@@ -59,8 +59,9 @@
         }
 
         $(document).ready(function () {
-            document.getElementById("searchButton").addEventListener("click", createGraph);
-            function createGraph() {
+            document.getElementById("searchButton").addEventListener("click", search);
+
+            function search() {
                 // TODO: Prevent empty queries and allow for a variable number of queries.
                 // TODO: Make the color of the queries deterministic with the color of the nodes.
                 var chart = forceChart();
@@ -95,7 +96,7 @@
                 if(query3.value == old){
                     query3.value = ntm;
                 }
-                createGraph();
+                search();
             }
 
             // Handle the enter key, because I am a lazy mother fucker
@@ -117,6 +118,12 @@
                 }
             });
 
+            $('#limit').keyup(function(e) {
+                if (e.keyCode == 13) {
+                    search();
+                }
+            });
+
         });
 
         function hideSidebar() {
@@ -133,6 +140,10 @@
 
         function outputUpdate(limit) {
             document.querySelector('#limit').value = limit;
+        }
+
+        function updateSlider(limit) {
+            document.querySelector('#doc_limit').value = limit;
         }
     </script>
 </head>
@@ -155,7 +166,7 @@
         <div class="rangeSliderDiv">
             <label for="doc_limit" id="doc_limit_label" class="rangeLabel">Max number of results</label>
             <input id="doc_limit" type="range" class="rangeSlider" value=50 max="1000" min="1" oninput="outputUpdate(value);"/>
-            <output for="doc_limit" id="limit" class="rangeOutput">50</output>
+            <input for="doc_limit" id="limit" class="rangeOutput" value="50" onkeyup="updateSlider(value);"/>
         </div>
     </div>
 

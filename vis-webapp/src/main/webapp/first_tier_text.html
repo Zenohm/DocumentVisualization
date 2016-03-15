@@ -102,10 +102,20 @@
                     $("#searchButton").click();
                 }
             });
+
+            $('#limit').keyup(function(e) {
+                if (e.keyCode == 13) {
+                    search();
+                }
+            });
         });
 
         function outputUpdate(limit) {
             document.querySelector('#limit').value = limit;
+        }
+
+        function updateSlider(limit) {
+            document.querySelector('#doc_limit').value = limit;
         }
     </script>
 </head>
@@ -126,7 +136,7 @@
             <div class="rangeSliderDiv">
                 <label for="doc_limit" id="doc_limit_label" class="rangeLabel">Max number of results</label>
                 <input id="doc_limit" type="range" class="rangeSlider" value=50 max="1000" min="1" oninput="outputUpdate(value);"/>
-                <output for="doc_limit" id="limit" class="rangeOutput">50</output>
+                <input for="doc_limit" id="limit" class="rangeOutput" value="50" onkeyup="updateSlider(value);"/>
                 <p class="disclaimer"><b>WARNING: Exorbitantly high limits may negatively impact performance.</b></p>
             </div>
         </div>
