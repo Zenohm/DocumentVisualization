@@ -121,10 +121,13 @@ function forceChart() {
                         }
                         return "cross"; // Return a cross by default
                     })
-                    .size(function(d){return d.size * 2500;})
+                    .size(function(d){
+
+                        return d.size * 2500;
+                    })
                 )
                 .attr("radius", function(d){
-                    return d.size * 2500;
+                    return d.size * 500;
                 })
                 .style("fill", function (d) {
                     return d3.hsl(d.color);
@@ -208,6 +211,8 @@ function forceChart() {
                     .each(collide(.5));
 
                 svg.selectAll(".node").attr("transform", function(d) { return getTranslate(d); });
+
+                //console.log(graph.nodes);
 
                 text.attr("x", function (d) {
                     return d.x;
