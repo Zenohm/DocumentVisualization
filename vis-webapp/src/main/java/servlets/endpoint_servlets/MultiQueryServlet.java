@@ -57,7 +57,7 @@ public class MultiQueryServlet extends HttpServlet {
                         : searcher.searchForResults(queryStringArray);
             } catch (NumberFormatException ex) {
                 // This shouldn't ever happen unless manual modification of the request string occurs.
-                log.error("Bad input given for doc_limit.  What were you thinking?  It has to be a number." +
+                log.warn("Bad input given for doc_limit.  What were you thinking?  It has to be a number." +
                         "  Going with the default doc_limit");
                 queryResults = searcher.searchForResults(queryStringArray);
             }
