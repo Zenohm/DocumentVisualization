@@ -79,13 +79,23 @@ public class CombinedRelatedTermsConverter {
                     removedNodes++;
                     continue;
                 }
-                int myIndex = jsonObject.nodes.size() - 1;
+                int myIndex = jsonObject.nodes.size();
                 int id = rTerm.getText().hashCode();
                 String color = fixedNodes.get(sourceIndex).color; // Get the color of the source
                 double linkPower = rTerm.getScore();
                 if(linkPower >= .001){
-                    jsonObject.nodes.add(TermNode.of(TermNode.NOT_FIXED, rTerm.getText(), id, color, rTerm.type, size, result.term));
-                    jsonObject.links.add(Link.of(sourceIndex, myIndex, linkPower));
+                    TermNode newNode = TermNode.of(TermNode.NOT_FIXED, rTerm.getText(), id, color, rTerm.type, size, result.term);
+                    int iOfNode = jsonObject.nodes.indexOf(newNode);
+                    if(iOfNode != -1){
+                        log.info(newNode.name + " is already in the visualization, skipping node creation.");
+                        // If the node is already there, do not add a new node, supplement the old node
+                        jsonObject.links.add(Link.of(sourceIndex, iOfNode, linkPower));
+                    }else{
+                        // Add a new node if the node is not there
+                        jsonObject.nodes.add(newNode);
+                        jsonObject.links.add(Link.of(sourceIndex, myIndex, linkPower));
+                    }
+
                     numNodes++;
                 }else{
                     removedNodes++;

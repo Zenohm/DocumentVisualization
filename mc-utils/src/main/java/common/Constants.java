@@ -31,6 +31,7 @@ package common;
 public class Constants {
     public static final String INDEX_DIRECTORY = "indexes";
     public static final String STOPWORDS_FILE = "db/stopwords.txt";
+    public static final String DICTIONARY_FILE = "db/dictionary.txt";
     public static final String INDEX_CONFIG_FILE = "config/index-config.cfg";
     public static final String FIELD_PATH = "path";
     public static final String FIELD_CONTENTS = "contents";

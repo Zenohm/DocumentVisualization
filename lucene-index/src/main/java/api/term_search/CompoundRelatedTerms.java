@@ -5,6 +5,9 @@ import api.reader.IndexReader;
 import common.StopwordsProvider;
 import common.data.ScoredTerm;
 import common.data.TermLocations;
+import common.dict.Dictionary;
+import common.dict.SetDictionary;
+import common.dict.TrueSetDictionary;
 import internal.analyzers.search.SearchAnalyzer;
 import internal.lucene_intf.Searcher;
 import internal.static_util.scorer.TermRelatednessScorer;
@@ -56,6 +59,9 @@ public class CompoundRelatedTerms extends Searcher implements RelatedTermsSearch
             log.error("Error Getting Tokenized Contents for: " + loc.docId);
             return Collections.EMPTY_SET;
         }
+        Dictionary d = SetDictionary.getInstance();
+        final Dictionary dict = d == null ? new TrueSetDictionary() : d;
+
 
         getStream(loc.getLocations())
                 .filter(location -> location + 1 < contents.length)
@@ -63,6 +69,7 @@ public class CompoundRelatedTerms extends Searcher implements RelatedTermsSearch
                         contents[location + 1].toLowerCase().trim()))
                 .filter(content -> !stopwords.contains(content.getRight()))
                 .filter(content -> !StringFilters.isNumeric(content.getRight()))
+                .filter(content -> dict.contains(content.getRight().toLowerCase()))
                 .map(content -> content.getLeft() + " " + content.getRight())
                 .forEach(potentialCompoundTerms::add);
 
@@ -72,6 +79,7 @@ public class CompoundRelatedTerms extends Searcher implements RelatedTermsSearch
                         contents[location - 1].toLowerCase().trim()))
                 .filter(content -> !stopwords.contains(content.getRight()))
                 .filter(content -> !StringFilters.isNumeric(content.getRight()))
+                .filter(content -> dict.contains(content.getRight().toLowerCase()))
                 .map(content -> content.getRight() + " " + content.getLeft())
                 .forEach(potentialCompoundTerms::add);
 

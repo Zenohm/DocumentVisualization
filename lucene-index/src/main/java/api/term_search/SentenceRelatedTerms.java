@@ -6,6 +6,9 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import common.ScoredTermConverter;
 import common.data.ScoredTerm;
+import common.dict.Dictionary;
+import common.dict.SetDictionary;
+import common.dict.TrueSetDictionary;
 import exception.SearchException;
 import internal.lucene_intf.LuceneReader;
 import internal.static_util.FullTextExtractor;
@@ -114,10 +117,14 @@ public class SentenceRelatedTerms extends LuceneReader implements DocumentRelate
                 .filter(s -> !s.isEmpty()) // Remove all the empty strings
                 .collect(Collectors.toList());
 
+        Dictionary d = SetDictionary.getInstance();
+        Dictionary dict = d == null ? new TrueSetDictionary() : d;
+
         long numSentences =  filteredSentences.size();
         Map<String, Long> termScores = filteredSentences.stream()
                 .map(s -> s.split("\\s")) // Split by words
                 .flatMap(Arrays::stream) // Map the string arrays to the stream
+                .filter(dict::contains)
                 .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
 
         // Remove single occurance terms
