@@ -124,7 +124,7 @@ public class SentenceRelatedTerms extends LuceneReader implements DocumentRelate
         Map<String, Long> termScores = filteredSentences.stream()
                 .map(s -> s.split("\\s")) // Split by words
                 .flatMap(Arrays::stream) // Map the string arrays to the stream
-                .filter(dict::contains)
+                .filter(dict::contains) // Ensure that only real words are allowed
                 .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
 
         // Remove single occurance terms
