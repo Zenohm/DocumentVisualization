@@ -1,8 +1,0 @@
-Bad:
-1.)	data	learning      genetic
-    replace: genetic	with: scale
-2.) 	unix 	capsicum      daemon
-    replace: capsicum   with: policy
-Good:
-1.) 	virtualization	visualization	logic
-2.)	array		test		mathematical
