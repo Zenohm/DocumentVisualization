@@ -25,13 +25,13 @@
             var queryString = "query";
             var queries = [];
             var queryNum = 1;
-            while(null != localStorage.getItem(queryString+queryNum)){
+            while (null != localStorage.getItem(queryString+queryNum)) {
                 queries.push(localStorage.getItem(queryString+queryNum));
                 queryNum++;
             }
 
             appendMetadata(document.getElementById("documentData"), docId);
-            if(queries.length != 0){
+            if (queries.length != 0) {
                 var jsonRequestString = "second_tier?docId=" + docId;
                 var num = 1;
                 for (var qNum in queries){
@@ -163,12 +163,11 @@
     </script>
 </head>
 <body id="textBody">
-    <div class="title">
-        <h1 align="center">Tier Two</h1>
-    </div>
-    <div id="documentData"></div>
-    <div id="options">
-
+    <div id="header">
+        <div class="title">
+            <h1 align="center">Tier Two</h1>
+        </div>
+        <div id="documentData"></div>
     </div>
     <div id="results"></div>
     <div id="sidebar" class="side-box-float" style="display: none;"></div>
