@@ -8,8 +8,19 @@
     <script type="text/javascript" src="js/searchUtils.js"></script>
     <link rel="stylesheet" type="text/css" href="style/text_search.css"/>
     <script>
+        function getParameterByName(name, url) {
+            if (!url) url = window.location.href;
+            url = url.toLowerCase(); // This is just to avoid case sensitiveness
+            name = name.replace(/[\[\]]/g, "\\$&").toLowerCase();// This is just to avoid case sensitiveness for query parameter name
+            var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+                    results = regex.exec(url);
+            if (!results) return null;
+            if (!results[2]) return '';
+            return decodeURIComponent(results[2].replace(/\+/g, " "));
+        }
+
         $(document).ready(function(){
-            var docId = localStorage.getItem("docId");
+            var docId = getParameterByName("docId");
 
             var queryString = "query";
             var queries = [];
@@ -30,6 +41,7 @@
                 }
                 console.log(jsonRequestString);
 
+                // TODO: refactor this to be less inane
                 document.getElementById("results").innerHTML = "";
                 // Make servlet call
                 $.getJSON(jsonRequestString,
@@ -47,7 +59,7 @@
                                     }
                                     // If there's not already a node for that term, make one.
                                     if (!nodes[nodeName]) {
-                                        nodes[nodeName] = new Object();
+                                        nodes[nodeName] = {};
                                     }
                                     // Add the entry for this relationship to the node.
                                     nodes[nodeName][node.relatedTo] = {
