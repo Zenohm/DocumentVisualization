@@ -3,7 +3,7 @@
 }
 
 .result {
-    background-color: #E8E8E8;
+    background-color: #D46A6A;
     margin: 5px;
     padding: 5px 8px;
     width: 100%;
@@ -13,7 +13,7 @@
 }
 
 .tierTwoResult {
-    background-color: #E8E8E8;
+    background-color: #D46A6A;
     margin: 5px;
     padding: 5px 8px 10px;
     width: 100%;
@@ -34,7 +34,7 @@
 
 .side-box-float {
     position: fixed;
-    background: #999;
+    background: #D46A6A;
     width: 30%;
     height: 500px;
     right: 50px;
@@ -71,7 +71,7 @@
 }
 
 #textBody {
-    background-color: #D49A6A;
+    background-color: #226666;
 }
 
 #scoreDiv {
@@ -107,7 +107,7 @@
 }
 
 #header {
-    background-color: #D49A6A;
+    background-color: #55AA55;
     border: black solid thin;
     border-radius: 5px;
     padding: 0px 5px 5px;
