@@ -35,7 +35,7 @@ body {
     width: 100%;
     height: 75%;
     float: left;
-    background-color: cornflowerblue;
+    background-color: #226666;
 }
 
 .footer_second {
@@ -43,7 +43,7 @@ body {
     width: 96%;
     height: 21%;
     padding: 1% 2% 2%;
-    background-color: darkgray;
+    background-color: #D46A6A;
     background-size: cover;
 }
 
@@ -51,35 +51,36 @@ body {
     width: 100%;
     height: 85%;
     float: left;
-    background-color: cornflowerblue;
+    background-color: #226666;
 }
 
 .sidebar {
-    width: 400px;
-    height: 200px;
+    display: inline-block;
+    width: 200px;
     position: fixed;
     left: 10px;
     top: 10px;
     padding: 10px;
-    background-color: darkgrey;
+    background-color: #D46A6A;
     overflow-y: auto;
     border: 1px black solid;
 }
 
 .term_info {
+    display: inline-block;
     width: 200px;
-    height: 100px;
     position: fixed;
     left: 10px;
     top: 10px;
     padding: 10px;
-    background-color: darkgray;
+    background-color: #D46A6A;
     overflow-y: auto;
     border: 1px black solid;
     text-align: center;
+    line-height: 2;
 }
 
-#term-info-div{
+#term-info-div {
     vertical-align: center;
 }
 
@@ -88,7 +89,7 @@ body {
     width: 96%;
     height: 10%;
     padding: 1% 2% 2%;
-    background-color: darkgray;
+    background-color: #55AA55;
     background-size: cover;
 }
 
@@ -98,7 +99,7 @@ body {
 }
 
 .link {
-    stroke: cornflowerblue;
+    stroke: #226666;
     stroke-opacity: .6;
 }
 

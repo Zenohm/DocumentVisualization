@@ -20,7 +20,7 @@
             if(onHideSidebar != null) onHideSidebar();
             var termDoc = document.getElementById("term-info");
             displaySidebar();
-            termDoc.innerHTML = term;
+            termDoc.innerHTML = term + "<br>";
             var div = document.getElementById("term-info");
             var button = document.createElement("button");
             button.innerHTML = "Refine search with " + term;

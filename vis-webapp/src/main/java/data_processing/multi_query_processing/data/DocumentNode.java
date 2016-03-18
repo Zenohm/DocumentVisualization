@@ -22,12 +22,12 @@ public class DocumentNode extends Node {
     /**
      * Creates a document node with the given parameters
      *
-     * @param name
-     * @param id
-     * @param color
-     * @param docId
-     * @param size
-     * @param score
+     * @param name - name of the node
+     * @param id - id for the node
+     * @param color - color for the node
+     * @param docId - documentID
+     * @param size - size of the node
+     * @param score - score for the node
      * @return new Document node
      */
     public static DocumentNode of(String name, int id, String color, int docId, double size, double score) {

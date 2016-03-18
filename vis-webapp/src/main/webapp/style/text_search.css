@@ -71,7 +71,7 @@
 }
 
 #textBody {
-    background-color: cornflowerblue;
+    background-color: #D49A6A;
 }
 
 #scoreDiv {
@@ -107,7 +107,7 @@
 }
 
 #header {
-    background-color: #E8E8E8;
+    background-color: #D49A6A;
     border: black solid thin;
     border-radius: 5px;
     padding: 0px 5px 5px;

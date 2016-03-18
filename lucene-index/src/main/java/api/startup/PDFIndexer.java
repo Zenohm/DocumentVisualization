@@ -56,6 +56,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
+ * Indexer for PDFs
  * Created by Chris on 8/19/2015.
  */
 public class PDFIndexer{
@@ -63,11 +64,22 @@ public class PDFIndexer{
     public final String indexDirectory;
     public final String resourceDirectory;
 
+    /**
+     * Bulids the PDFIndexer
+     * @param indexDirectory - the directory to output the index to
+     * @param resourceDirectory - the directory that contains the resources
+     */
     public PDFIndexer(String indexDirectory, String resourceDirectory) {
         this.indexDirectory = indexDirectory;
         this.resourceDirectory = resourceDirectory;
     }
 
+    /**
+     * Indexes all the documents in the CSV file
+     * @param writer - index writer
+     * @param indexConfiguration - the configuration for all the indexable documents
+     * @throws IOException
+     */
     static void indexDocs(final IndexWriter writer, String indexConfiguration) throws IOException {
         Reader in = new FileReader(indexConfiguration);
         CSVParser parser = CSVFormat.RFC4180.withHeader().parse(in);
@@ -91,6 +103,12 @@ public class PDFIndexer{
 
     }
 
+    /**
+     * Indexes a single document and writes it to the given index writer
+     * @param writer - the index writer to writer
+     * @param metadata - the document
+     * @throws IOException
+     */
     static void indexDoc(IndexWriter writer, DocumentMetadata metadata) throws IOException {
         Path file = Paths.get(metadata.getFilename());
         try {
