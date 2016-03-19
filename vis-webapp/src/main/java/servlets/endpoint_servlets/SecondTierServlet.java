@@ -3,6 +3,8 @@ package servlets.endpoint_servlets;
 import data_processing.data.D3ConvertibleJson;
 import data_processing.related_terms_combiner.CombinedRelatedTerms;
 import data_processing.related_terms_combiner.CombinedRelatedTermsConverter;
+import data_processing.related_terms_combiner.alt.AlternateRelatedTermsConverter;
+import data_processing.related_terms_combiner.alt.data.RootNode;
 import data_processing.related_terms_combiner.data.RelatedTermResult;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -54,9 +56,15 @@ public class SecondTierServlet extends HttpServlet {
                 .forEach(results::add);
 
         RelatedTermResult[] resArray = new RelatedTermResult[results.size()];
-        D3ConvertibleJson json = CombinedRelatedTermsConverter
-                .convertToLinksAndNodes(results.toArray(resArray));
-        ResponseUtils.printPrettyJsonResponse(res, json);
+
+        if(req.getParameterMap().containsKey("exp")){
+            RootNode result = AlternateRelatedTermsConverter.convertToD3(results.toArray(resArray));
+            ResponseUtils.printJsonResponse(res, result);
+        }else{
+            D3ConvertibleJson json = CombinedRelatedTermsConverter
+                    .convertToLinksAndNodes(results.toArray(resArray));
+            ResponseUtils.printPrettyJsonResponse(res, json);
+        }
         log.info("Total time to produce second tier results: " + (System.nanoTime() - startTime)/Math.pow(10, 9));
     }
 }
