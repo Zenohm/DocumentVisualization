@@ -5,10 +5,12 @@ package data_processing.related_terms_combiner.alt.data;
  */
 public class Node extends RootNode {
     public final double size;
+    public final String color;
 
-    public Node(String name, double size) {
+    public Node(String name, double size, String color) {
         super(name);
         this.size = size;
+        this.color = color;
     }
 
 }
