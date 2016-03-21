@@ -51,6 +51,34 @@
                     .append("g")
                     .attr("transform", "translate(" + diameter / 2 + "," + diameter / 2 + ")");
 
+
+            svg.append("pattern")
+                    .attr({ id:"red",
+                            width:"8",
+                            height:"8",
+                            patternUnits:"userSpaceOnUse",
+                            patternTransform:"rotate(-45)"})
+                    .append("rect")
+                    .attr({ width:"4", height:"8", transform:"translate(0,0)", fill:"red" });
+
+            svg.append("pattern")
+                    .attr({ id:"blue",
+                        width:"8",
+                        height:"8",
+                        patternUnits:"userSpaceOnUse",
+                        patternTransform:"rotate(45)"})
+                    .append("rect")
+                    .attr({ width:"4", height:"8", transform:"translate(0,0)", fill:"blue" });
+
+            svg.append("pattern")
+                    .attr({ id:"green",
+                        width:"8",
+                        height:"8",
+                        patternUnits:"userSpaceOnUse",
+                        patternTransform:"rotate(90)"})
+                    .append("rect")
+                    .attr({ width:"4", height:"8", transform:"translate(0,0)", fill:"green" });
+
             var query1 = localStorage.getItem("query1");
             var query2 = localStorage.getItem("query2");
             var query3 = localStorage.getItem("query3");
@@ -68,7 +96,14 @@
                         .data(nodes)
                         .enter().append("circle")
                         .attr("class", function(d) { return d.parent ? d.children ? "node" : "node node--leaf" : "node node--root"; })
-                        .style("fill", function(d) { return d.color; })
+                        .style("fill", function(d) {
+                            if (d.color == "lightblue" || d.color == "black")
+                            {
+                                return d.color;
+                            }
+                            return "url(#"+d.color+")";
+
+                        })
                         .on("click", function(d) { if (focus !== d) zoom(d), d3.event.stopPropagation(); });
 
                 var text = svg.selectAll("text")

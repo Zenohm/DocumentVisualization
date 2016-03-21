@@ -8,10 +8,12 @@ import java.util.List;
  */
 public class RootNode {
     public final String name;
+    public final String color;
     public final List<Node> children;
 
-    public RootNode(String name) {
+    public RootNode(String name, String color) {
         this.name = name;
+        this.color = color;
         children = new ArrayList<>();
     }
 

@@ -30,7 +30,7 @@ public class AlternateRelatedTermsConverter {
                             RelatedTerm.RelatedTermType.Synonym, "green");
 
     public static RootNode convertToD3(RelatedTermResult... results){
-        RootNode root = new RootNode("flare");
+        RootNode root = new RootNode("flare", "black");
         for(RelatedTermResult result : results){
             Node childNode = new Node(result.term, 1, "lightblue");
             root.children.add(childNode);
