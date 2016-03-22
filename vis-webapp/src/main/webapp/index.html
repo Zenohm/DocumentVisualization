@@ -1,181 +1,104 @@
 <!DOCTYPE html>
-<!--
-  ~ The MIT License (MIT)
-  ~
-  ~ Copyright (c) 2015 Chris Bellis, Chris Perry
-  ~
-  ~ Permission is hereby granted, free of charge, to any person obtaining a copy
-  ~ of this software and associated documentation files (the "Software"), to deal
-  ~ in the Software without restriction, including without limitation the rights
-  ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-  ~ copies of the Software, and to permit persons to whom the Software is
-  ~ furnished to do so, subject to the following conditions:
-  ~
-  ~ The above copyright notice and this permission notice shall be included in
-  ~ all copies or substantial portions of the Software.
-  ~
-  ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-  ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-  ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-  ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-  ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-  ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-  ~ THE SOFTWARE.
-  -->
-
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" type="text/css" href="style/style.css"/>
-    <link rel="stylesheet" type="text/css" href="style/results-style.css"/>
-    <title>Tier 1 Visualization</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-    <script src="js/multiTermGraph.js"></script>
-    <script src="js/searchUtils.js"></script>
-    <script>
-        var onHideSidebar = null;
-        var currentlyClickedDoc = null;
-        function displayDocument(docId, callback) {
-            if (currentlyClickedDoc == docId){
-                return;
-            }
-            currentlyClickedDoc = docId;
-            if (onHideSidebar != null) onHideSidebar();
-
-            var docInfo = document.getElementById("documentInfo");
-            docInfo.innerHTML = "";
-            localStorage.setItem("docId", docId); // Set the document ID
-            displaySidebar();
-            var additionalData = [function(resultDiv, docId){
-                var link = document.createElement("a");
-                link.innerHTML = "[SECOND_TIER]";
-                link.setAttribute("href", "second_tier.html");
-                link.setAttribute("target", "_blank");
-                resultDiv.appendChild(link);
-            }];
-            appendMetadata(docInfo, docId, additionalData);
-            onHideSidebar = callback;
-        }
-
-        $(document).ready(function () {
-            document.getElementById("searchButton").addEventListener("click", search);
-
-            function search() {
-                // TODO: Prevent empty queries and allow for a variable number of queries.
-                // TODO: Make the color of the queries deterministic with the color of the nodes.
-                var chart = forceChart();
-                var query1 = document.getElementById("query1").value;
-                var query2 = document.getElementById("query2").value;
-                var query3 = document.getElementById("query3").value;
-                var doc_limit = document.getElementById("doc_limit").value;
-                localStorage.setItem("query1", query1); // Save the queries in local storage.
-                localStorage.setItem("query2", query2);
-                localStorage.setItem("query3", query3);
-                d3.json("multi_term_search?vis&query1=" + query1 + "&query2=" + query2 + "&query3=" + query3 +
-                        "&doc_limit=" + doc_limit, function (error, data) {
-                    if (error) throw error;
-                    d3.select("#main").datum(data).call(chart);
-                });
-            }
-
-            document.getElementById("updateButton").addEventListener("click", updateQuery);
-            function updateQuery() {
-                var old = localStorage.getItem("oldTerm");
-                var ntm = localStorage.getItem("newTerm");
-
-                var query1 = document.getElementById("query1")
-                if(query1.value == old){
-                    query1.value = ntm;
-                }
-
-                if(query2.value == old){
-                    query2.value = ntm;
-                }
-
-                if(query3.value == old){
-                    query3.value = ntm;
-                }
-                search();
-            }
-
-            // Handle the enter key, because I am a lazy mother fucker
-            $("#query1").keyup(function (event) {
-                if (event.keyCode == 13) {
-                    $("#searchButton").click();
-                }
-            });
-
-            $("#query2").keyup(function (event) {
-                if (event.keyCode == 13) {
-                    $("#searchButton").click();
-                }
-            });
-
-            $("#query3").keyup(function (event) {
-                if (event.keyCode == 13) {
-                    $("#searchButton").click();
-                }
-            });
-
-            $('#limit').keyup(function(e) {
-                if (e.keyCode == 13) {
-                    search();
-                }
-            });
-
-        });
-
-        function hideSidebar() {
-            document.getElementById("infoBar").style.display = 'none';
-            if (onHideSidebar != null) {
-                onHideSidebar();
-            }
-
-        }
-
-        function displaySidebar() {
-            document.getElementById("infoBar").style.display = '';
-        }
-
-        function outputUpdate(limit) {
-            document.querySelector('#limit').value = limit;
-        }
-
-        function updateSlider(limit) {
-            document.querySelector('#doc_limit').value = limit;
-        }
-    </script>
+    <title>Visual Search System</title>
 </head>
+<link rel="stylesheet" type="text/css" href="style/buttons.css"/>
+<style>
+    html, body {
+        height: 100%;
+        width: 100%;
+        background-color: #226666;
+        margin: 0 0 0 0;
+    }
+
+    #title {
+        position: absolute;
+        top: 3px;
+        left: 0; right: 0;
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        font-size: 42px;
+    }
+
+    #query-entry {
+        margin: auto;
+        position: absolute;
+        text-align: center;
+        vertical-align: center;
+        background-color: #D46A6A;
+        top: 0; left: 0; bottom: 0; right: 0;
+        height: 300px;
+        width: 75%;
+        border-radius: 10px;
+    }
+
+    #queries {
+        width: 100%;
+        height: 24px;
+        position: absolute;
+        top: 0; left: 0; bottom: 0; right: 0;
+        margin: auto;
+    }
+
+    .query {
+        width: 25%;
+    }
+
+    #buttons {
+        width: 100%;
+        position: absolute;
+        bottom: 30px;
+        left: 0; right: 0;
+    }
+
+
+</style>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script>
+    var queryString = "query";
+    var queryElements = [];
+    var nextQueryId = 1;
+    $(document).ready(function(){
+        for(var i = 0; i<3; i++){
+            addInput();
+        }
+    });
+
+    function addInput(){
+        if(queryElements.length >= 9) return;
+        var input = document.createElement("input");
+        input.type = "text";
+        input.className = "query";
+        input.id = queryString + nextQueryId;
+        queryElements.push(input);
+        nextQueryId++;
+        document.getElementById("queries").appendChild(input);
+    }
+
+    function removeInput(){
+        if(queryElements.length <= 2) return;
+        var element = queryElements.pop();
+        document.getElementById("queries").removeChild(element);
+        nextQueryId--;
+    }
+
+    function doSearch(){
+        console.log("Hello");
+    }
+
+</script>
 <body>
-<!--<div class="container">-->
-<div class="sidebar" id="infoBar" style="display:none;">
-    <input alt="Close" type="image" src="imgs/closeBtn.png" id="close" onclick="hideSidebar()">
-    <div id="documentInfo"></div>
-</div>
-<div class="content" id="main"></div>
-<br>
-<div class="footer">
-    <!-- TODO: These contain test values -->
-    <div id="search-terms">
-        <div class="term blue"><input class="input" id="query2" type="search" value="web"/></div>
-        <div class="term red"><input class="input" id="query1" type="search" value="visualization"/></div>
-        <div class="term green"><input class="input" id="query3" type="search" value="term"/></div>
-        <button style="width:99%; margin: 0 auto;" id="searchButton">Search</button>
-        <button style="width:99%; margin: 0 auto;" id="updateButton">Update Queries</button>
-        <div class="rangeSliderDiv">
-            <label for="doc_limit" id="doc_limit_label" class="rangeLabel">Max number of results</label>
-            <input id="doc_limit" type="range" class="rangeSlider" value=50 max="1000" min="1" oninput="outputUpdate(value);"/>
-            <input for="doc_limit" id="limit" class="rangeOutput" value="50" onkeyup="updateSlider(value);"/>
+<div id="content">
+    <div id="query-entry">
+        <p id="title">Academic Repository Search</p>
+        <div id="queries"></div>
+        <div id="buttons">
+            <button id="searchButton" onclick="doSearch()">Search</button>
+            <button id="addQuery" onclick="addInput()">Add Query</button>
+            <button id="removeQuery" onclick="removeInput()">Remove Query</button>
         </div>
     </div>
-
-
-    <!--<div id="credit">-->
-    <!--<p>Data Provided by <a href="http://research.google.com">Google Research</a></p>-->
-    <!--</div>-->
 </div>
-<!--</div>-->
-
 </body>
 </html>
