@@ -5,11 +5,11 @@
     <title>Visual Search System</title>
 </head>
 <link rel="stylesheet" type="text/css" href="style/buttons.css"/>
+<link rel="stylesheet" type="text/css" href="style/main-styles.css"/>
 <style>
     html, body {
         height: 100%;
         width: 100%;
-        background-color: #226666;
         margin: 0 0 0 0;
     }
 
@@ -26,7 +26,6 @@
         position: absolute;
         text-align: center;
         vertical-align: center;
-        background-color: #D46A6A;
         top: 0; left: 0; bottom: 0; right: 0;
         height: 300px;
         width: 75%;
@@ -84,13 +83,21 @@
     }
 
     function doSearch(){
-        console.log("Hello");
+        var i = 1;
+        localStorage.clear();
+        while(null != document.getElementById(queryString+i)){
+            var query = queryString+i;
+            localStorage.setItem(query,document.getElementById(query).value);
+            i++;
+        }
+        console.log(localStorage);
+        window.location = "new-first-tier.html";
     }
 
 </script>
-<body>
+<body class="background">
 <div id="content">
-    <div id="query-entry">
+    <div id="query-entry" class="attention">
         <p id="title">Academic Repository Search</p>
         <div id="queries"></div>
         <div id="buttons">

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>First Tier Search</title>
+    <!-- Styles -->
+    <link rel="stylesheet" type="text/css" href="style/buttons.css"/>
+    <link rel="stylesheet" type="text/css" href="style/main-styles.css"/>
+    <link rel="stylesheet" type="text/css" href="style/first-tier-vis-style.css"/>
+    <style>
+        html, body {
+            height: 100%;
+            width: 100%;
+            margin: 0 0 0 0;
+        }
+
+        div, svg {
+            margin: 0 0 0 0;
+        }
+
+        #content {
+            height: 100%;
+            width: 100%;
+            margin: 0 0 0 0;
+        }
+
+        #sidebar {
+            display: inline-block;
+            width: 200px;
+            position: fixed;
+            left: 10px;
+            top: 10px;
+            padding: 10px;
+            background-color: #D46A6A;
+            overflow-y: auto;
+            border: 1px black solid;
+        }
+
+        #close_btn {
+            display: block;
+            float: right;
+            width: 30px;
+            height: 29px;
+            margin: 0;
+        }
+    </style>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="js/searchUtils.js"></script>
+    <script src="js/multiTermGraph.js"></script>
+    <script>
+        var onHideSidebar = null;
+        var currentlyClickedDoc = null;
+        function displayDocument(docId, callback){
+            if (currentlyClickedDoc == docId){
+                return;
+            }
+            currentlyClickedDoc = docId;
+            if (onHideSidebar != null) onHideSidebar();
+
+            var docInfo = document.getElementById("documentInfo");
+            docInfo.innerHTML = "";
+            localStorage.setItem("docId", docId); // Set the document ID
+            displaySidebar();
+            var additionalData = [function(resultDiv, docId){
+                var link = document.createElement("a");
+                link.innerHTML = "[SECOND_TIER]";
+                link.setAttribute("href", "second_tier.html");
+                link.setAttribute("target", "_blank");
+                resultDiv.appendChild(link);
+            }];
+            appendMetadata(docInfo, docId, additionalData);
+            onHideSidebar = callback;
+        }
+
+        function hideSidebar(){
+            document.getElementById("sidebar").style.display = 'none';
+            currentlyClickedDoc = null;
+            if(onHideSidebar != null) {
+                onHideSidebar();
+            }
+        }
+
+        function displaySidebar(){
+            document.getElementById("sidebar").style.display = '';
+        }
+
+        $(document).ready(function(){
+            console.log(localStorage);
+            var chart = forceChart();
+            var query_string = "multi_term_search?vis";
+            var i = 1;
+            while(null != localStorage.getItem("query"+i)){
+                var query = localStorage.getItem("query"+i);
+                query_string += "&query"+i+"="+query;
+                i++;
+            }
+            d3.json(query_string, function(error, data){
+                d3.select("#content").datum(data).call(chart);
+            });
+        });
+
+    </script>
+</head>
+<body>
+<div id="sidebar" class="attention" style="display: none;">
+    <input alt="Close" type="image" src="imgs/closeBtn.png" id="close_btn" onclick="hideSidebar()">
+    <div id="documentInfo"></div>
+</div>
+<div id="content" class="background"></div>
+</body>
+</html>
