@@ -57,14 +57,19 @@ function forceChart() {
             width = this.clientWidth - 3;
 
             for(var j = 0; j < graph.nodes.length; j++){
-                d.nodes[j].radius = d.nodes[j].size * 20;
+                if(d.nodes[j].fixed){
+                    d.nodes[j].radius = d.nodes[j].size * 15;
+                }else{
+                    d.nodes[j].radius = d.nodes[j].size * 35;
+                }
+
             }
 
             force = d3.layout.force()
                 .charge(-150)
                 .linkDistance(LINK_SIZE) // Minimum link length
                 .linkStrength(function (d) {
-                    return d.link_power * 5;
+                    return d.link_power * 3;
                 })
                 .size([width, height]);
 
@@ -126,9 +131,6 @@ function forceChart() {
                         return d.size * 2500;
                     })
                 )
-                .attr("radius", function(d){
-                    return d.size * 500;
-                })
                 .style("fill", function (d) {
                     return d3.hsl(d.color);
                 })
