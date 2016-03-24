@@ -53,8 +53,8 @@ function forceChart() {
             graph = d;
 
             me = this;
-            height = this.clientHeight;
-            width = this.clientWidth;
+            height = this.clientHeight - 3;
+            width = this.clientWidth - 3;
 
             for(var j = 0; j < graph.nodes.length; j++){
                 d.nodes[j].radius = d.nodes[j].size * 20;
@@ -287,8 +287,8 @@ function forceChart() {
      * Function called on changing the size.
      */
     function onResize() {
-        chart.height(me.clientHeight);
-        chart.width(me.clientWidth);
+        chart.height(me.clientHeight - 3);
+        chart.width(me.clientWidth - 3);
     }
 
     /**

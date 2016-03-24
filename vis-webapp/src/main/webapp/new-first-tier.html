@@ -18,8 +18,33 @@
             margin: 0 0 0 0;
         }
 
-        #content {
+        #search_bar{
+            box-sizing: border-box;
+            height: 9%;
+            width: 75%;
+            margin: 0 0 0 0;
+            border-bottom: solid black 3px;
+            border-right: solid black 3px;
+        }
+
+        #search_terms{
+            display: flex;
+            flex-flow: column wrap;
+            align-items: center;
+            float: left;
+            width: 50%;
             height: 100%;
+        }
+
+        #buttons{
+            display: flex;
+            align-items: center;
+            float: left;
+            width: 50%;
+        }
+
+        #content {
+            height: 90%;
             width: 100%;
             margin: 0 0 0 0;
         }
@@ -28,7 +53,7 @@
             display: inline-block;
             width: 200px;
             position: fixed;
-            left: 10px;
+            right: 10px;
             top: 10px;
             padding: 10px;
             background-color: #D46A6A;
@@ -42,6 +67,12 @@
             width: 30px;
             height: 29px;
             margin: 0;
+        }
+
+        .query {
+            display: table-cell;
+            vertical-align: middle;
+            width: 30%;
         }
     </style>
 
@@ -65,11 +96,10 @@
             localStorage.setItem("docId", docId); // Set the document ID
             displaySidebar();
             var additionalData = [function(resultDiv, docId){
-                var link = document.createElement("a");
-                link.innerHTML = "[SECOND_TIER]";
-                link.setAttribute("href", "second_tier.html");
-                link.setAttribute("target", "_blank");
-                resultDiv.appendChild(link);
+                var button = document.createElement("button");
+                button.innerHTML = "Second Tier";
+                button.onclick = goToSecondTier;
+                resultDiv.appendChild(button);
             }];
             appendMetadata(docInfo, docId, additionalData);
             onHideSidebar = callback;
@@ -88,6 +118,22 @@
         }
 
         $(document).ready(function(){
+            var i = 1;
+            while(null != localStorage.getItem("query"+i)){
+                var query = localStorage.getItem("query"+i);
+                var input = document.createElement("input");
+                input.type = "text";
+                input.id = "query_text"+i;
+                input.className = "query";
+                input.value = query;
+                document.getElementById("search_terms").appendChild(input);
+                i++;
+            }
+
+            doSearch();
+        });
+
+        function doSearch(){
             console.log(localStorage);
             var chart = forceChart();
             var query_string = "multi_term_search?vis";
@@ -100,11 +146,30 @@
             d3.json(query_string, function(error, data){
                 d3.select("#content").datum(data).call(chart);
             });
-        });
+        }
+
+        function updateQueriesAndDoSearch(){
+            var i = 1;
+            while(null != document.getElementById("query_text"+i)){
+                localStorage.setItem("query"+i, document.getElementById("query_text"+i).value);
+                i++;
+            }
+            doSearch();
+        }
+
+        function goToSecondTier(){
+            window.location = "new-second-tier.html";
+        }
 
     </script>
 </head>
-<body>
+<body class="background">
+<div id="search_bar" class="basic">
+    <div id="search_terms" class="basic"></div>
+    <div id="buttons" class="basic">
+        <button id="search_button" onclick="updateQueriesAndDoSearch()" class="query">Search</button>
+    </div>
+</div>
 <div id="sidebar" class="attention" style="display: none;">
     <input alt="Close" type="image" src="imgs/closeBtn.png" id="close_btn" onclick="hideSidebar()">
     <div id="documentInfo"></div>
