@@ -66,6 +66,10 @@ public class CombinedRelatedTermsConverter {
             jsonObject.nodes.add(sn);
         }
 
+        FixedNode gravityNode = SizedFixedNode.of("", -999, "white", .5, .5, "");
+        int gravityNodeIndex = jsonObject.nodes.size();
+        jsonObject.nodes.add(gravityNode);
+
         // Get the results
         int numNodes = 0;
         int removedNodes = 0;
@@ -90,10 +94,12 @@ public class CombinedRelatedTermsConverter {
                         log.info(newNode.name + " is already in the visualization, skipping node creation.");
                         // If the node is already there, do not add a new node, supplement the old node
                         jsonObject.links.add(Link.of(sourceIndex, iOfNode, linkPower));
+                        jsonObject.links.add(Link.of(gravityNodeIndex, iOfNode, .075));
                     }else{
                         // Add a new node if the node is not there
                         jsonObject.nodes.add(newNode);
                         jsonObject.links.add(Link.of(sourceIndex, myIndex, linkPower));
+                        jsonObject.links.add(Link.of(gravityNodeIndex, myIndex, .075));
                     }
 
                     numNodes++;

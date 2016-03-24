@@ -27,6 +27,10 @@
             border-right: solid black 3px;
         }
 
+        #refine_buttons{
+            font-size: 12px;
+        }
+
         #content {
             width: 100%;
             height: 85%;
@@ -53,6 +57,15 @@
             margin: 0;
         }
 
+        #documentInfo{
+            font-family: 'Open Sans', sans-serif;
+            font-size: 24px;
+        }
+
+        .refine_buttons{
+            width: 90%;
+        }
+
     </style>
 
     <!-- Scripts -->
@@ -73,7 +86,30 @@
             displaySidebar();
             var termInfo = document.getElementById("documentInfo");
             termInfo.innerHTML = term;
+
+            // TODO: Work on the refine buttons div
+            var refineButtons = document.getElementById("refine_buttons");
+            refineButtons.innerHTML = "";
+            var i = 1;
+            while(null != localStorage.getItem("query"+i)){
+                var button = document.createElement("button");
+                button.innerHTML = "Refine " + localStorage.getItem("query"+i);
+                var value = i;
+                button.className = "refine_buttons";
+                button.onclick = function(){
+                    console.log("Setting query " + value + " to " + term);
+                    localStorage.setItem("query"+value, term);
+                    goToSecondTier();
+                };
+                refineButtons.appendChild(button);
+                i++;
+            }
+
             onHideSidebar = callback;
+        }
+
+        function goToSecondTier(){
+            window.location = "new-first-tier.html";
         }
 
         function hideSidebar(){
@@ -127,6 +163,7 @@
     <div id="sidebar" class="attention" style="display: none;">
         <input alt="Close" type="image" src="imgs/closeBtn.png" id="close_btn" onclick="hideSidebar()">
         <div id="documentInfo"></div>
+        <div id="refine_buttons"></div>
     </div>
 </body>
 </html>

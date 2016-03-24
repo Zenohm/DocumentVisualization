@@ -189,12 +189,14 @@ function forceChart() {
             /**
              * Function that is called every tick (critical code should run fast)
              */
+            var radius = 20;
             function onTick() {
                 node.attr("cx", function (d) {
                         if (d.fixed) {
                             d.x = width * d.xLoc;
                             return d.x;
                         } else {
+                            //d.x = Math.max(radius, Math.min(width - radius, d.x));
                             return d.x;
                         }
                     })
@@ -203,12 +205,15 @@ function forceChart() {
                             d.y = height * d.yLoc;
                             return d.y;
                         } else {
+                            //d.y = Math.max(radius, Math.min(height - radius, d.y));
                             return d.y;
                         }
                     })
                     .attr("x", function(d){return d.x;})
                     .attr("y", function(d){return d.y})
                     .each(collide(.5));
+
+                console.log("Width: " + width + "Height: " + height);
 
                 svg.selectAll(".node").attr("transform", function(d) { return getTranslate(d); });
 
