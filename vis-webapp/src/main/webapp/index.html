@@ -54,46 +54,50 @@
 
 </style>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script src="js/visual_tier_storage_manipulation.js"></script>
 <script>
-    var queryString = "query";
-    var queryElements = [];
-    var nextQueryId = 1;
-    $(document).ready(function(){
-        for(var i = 0; i<3; i++){
-            addInput();
-        }
-    });
+var queryString = "query";
+var queryElements = [];
+var nextQueryId = 1;
 
-    function addInput(){
-        if(queryElements.length >= 9) return;
-        var input = document.createElement("input");
-        input.type = "text";
-        input.className = "query";
-        input.id = queryString + nextQueryId;
-        queryElements.push(input);
-        nextQueryId++;
-        document.getElementById("queries").appendChild(input);
+$(document).ready(function(){
+    for(var i = 0; i<3; i++){
+        addInput();
     }
+});
 
-    function removeInput(){
-        if(queryElements.length <= 2) return;
-        var element = queryElements.pop();
-        document.getElementById("queries").removeChild(element);
-        nextQueryId--;
-    }
+/**
+ * Adds a box for another query
+ */
+function addInput() {
+    if(queryElements.length >= 9) return;
+    var input = document.createElement("input");
+    input.type = "text";
+    input.className = "query";
+    input.id = "query_text" + nextQueryId;
+    queryElements.push(input);
+    nextQueryId++;
+    document.getElementById("queries").appendChild(input);
+}
 
-    function doSearch(){
-        var i = 1;
-        localStorage.clear();
-        while(null != document.getElementById(queryString+i)){
-            var query = queryString+i;
-            localStorage.setItem(query,document.getElementById(query).value);
-            i++;
-        }
-        console.log(localStorage);
-        window.location = "new-first-tier.html";
-    }
+/**
+ * Removes a box for a query
+ */
+function removeInput(){
+    if(queryElements.length <= 2) return;
+    var element = queryElements.pop();
+    document.getElementById("queries").removeChild(element);
+    nextQueryId--;
+}
 
+/**
+ * Flush the local storage, load it back up, and proceed to the tier one
+ */
+function proceedToTierOne() {
+    localStorage.clear();
+    loadFieldsIntoLocalStorage();
+    window.location = "new-first-tier.html";
+}
 </script>
 <body class="background">
 <div id="content">
@@ -101,7 +105,7 @@
         <p id="title">Academic Repository Search</p>
         <div id="queries"></div>
         <div id="buttons">
-            <button id="searchButton" onclick="doSearch()">Search</button>
+            <button id="searchButton" onclick="proceedToTierOne()">Search</button>
             <button id="addQuery" onclick="addInput()">Add Query</button>
             <button id="removeQuery" onclick="removeInput()">Remove Query</button>
         </div>
