@@ -37,6 +37,10 @@ function loadFieldsIntoLocalStorage() {
         localStorage.setItem("query"+i, document.getElementById("query_text"+i).value);
         i++;
     }
+    // Make sure we have a limit before we try and grab it
+    if (null != document.getElementById("limit")) {
+        localStorage.setItem("doc_limit", document.getElementById("limit").value);
+    }
 }
 
 /**
@@ -50,5 +54,6 @@ function getQueryString() {
         query_string += "&query" + i + "=" + query;
         i++;
     }
+    query_string += "&doc_limit=" + localStorage.getItem("doc_limit");
     return query_string;
 }
