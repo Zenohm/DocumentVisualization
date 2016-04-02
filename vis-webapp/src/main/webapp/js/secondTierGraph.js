@@ -65,11 +65,7 @@ function forceChart() {
             }
 
             force = d3.layout.force()
-                .charge(-150)
-                .linkDistance(LINK_SIZE) // Minimum link length
-                .linkStrength(function (d) {
-                    return d.link_power * 3;
-                })
+
                 .size([width, height]);
 
             // Check if the SVG exists, if it doesn't create it
@@ -81,6 +77,11 @@ function forceChart() {
             // Add the data, start the sim.
             force.nodes(d.nodes)
                 .links(d.links)
+                .charge(-175)
+                .linkDistance(LINK_SIZE) // Minimum link length
+                .linkStrength(function (d) {
+                    return d.link_power * 3;
+                })
                 .start();
 
             // Apply stuff to links
@@ -220,11 +221,7 @@ function forceChart() {
                     .attr("y", function(d){return d.y})
                     .each(collide(.5));
 
-                console.log("Width: " + width + "Height: " + height);
-
                 svg.selectAll(".node").attr("transform", function(d) { return getTranslate(d); });
-
-                //console.log(graph.nodes);
 
                 text.attr("x", function (d) {
                     return d.x;
