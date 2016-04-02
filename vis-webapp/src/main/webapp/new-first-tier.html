@@ -81,9 +81,14 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script src="js/searchUtils.js"></script>
     <script src="js/multiTermGraph.js"></script>
+    <script src="js/visual_tier_storage_manipulation.js"></script>
     <script>
         var onHideSidebar = null;
         var currentlyClickedDoc = null;
+
+        /**
+         * Show a doc on click
+         */
         function displayDocument(docId, callback){
             if (currentlyClickedDoc == docId){
                 return;
@@ -117,6 +122,9 @@
             document.getElementById("sidebar").style.display = '';
         }
 
+        /**
+         * On load, populate what needs populated from what we have in storage, then do a search.
+         */
         $(document).ready(function(){
             var i = 1;
             while(null != localStorage.getItem("query"+i)){
@@ -133,27 +141,24 @@
             doSearch();
         });
 
+        /**
+         * Conducts a search, using the info stored in local storage
+         */
         function doSearch(){
             console.log(localStorage);
+            console.log(getQueryString());
             var chart = forceChart();
-            var query_string = "multi_term_search?vis";
-            var i = 1;
-            while(null != localStorage.getItem("query"+i)){
-                var query = localStorage.getItem("query"+i);
-                query_string += "&query"+i+"="+query;
-                i++;
-            }
+            var query_string = getQueryString();
             d3.json(query_string, function(error, data){
                 d3.select("#content").datum(data).call(chart);
             });
         }
 
-        function updateQueriesAndDoSearch(){
-            var i = 1;
-            while(null != document.getElementById("query_text"+i)){
-                localStorage.setItem("query"+i, document.getElementById("query_text"+i).value);
-                i++;
-            }
+        /**
+         * Grab info from the fields and conduct the search.
+         */
+        function updateQueriesAndDoSearch() {
+            loadFieldsIntoLocalStorage();
             doSearch();
         }
 
@@ -168,6 +173,11 @@
     <div id="search_terms" class="basic"></div>
     <div id="buttons" class="basic">
         <button id="search_button" onclick="updateQueriesAndDoSearch()" class="query">Search</button>
+    </div>
+    <div class="rangeSliderDiv" style="display: none">
+        <label for="doc_limit" id="doc_limit_label" class="rangeLabel">Max number of results</label>
+        <input id="doc_limit" type="range" class="rangeSlider" value=50 max="1000" min="1" oninput="outputUpdate(value);"/>
+        <input for="doc_limit" id="limit" class="rangeOutput" value="50" onkeyup="updateSlider(value);"/>
     </div>
 </div>
 <div id="sidebar" class="attention" style="display: none;">

@@ -94,18 +94,22 @@
             while(null != localStorage.getItem("query"+i)){
                 var button = document.createElement("button");
                 button.innerHTML = "Refine " + localStorage.getItem("query"+i);
-                var value = i;
                 button.className = "refine_buttons";
-                button.onclick = function(){
-                    console.log("Setting query " + value + " to " + term);
-                    localStorage.setItem("query"+value, term);
-                    goToSecondTier();
-                };
+
+                button.onclick = getButtonFunction(i, term); // Used a closure so that the variable binds at the correct time.
                 refineButtons.appendChild(button);
                 i++;
             }
 
             onHideSidebar = callback;
+        }
+
+        function getButtonFunction(queryLoc, term){
+            return function(){
+                console.log("Setting query " + queryLoc + " to " + term);
+                localStorage.setItem("query"+queryLoc, term);
+                goToSecondTier();
+            }
         }
 
         function goToSecondTier(){
