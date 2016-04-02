@@ -14,9 +14,8 @@ import internal.term_utils.TermQueryScore;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by chris on 12/30/15.
@@ -77,7 +76,6 @@ public class CombinedRelatedTermsConverter {
             // Add the related terms as nodes
             int sourceIndex = termIndexes.get(result.term);
             for(RelatedTerm rTerm : result.getResults()){
-//                EasyLogger.log(result.term + "_comb_rel_terms", rTerm);
                 double size = scorer.getScore(rTerm.getText(), result.docId, TermQueryScore.QueryType.Multiword);
                 if(size < .0001){
                     removedNodes++;
@@ -92,15 +90,31 @@ public class CombinedRelatedTermsConverter {
                     int iOfNode = jsonObject.nodes.indexOf(newNode);
                     if(iOfNode != -1){
                         log.info(newNode.name + " is already in the visualization, skipping node creation.");
+
+                        // How to get other link power?
+                        List<Double> otherLinkPowers = jsonObject.links.stream()
+                                .filter(l -> l.target == iOfNode)
+                                .map(l -> l.link_power)
+                                .sorted(Comparator.reverseOrder())
+                                .collect(Collectors.toList());
+
+                        double otherLinkPower = otherLinkPowers.isEmpty() ? 0 : otherLinkPowers.get(0);
+
+                        if(linkPower > otherLinkPower){
+                            if(!jsonObject.nodes.get(iOfNode).fixed){
+                                log.info(newNode.name + " is more related to " + result.term + " replacing color.");
+                                jsonObject.nodes.set(iOfNode, newNode);
+                            }
+                        }
+
                         // If the node is already there, do not add a new node, supplement the old node
                         jsonObject.links.add(Link.of(sourceIndex, iOfNode, linkPower));
-                        jsonObject.links.add(Link.of(gravityNodeIndex, iOfNode, .075));
                     }else{
                         // Add a new node if the node is not there
                         jsonObject.nodes.add(newNode);
                         jsonObject.links.add(Link.of(sourceIndex, myIndex, linkPower));
-                        jsonObject.links.add(Link.of(gravityNodeIndex, myIndex, .075));
                     }
+                    jsonObject.links.add(Link.of(gravityNodeIndex, myIndex, .075)); // Add a central gravity to the node.
 
                     numNodes++;
                 }else{

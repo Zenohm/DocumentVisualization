@@ -16,4 +16,13 @@ public abstract class Node {
         this.id = id;
         this.color = color;
     }
+
+    @Override
+    public boolean equals(Object o){
+        if(o instanceof Node){
+            Node n = (Node)o;
+            return n.name.equals(this.name);
+        }
+        return false;
+    }
 }

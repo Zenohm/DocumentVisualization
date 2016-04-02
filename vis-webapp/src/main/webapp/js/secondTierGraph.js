@@ -51,7 +51,6 @@ function forceChart() {
         // 'd' is the data
         selection.each(function (d, i) {
             graph = d;
-
             me = this;
             height = this.clientHeight - 3;
             width = this.clientWidth - 3;
@@ -92,7 +91,13 @@ function forceChart() {
 
             link.enter().append("line")
                 .attr("class", "link")
-                .style("stroke-width", 0);
+                .style("stroke-width", function(d){
+                    if(d.source.id == -999){
+                        return 0;
+                    }
+                    return "1.5px";
+                })
+                .style("stroke", function(d){ return d.source.color});
 
             node = svg.selectAll(".node")
                 .data(d.nodes)
@@ -248,7 +253,6 @@ function forceChart() {
 
     // Resolves collisions between d and all other circles.
     function collide(alpha){
-        //console.log(graph.nodes);
         var quadtree = d3.geom.quadtree(graph.nodes);
         return function(d) {
             var r = d.radius + maxRadius + clusterPadding,

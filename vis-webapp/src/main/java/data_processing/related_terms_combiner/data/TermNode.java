@@ -21,4 +21,9 @@ public class TermNode extends Node {
     public static TermNode of(boolean fixed, String name, int id, String color, RelatedTerm.RelatedTermType termType, double size, String relatedTo){
         return new TermNode(fixed, name, id, color, termType, size, relatedTo);
     }
+
+    @Override
+    public boolean equals(Object o){
+        return super.equals(o);
+    }
 }

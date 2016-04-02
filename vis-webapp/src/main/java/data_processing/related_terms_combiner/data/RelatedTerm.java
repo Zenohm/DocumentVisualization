@@ -21,6 +21,10 @@ public class RelatedTerm extends ScoredTerm{
         return RelatedTerm.of(term.getText(), term.getScore(), type);
     }
 
+    public boolean equals(Object o){
+        return super.equals(o);
+    }
+
     /**
      * Created by chris on 12/30/15.
      */
