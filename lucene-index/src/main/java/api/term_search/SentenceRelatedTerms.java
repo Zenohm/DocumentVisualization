@@ -132,7 +132,12 @@ public class SentenceRelatedTerms extends LuceneReader implements DocumentRelate
                 .filter(t -> {
                     try {
                         String termStem = TermStemmer.stemTerm(t.getKey());
-                        return termStem.equals(t.getKey()) || !terms.contains(termStem);
+                        if(terms.contains(termStem))
+                            return false;
+                        if(termStem.equals(t.getKey()))
+                            return true;
+                        if(termStem.equals(term))
+                            return false;
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
