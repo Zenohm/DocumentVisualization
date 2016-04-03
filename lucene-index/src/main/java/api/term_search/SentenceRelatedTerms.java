@@ -21,10 +21,7 @@ import term_search.DocumentRelatedTermsSearcher;
 import utilities.StringManip;
 
 import java.text.Normalizer;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -127,12 +124,21 @@ public class SentenceRelatedTerms extends LuceneReader implements DocumentRelate
                 .filter(dict::contains) // Ensure that only real words are allowed
                 .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
 
+        Set<String> terms = termScores.keySet();
+
         // Remove single occurance terms
         termScores = termScores.entrySet().stream()
                 .filter(e -> e.getValue() != 1)
+                .filter(t -> {
+                    try {
+                        String termStem = TermStemmer.stemTerm(t.getKey());
+                        return termStem.equals(t.getKey()) || !terms.contains(termStem);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                    return true;
+                })
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-
-//        EasyLogger.log(term + "_term_scores", termScores.entrySet().stream().map(e -> e.getKey() + ": " + e.getValue()).collect(Collectors.joining("\n")));
 
         // Convert this to a list of scores
         List<ScoredTerm> scores = ScoredTermConverter.convertToScoredTerm(termScores, numSentences);
