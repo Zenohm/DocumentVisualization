@@ -77,6 +77,7 @@
         var currentlyClickedTerm = null;
         var onHideSidebar = null;
         function displayTerm(term_node, callback){
+            console.log(term_node);
             var term = term_node.name;
             if(currentlyClickedTerm == term){
                 return;
@@ -86,6 +87,15 @@
             displaySidebar();
             var termInfo = document.getElementById("documentInfo");
             termInfo.innerHTML = term;
+
+            var relatedTo = document.getElementById("relatedTo");
+            relatedTo.innerHTML = term + " is related to:<br>";
+            for(var related in term_node.termsRelatedTo){
+                relatedTo.innerHTML += term_node.termsRelatedTo[related];
+                if(related != term_node.termsRelatedTo.length - 1){
+                    relatedTo.innerHTML += ", ";
+                }
+            }
 
             // TODO: Work on the refine buttons div
             var refineButtons = document.getElementById("refine_buttons");
@@ -167,6 +177,7 @@
     <div id="sidebar" class="attention" style="display: none;">
         <input alt="Close" type="image" src="imgs/closeBtn.png" id="close_btn" onclick="hideSidebar()">
         <div id="documentInfo"></div>
+        <div id="relatedTo"></div>
         <div id="refine_buttons"></div>
     </div>
 </body>

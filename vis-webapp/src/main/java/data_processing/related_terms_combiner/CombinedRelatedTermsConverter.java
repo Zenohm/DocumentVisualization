@@ -89,7 +89,7 @@ public class CombinedRelatedTermsConverter {
                     TermNode newNode = TermNode.of(TermNode.NOT_FIXED, rTerm.getText(), id, color, rTerm.type, size, result.term);
                     int iOfNode = jsonObject.nodes.indexOf(newNode);
                     if(iOfNode != -1){
-                        log.info(newNode.name + " is already in the visualization, skipping node creation.");
+//                        log.info(newNode.name + " is already in the visualization, skipping node creation.");
 
                         // How to get other link power?
                         List<Double> otherLinkPowers = jsonObject.links.stream()
@@ -100,11 +100,18 @@ public class CombinedRelatedTermsConverter {
 
                         double otherLinkPower = otherLinkPowers.isEmpty() ? 0 : otherLinkPowers.get(0);
 
-                        if(linkPower > otherLinkPower){
-                            if(!jsonObject.nodes.get(iOfNode).fixed){
-                                log.info(newNode.name + " is more related to " + result.term + " replacing color.");
+                        if(linkPower > otherLinkPower) { // If link power is greater, then replace the node with the new node.
+                            if (!jsonObject.nodes.get(iOfNode).fixed) { // If the old node is not fixed.
+                                TermNode oldNode = (TermNode)jsonObject.nodes.get(iOfNode);
+                                oldNode.termsRelatedTo.forEach(newNode::addRelatedTerm); // add related terms
+//                                log.info(newNode.name + " is more related to " + result.term + " replacing color.");
                                 jsonObject.nodes.set(iOfNode, newNode);
                             }
+                        }else{
+                            if(!jsonObject.nodes.get(iOfNode).fixed){
+                                ((TermNode)jsonObject.nodes.get(iOfNode)).addRelatedTerm(result.term);
+                            }
+
                         }
 
                         // If the node is already there, do not add a new node, supplement the old node

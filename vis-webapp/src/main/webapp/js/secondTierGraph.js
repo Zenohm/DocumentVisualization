@@ -30,7 +30,7 @@
 
 function forceChart() {
     // "Constant" Variables
-    var LINK_SIZE = 40,
+    var LINK_SIZE = 30,
         FONT_SIZE = "16px";
     // "Class" Variables
     var width = 400,
@@ -80,7 +80,7 @@ function forceChart() {
                 .charge(-175)
                 .linkDistance(LINK_SIZE) // Minimum link length
                 .linkStrength(function (d) {
-                    return d.link_power * 3;
+                    return d.link_power * 7;
                 })
                 .start();
 
