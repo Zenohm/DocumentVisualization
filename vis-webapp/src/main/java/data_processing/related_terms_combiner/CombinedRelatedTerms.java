@@ -84,6 +84,8 @@ public class CombinedRelatedTerms {
         try {
             if(crt != null){
                 compoundRelatedTerms = crt.getRelatedTerms(term);
+                log.info("Total Time to produce compound related terms to " + term + ": " + (System.nanoTime() - crtStart)/Math.pow(10,9) +
+                ".Got " + compoundRelatedTerms.size() + " compound related terms.");
             }else{
                 log.error("Compound related terms generator was not initialized");
                 compoundRelatedTerms = null;
@@ -92,7 +94,7 @@ public class CombinedRelatedTerms {
             e.printStackTrace();
             compoundRelatedTerms = null;
         }
-        log.info("Total Time to produce compound related terms to " + term + ": " + (System.nanoTime() - crtStart)/Math.pow(10,9));
+
         return compoundRelatedTerms;
     }
 
@@ -102,19 +104,20 @@ public class CombinedRelatedTerms {
         long srtStart = System.nanoTime();
         try {
             sentenceRelatedTerms = srt.getDocumentRelatedTerms(docId, term);
+            log.info("Total Time to produce sentence related terms to " + term + " in document # " + docId + ": " + (System.nanoTime() - srtStart)/Math.pow(10, 9) +
+                    ". Got " + sentenceRelatedTerms.size() + " sentence related terms");
         } catch (SearchException e) {
             log.error("Sentence Related Terms Could not be obtained");
             e.printStackTrace();
         }
-        log.info("Total Time to produce sentence related terms to " + term + " in document # " + docId + ": " + (System.nanoTime() - srtStart)/Math.pow(10, 9) +
-                ". Got " + sentenceRelatedTerms.size() + " sentence related terms");
         return sentenceRelatedTerms;
     }
 
     private List<ScoredTerm> getSynonyms(String term){
         long synStart = System.nanoTime();
         List<ScoredTerm> synTerms = SynonymAdapter.getScoredSynonymsWithMinimalRelation(term);
-        log.info("Total time to produce synonyms to " + term + ": " + (System.nanoTime() - synStart)/Math.pow(10, 9));
+        log.info("Total time to produce synonyms to " + term + ": " + (System.nanoTime() - synStart)/Math.pow(10, 9) +
+        "Got " + synTerms.size() + " synonyms.");
         return synTerms;
     }
 
