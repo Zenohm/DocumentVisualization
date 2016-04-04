@@ -49,12 +49,20 @@
             border: 1px black solid;
         }
 
+        #back_button {
+            position: fixed;
+            bottom: 20px;
+            left: 10px;
+            cursor: pointer;
+        }
+
         #close_btn {
             display: block;
             float: right;
             width: 30px;
             height: 29px;
             margin: 0;
+            cursor: pointer;
         }
 
         #documentInfo{
@@ -118,11 +126,11 @@
             return function(){
                 console.log("Setting query " + queryLoc + " to " + term);
                 localStorage.setItem("query"+queryLoc, term);
-                goToSecondTier();
+                goToFirstTeir();
             }
         }
 
-        function goToSecondTier(){
+        function goToFirstTeir(){
             window.location = "new-first-tier.html";
         }
 
@@ -180,5 +188,6 @@
         <div id="relatedTo"></div>
         <div id="refine_buttons"></div>
     </div>
+    <img src="imgs/backButton.png" height="50px" width="50px" id="back_button" alt="Return to first teir" onclick="goToFirstTeir()"/>
 </body>
 </html>

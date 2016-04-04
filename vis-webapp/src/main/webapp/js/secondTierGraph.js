@@ -37,6 +37,7 @@ function forceChart() {
         height = 400,
         force = 0,
         svg = 0,
+        defs = 0,
         link = 0,
         node = 0,
         text = 0,
@@ -74,13 +75,15 @@ function forceChart() {
                 svg = d3.select(me).append("svg").attr("width", width).attr("height", height);
             }
 
+            var defs = svg.append("defs");
+
             // Add the data, start the sim.
             force.nodes(d.nodes)
                 .links(d.links)
                 .charge(-175)
                 .linkDistance(LINK_SIZE) // Minimum link length
                 .linkStrength(function (d) {
-                    return d.link_power * 7;
+                    return d.link_power * 5;
                 })
                 .start();
 
@@ -96,7 +99,7 @@ function forceChart() {
                     if(d.source.id == -999){
                         return 0;
                     }
-                    return "1.5px";
+                    return "0";
                 })
                 .style("stroke", function(d){ return d.source.color});
 
@@ -106,7 +109,7 @@ function forceChart() {
                     if(d.fixed){
                         return FIXED_NODE_SIZE;
                     }else {
-                        return d.size * 3;
+                        return d.size * 5;
                     }
                 });
 
@@ -137,8 +140,42 @@ function forceChart() {
                         return d.size * 2500;
                     })
                 )
-                .style("fill", function (d) {
-                    return d3.hsl(d.color);
+                .attr("size", function(d){
+                    return d.size * 2500;
+                })
+                .attr("fill", function (d) { // TODO: Implement a pattern fill technique here.
+                    if(d.id >= 0){
+                        var totalHeight = Math.ceil(this.getBBox().height);
+
+                        var perUnitHeight = totalHeight / d.colors.length;
+                        var height = 0;
+                        var pattern = defs.append("pattern")
+                            .attr("id", "id"+ d.id)
+                            .attr("width", 10)
+                            .attr("x", 0)
+                            .attr("y", d.colors.length % 2 == 0 ? 0 : (1.0/2.0)*perUnitHeight )
+                            .attr("patternUnits", "userSpaceOnUse");
+
+                        for(var color in d.colors){
+                            var currentColor = d.colors[color];
+                            pattern.append("rect")
+                                .attr("height", perUnitHeight)
+                                .attr("width", 10)
+                                .attr("x", 0)
+                                .attr("y", height)
+                                .attr("fill", currentColor);
+                            height += perUnitHeight;
+                        }
+
+                        pattern.attr("height", height);
+
+                        return "url(#id"+ d.id + ")";
+                    } else{
+                        return d3.hsl(d.color);
+                    }
+                })
+                .attr("id", function(d){
+                    return "id" + d.id;
                 })
                 .on("click", function (d) {
                     // Don't run this on the fixed nodes

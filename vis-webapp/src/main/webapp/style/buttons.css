@@ -12,6 +12,7 @@ button {
     margin-top: 5px;
     margin-bottom: 18px;
     text-decoration: none;
+    cursor: pointer;
 }
 button:visited{
     color: #fff;

@@ -75,9 +75,14 @@ function addInput() {
     input.type = "text";
     input.className = "query";
     input.id = "query_text" + nextQueryId;
+    document.getElementById("queries").appendChild(input);
+    $("#"+input.id).keyup(function (event) {
+        if (event.keyCode == 13) {
+            proceedToTierOne();
+        }
+    });
     queryElements.push(input);
     nextQueryId++;
-    document.getElementById("queries").appendChild(input);
 }
 
 /**

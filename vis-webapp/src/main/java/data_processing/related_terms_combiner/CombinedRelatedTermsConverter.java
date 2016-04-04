@@ -22,14 +22,7 @@ import java.util.stream.Collectors;
  */
 public class CombinedRelatedTermsConverter {
     private static final Log log = LogFactory.getLog(CombinedRelatedTermsConverter.class);
-    private static TermQueryScore scorer;
-    static{
-        try {
-            scorer = new TermQueryScore(LuceneIndexReader.getInstance());
-        } catch (LuceneSearchException e) {
-            e.printStackTrace();
-        }
-    }
+
     public static D3ConvertibleJson convertToLinksAndNodes(RelatedTermResult... results){
         TermQueryScore scorer;
         try {
@@ -72,6 +65,7 @@ public class CombinedRelatedTermsConverter {
         // Get the results
         int numNodes = 0;
         int removedNodes = 0;
+        int idCounter = 0;
         for(RelatedTermResult result : results){
             // Add the related terms as nodes
             int sourceIndex = termIndexes.get(result.term);
@@ -82,15 +76,13 @@ public class CombinedRelatedTermsConverter {
                     continue;
                 }
                 int myIndex = jsonObject.nodes.size();
-                int id = rTerm.getText().hashCode();
+                int id = ++idCounter;
                 String color = fixedNodes.get(sourceIndex).color; // Get the color of the source
                 double linkPower = rTerm.getScore();
                 if(linkPower >= .001){
                     TermNode newNode = TermNode.of(TermNode.NOT_FIXED, rTerm.getText(), id, color, rTerm.type, size, result.term);
                     int iOfNode = jsonObject.nodes.indexOf(newNode);
                     if(iOfNode != -1){
-//                        log.info(newNode.name + " is already in the visualization, skipping node creation.");
-
                         // How to get other link power?
                         List<Double> otherLinkPowers = jsonObject.links.stream()
                                 .filter(l -> l.target == iOfNode)
@@ -104,14 +96,14 @@ public class CombinedRelatedTermsConverter {
                             if (!jsonObject.nodes.get(iOfNode).fixed) { // If the old node is not fixed.
                                 TermNode oldNode = (TermNode)jsonObject.nodes.get(iOfNode);
                                 oldNode.termsRelatedTo.forEach(newNode::addRelatedTerm); // add related terms
-//                                log.info(newNode.name + " is more related to " + result.term + " replacing color.");
+                                oldNode.colors.forEach(newNode::addColor);
                                 jsonObject.nodes.set(iOfNode, newNode);
                             }
                         }else{
                             if(!jsonObject.nodes.get(iOfNode).fixed){
                                 ((TermNode)jsonObject.nodes.get(iOfNode)).addRelatedTerm(result.term);
+                                jsonObject.nodes.get(iOfNode).addColor(color);
                             }
-
                         }
 
                         // If the node is already there, do not add a new node, supplement the old node

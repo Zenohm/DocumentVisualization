@@ -85,7 +85,7 @@ public class CombinedRelatedTerms {
             if(crt != null){
                 compoundRelatedTerms = crt.getRelatedTerms(term);
                 log.info("Total Time to produce compound related terms to " + term + ": " + (System.nanoTime() - crtStart)/Math.pow(10,9) +
-                ".Got " + compoundRelatedTerms.size() + " compound related terms.");
+                ". Got " + compoundRelatedTerms.size() + " compound related terms.");
             }else{
                 log.error("Compound related terms generator was not initialized");
                 compoundRelatedTerms = null;
@@ -117,7 +117,7 @@ public class CombinedRelatedTerms {
         long synStart = System.nanoTime();
         List<ScoredTerm> synTerms = SynonymAdapter.getScoredSynonymsWithMinimalRelation(term);
         log.info("Total time to produce synonyms to " + term + ": " + (System.nanoTime() - synStart)/Math.pow(10, 9) +
-        "Got " + synTerms.size() + " synonyms.");
+        ". Got " + synTerms.size() + " synonyms.");
         return synTerms;
     }
 

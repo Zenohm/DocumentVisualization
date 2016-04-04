@@ -67,6 +67,7 @@
             width: 30px;
             height: 29px;
             margin: 0;
+            cursor: pointer;
         }
 
         .query {
@@ -134,7 +135,12 @@
                 input.id = "query_text"+i;
                 input.className = "query";
                 input.value = query;
-                document.getElementById("search_terms").appendChild(input);
+                document.getElementById("search_terms").appendChild(input)
+                $("#"+input.id).keyup(function (event) {
+                    if (event.keyCode == 13) {
+                        updateQueriesAndDoSearch();
+                    }
+                });
                 i++;
             }
 
