@@ -158,6 +158,7 @@
             d3.json(query_string, function(error, data){
                 d3.select("#content").datum(data).call(chart);
             });
+            hideSidebar();
         }
 
         /**
