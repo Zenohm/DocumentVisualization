@@ -112,8 +112,9 @@ public class CombinedRelatedTermsConverter {
                         // Add a new node if the node is not there
                         jsonObject.nodes.add(newNode);
                         jsonObject.links.add(Link.of(sourceIndex, myIndex, linkPower));
+                        jsonObject.links.add(Link.of(gravityNodeIndex, myIndex, .075)); // Add a central gravity to the node.
                     }
-                    jsonObject.links.add(Link.of(gravityNodeIndex, myIndex, .075)); // Add a central gravity to the node.
+
 
                     numNodes++;
                 }else{

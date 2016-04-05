@@ -56,17 +56,30 @@ function forceChart() {
             height = this.clientHeight - 3;
             width = this.clientWidth - 3;
 
-            for(var j = 0; j < graph.nodes.length; j++){
-                if(d.nodes[j].fixed){
-                    d.nodes[j].radius = d.nodes[j].size * 15;
-                }else{
-                    d.nodes[j].radius = d.nodes[j].size * 35;
+            // Find blank links, which give the error
+            // "Uncaught TypeError: Cannot read property 'weight' of undefined"
+            graph.links.forEach(function(link, index, list) {
+                if (typeof graph.nodes[link.source] === 'undefined') {
+                    console.log('undefined source', link);
                 }
+                if (typeof graph.nodes[link.target] === 'undefined') {
+                    console.log('undefined target', link);
+                }
+            });
 
-            }
+            //for(var j = 0; j < graph.nodes.length; j++){
+            //    if(d.nodes[j].fixed){
+            //        d.nodes[j].radius = d.nodes[j].size * 15;
+            //    }else{
+            //        d.nodes[j].radius = d.nodes[j].size * 35;
+            //    }
+            //
+            //}
 
             force = d3.layout.force()
-
+                .nodes(d.nodes)
+                .links(d.links)
+                .charge(-50)
                 .size([width, height]);
 
             // Check if the SVG exists, if it doesn't create it
@@ -78,10 +91,7 @@ function forceChart() {
             var defs = svg.append("defs");
 
             // Add the data, start the sim.
-            force.nodes(d.nodes)
-                .links(d.links)
-                .charge(-175)
-                .linkDistance(LINK_SIZE) // Minimum link length
+            force.linkDistance(LINK_SIZE) // Minimum link length
                 .linkStrength(function (d) {
                     return d.link_power * 5;
                 })
@@ -104,45 +114,35 @@ function forceChart() {
                 .style("stroke", function(d){ return d.source.color});
 
             node = svg.selectAll(".node")
-                .data(d.nodes)
-                .attr("radius", function(d){
-                    if(d.fixed){
-                        return FIXED_NODE_SIZE;
-                    }else {
-                        return d.size * 5;
-                    }
-                });
+                .data(d.nodes);
 
             // Adding the nodes
             node.enter()
                 .append("path")
-                .attr("class", "node");
-
-            node.attr("transform", function(d){ return getTranslate(d); })
+                .attr("class", "node")
+                .attr("transform", function(d){ return getTranslate(d); })
                 .attr("d", d3.svg.symbol()
                     .type(function(d){
                         if(d.fixed){
                             return "circle";
                         }
                         if(d.termType == "Compound"){
-                            return "triangle-up";
+                            return "square";
                         }
                         else if(d.termType == "Sentence"){
-                            return "square";
+                            return "triangle-up";
                         }
                         else if(d.termType == "Synonym"){
                             return "circle";
                         }
+                        else if(d.termType == "Semantic"){
+                            return "triangle-down";
+                        }
                         return "cross"; // Return a cross by default
                     })
                     .size(function(d){
-
                         return d.size * 2500;
-                    })
-                )
-                .attr("size", function(d){
-                    return d.size * 2500;
-                })
+                    }))
                 .attr("fill", function (d) { // TODO: Implement a pattern fill technique here.
                     if(d.id >= 0){
                         var totalHeight = Math.ceil(this.getBBox().height);
@@ -176,6 +176,10 @@ function forceChart() {
                 })
                 .attr("id", function(d){
                     return "id" + d.id;
+                })
+                .attr("radius", function(d) {
+                    d.radius = Math.ceil(this.getBBox().height / 2);
+                    return d.radius;
                 })
                 .on("click", function (d) {
                     // Don't run this on the fixed nodes
@@ -234,7 +238,6 @@ function forceChart() {
             /**
              * Function that is called every tick (critical code should run fast)
              */
-            var radius = 20;
             function onTick() {
                 node.attr("cx", function (d) {
                         if (d.fixed) {
@@ -282,13 +285,14 @@ function forceChart() {
         });
     }
 
-    var maxRadius = 30,
+    var maxRadius = 0,
         clusterPadding = 5;
 
     // Resolves collisions between d and all other circles.
     function collide(alpha){
         var quadtree = d3.geom.quadtree(graph.nodes);
         return function(d) {
+            console.log(d.radius);
             var r = d.radius + maxRadius + clusterPadding,
                 nx1 = d.x - r,
                 nx2 = d.x + r,
