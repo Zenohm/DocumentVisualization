@@ -4,7 +4,7 @@ This document will assist you in successfully installing the docvis webapp for d
 
 .........................................................................................
 
-PREREQUISITS:
+PREREQUISITES:
 	You have the following: perl installed, a distribution of the repo, intelliJ IDEA, a working knowledge of computers
 
 .........................................................................................
@@ -32,12 +32,20 @@ Step 2.) Download the papers
      	   NOTE: the script will take a good while to complete; it has to download a lot of data
 	   
 Step 3.) Create stopwords file
+     The stopwords file is a file containing blacklisted words that are NOT to be indexed.  Any word contained within will be skipped over when indexing.
      You may use whatever stopwords you wish, but we recommend using our stopwords file, which you can download for yourself at
           https://bitbucket.org/mcsquared/citegraphweb/downloads/stopwords.txt
      Regardless of what you have for your stopwords file, place it at
      	  RESOURCE_FOLDER/db/stopwords.txt
 
-Step 4.) Set up server run configuration
+Step 4.) Create dictionary file
+     The dictionary file is a whitelist text file containing words that are to be recognized by the tier 2 utilities: the words in this file are the only words to appear in tier 2 as synonyms, related terms, etc. 
+     Like the stopwords.txt, you may use whatever stopwords you wish, but we recommend our dictionary file, which can be found at
+     	  https://bitbucket.org/mcsquared/citegraphweb/downloads/dictionary.txt
+     Regardless of what you have for your dictionary file, place it at
+     	  RESOURCE_FOLDER/db/dictionary.txt
+
+Step 5.) Set up server run configuration
      If you are not using intelliJ, you will have to set up a configuration to run a tomcat server with RESOURCE_FOLDER defined as described earlier.
      For intelliJ: Open up the project.  Choose 'edit configurations' from the run menu.  Select the '+' and choose Maven. Name it something nice, like "Run Tomcat."
      Where it says "command line" enter
