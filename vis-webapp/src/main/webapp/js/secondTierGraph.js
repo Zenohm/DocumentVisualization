@@ -292,7 +292,6 @@ function forceChart() {
     function collide(alpha){
         var quadtree = d3.geom.quadtree(graph.nodes);
         return function(d) {
-            console.log(d.radius);
             var r = d.radius + maxRadius + clusterPadding,
                 nx1 = d.x - r,
                 nx2 = d.x + r,
