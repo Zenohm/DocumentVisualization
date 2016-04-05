@@ -4,7 +4,6 @@ import api.exception.LuceneSearchException;
 import api.reader.IndexReader;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import common.ScoredTermConverter;
 import common.data.ScoredTerm;
 import common.dict.Dictionary;
 import common.dict.SetDictionary;
@@ -14,6 +13,7 @@ import internal.lucene_intf.LuceneReader;
 import internal.static_util.FullTextExtractor;
 import internal.static_util.TermStemmer;
 import internal.static_util.data.TermDocument;
+import internal.static_util.scorer.TermRelatednessScorer;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.queryparser.classic.ParseException;
@@ -146,7 +146,9 @@ public class SentenceRelatedTerms extends LuceneReader implements DocumentRelate
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
         // Convert this to a list of scores
-        List<ScoredTerm> scores = ScoredTermConverter.convertToScoredTerm(termScores, numSentences);
+        List<ScoredTerm> scores = termScores.keySet().stream()
+                .map(s -> new ScoredTerm(s, TermRelatednessScorer.score(term, s)))
+                .collect(Collectors.toList());
 
         // Sort in reverse order
         Collections.sort(scores, Collections.reverseOrder());

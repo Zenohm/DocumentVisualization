@@ -71,55 +71,59 @@ public class CombinedRelatedTermsConverter {
             int sourceIndex = termIndexes.get(result.term);
             for(RelatedTerm rTerm : result.getResults()){
                 double size = scorer.getScore(rTerm.getText(), result.docId, TermQueryScore.QueryType.Multiword);
-                if(size < .0001){
+                if(size < .001){
                     removedNodes++;
                     continue;
                 }
+                double linkPower = rTerm.getScore();
+                if(linkPower < .001){
+                    removedNodes++;
+                    continue;
+                }
+
                 int myIndex = jsonObject.nodes.size();
                 int id = ++idCounter;
                 String color = fixedNodes.get(sourceIndex).color; // Get the color of the source
-                double linkPower = rTerm.getScore();
-                if(linkPower >= .001){
-                    TermNode newNode = TermNode.of(TermNode.NOT_FIXED, rTerm.getText(), id, color, rTerm.type, size, result.term);
-                    int iOfNode = jsonObject.nodes.indexOf(newNode);
-                    if(iOfNode != -1){
-                        // How to get other link power?
-                        List<Double> otherLinkPowers = jsonObject.links.stream()
-                                .filter(l -> l.target == iOfNode)
-                                .map(l -> l.link_power)
-                                .sorted(Comparator.reverseOrder())
-                                .collect(Collectors.toList());
 
-                        double otherLinkPower = otherLinkPowers.isEmpty() ? 0 : otherLinkPowers.get(0);
+                // Generate!
+                TermNode newNode = TermNode.of(TermNode.NOT_FIXED, rTerm.getText(), id, color, rTerm.type, size, result.term);
+                int iOfNode = jsonObject.nodes.indexOf(newNode);
+                if(iOfNode != -1){
+                    // How to get other link power?
+                    List<Double> otherLinkPowers = jsonObject.links.stream()
+                            .filter(l -> l.target == iOfNode)
+                            .map(l -> l.link_power)
+                            .sorted(Comparator.reverseOrder())
+                            .collect(Collectors.toList());
 
-                        if(linkPower > otherLinkPower) { // If link power is greater, then replace the node with the new node.
-                            if (!jsonObject.nodes.get(iOfNode).fixed) { // If the old node is not fixed.
-                                TermNode oldNode = (TermNode)jsonObject.nodes.get(iOfNode);
-                                oldNode.termsRelatedTo.forEach(newNode::addRelatedTerm); // add related terms
-                                oldNode.colors.forEach(newNode::addColor);
-                                jsonObject.nodes.set(iOfNode, newNode);
-                            }
-                        }else{
-                            if(!jsonObject.nodes.get(iOfNode).fixed){
-                                ((TermNode)jsonObject.nodes.get(iOfNode)).addRelatedTerm(result.term);
-                                jsonObject.nodes.get(iOfNode).addColor(color);
-                            }
+                    double otherLinkPower = otherLinkPowers.isEmpty() ? 0 : otherLinkPowers.get(0);
+
+                    if(linkPower > otherLinkPower) { // If link power is greater, then replace the node with the new node.
+                        if (!jsonObject.nodes.get(iOfNode).fixed) { // If the old node is not fixed.
+                            TermNode oldNode = (TermNode)jsonObject.nodes.get(iOfNode);
+                            oldNode.termsRelatedTo.forEach(newNode::addRelatedTerm); // add related terms
+                            oldNode.colors.forEach(newNode::addColor);
+                            jsonObject.nodes.set(iOfNode, newNode);
                         }
-
-                        // If the node is already there, do not add a new node, supplement the old node
-                        jsonObject.links.add(Link.of(sourceIndex, iOfNode, linkPower));
                     }else{
-                        // Add a new node if the node is not there
-                        jsonObject.nodes.add(newNode);
-                        jsonObject.links.add(Link.of(sourceIndex, myIndex, linkPower));
-                        jsonObject.links.add(Link.of(gravityNodeIndex, myIndex, .075)); // Add a central gravity to the node.
+                        if(!jsonObject.nodes.get(iOfNode).fixed){
+                            ((TermNode)jsonObject.nodes.get(iOfNode)).addRelatedTerm(result.term);
+                            jsonObject.nodes.get(iOfNode).addColor(color);
+                        }
                     }
 
-
-                    numNodes++;
+                    // Add link to show relationship
+                    jsonObject.links.add(Link.of(sourceIndex, iOfNode, linkPower));
                 }else{
-                    removedNodes++;
+                    // Add a new node if the node is not there
+                    jsonObject.nodes.add(newNode);
+                    jsonObject.links.add(Link.of(sourceIndex, myIndex, linkPower));
+                    jsonObject.links.add(Link.of(gravityNodeIndex, myIndex, .15)); // Add a central gravity to the node.
                 }
+
+
+                numNodes++;
+
             }
         }
         log.info("Number of nodes: " + numNodes);
