@@ -82,7 +82,8 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script src="js/searchUtils.js"></script>
     <script src="js/multiTermGraph.js"></script>
-    <script src="js/visual_tier_storage_manipulation.js"></script>
+    <script src="js/localStorageManipulation.js"></script>
+    <script src="js/common.js"></script>
     <script>
         var onHideSidebar = null;
         var currentlyClickedDoc = null;
@@ -135,7 +136,8 @@
                 input.id = "query_text"+i;
                 input.className = "query";
                 input.value = query;
-                document.getElementById("search_terms").appendChild(input)
+                // Make the enter key work for each box.
+                document.getElementById("search_terms").appendChild(input);
                 $("#"+input.id).keyup(function (event) {
                     if (event.keyCode == 13) {
                         updateQueriesAndDoSearch();
@@ -152,21 +154,12 @@
          */
         function doSearch(){
             console.log(localStorage);
-            console.log(getQueryString());
             var chart = forceChart();
-            var query_string = getQueryString();
+            var query_string = getVisQueryString();
             d3.json(query_string, function(error, data){
                 d3.select("#content").datum(data).call(chart);
             });
             hideSidebar();
-        }
-
-        /**
-         * Grab info from the fields and conduct the search.
-         */
-        function updateQueriesAndDoSearch() {
-            loadFieldsIntoLocalStorage();
-            doSearch();
         }
 
         function goToSecondTier(){

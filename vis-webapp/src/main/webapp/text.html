@@ -15,9 +15,6 @@ var queryString = "query";
 var queryElements = [];
 var nextQueryId = 1;
 
-/**
- * Start us off with three input boxes
- */
 $(document).ready(function(){
     for(var i = 0; i<3; i++){
         addInput();
@@ -30,18 +27,18 @@ $(document).ready(function(){
 function proceedToTierOne() {
     localStorage.clear();
     loadFieldsIntoLocalStorage();
-    window.location = "new-first-tier.html";
+    window.location = "first_tier_text.html";
 }
-</script>
 
+</script>
 <body class="background">
 <div id="content">
     <div id="query-entry" class="attention">
-        <p id="title">Academic Repository Search</p>
+        <p id="title">Academic Repository Text-Based Search</p>
         <div id="queries"></div>
         <div id="buttons">
             <button id="searchButton" onclick="proceedToTierOne()">Search</button>
-            <button id="addQuery" onclick="addInput()">Add Query</button>
+            <button id="addQuery" onclick="addInput('text')">Add Query</button>
             <button id="removeQuery" onclick="removeInput()">Remove Query</button>
             <div class="rangeSliderDiv">
                 <label for="doc_limit" id="doc_limit_label" class="rangeLabel">Max number of results</label>

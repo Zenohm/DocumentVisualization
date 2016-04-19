@@ -19,6 +19,9 @@
             return decodeURIComponent(results[2].replace(/\+/g, " "));
         }
 
+        /**
+         * Do the search for terms
+         */
         $(document).ready(function(){
             var docId = getParameterByName("docId");
 
@@ -99,6 +102,7 @@
                                         if (type === "Sentence" || type === "Compound") {
                                             type += " Term";
                                         }
+                                        // The relationship scores
                                         var related = document.createElement("p");
                                         related.className = "termInfo";
                                         related.innerHTML = type + " for " + relatedTerm +
@@ -106,6 +110,17 @@
                                         result.appendChild(related);
                                     }
                                 }
+
+                                // Create a refinement option for each term
+                                var refinements = document.createElement("div");
+                                for (queryNum in queries) {
+                                    var refinement = document.createElement("button");
+                                    refinement.innerHTML = "refine " + queries[queryNum];
+                                    var queryInt = parseInt(queryNum) + 1; // Array offset correction
+                                    refinement.onclick = getButtonFunction(queryInt, obj.name);
+                                    refinements.appendChild(refinement);
+                                }
+                                result.appendChild(refinements)
                             });
 
                         });
@@ -114,6 +129,13 @@
                 console.log("NO QUERIES!");
             }
         });
+
+        function getButtonFunction(queryNum, term) {
+            return function() {
+                localStorage.setItem("query" + queryNum, term);
+                window.location = "first_tier_text.html";
+            };
+        }
 
         /**
          * Quick and dirty descending sorter for nodes

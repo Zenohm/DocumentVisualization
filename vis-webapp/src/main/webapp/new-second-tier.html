@@ -126,11 +126,11 @@
             return function(){
                 console.log("Setting query " + queryLoc + " to " + term);
                 localStorage.setItem("query"+queryLoc, term);
-                goToFirstTeir();
+                goToFirstTier();
             }
         }
 
-        function goToFirstTeir(){
+        function goToFirstTier(){
             window.location = "new-first-tier.html";
         }
 
@@ -188,6 +188,6 @@
         <div id="relatedTo"></div>
         <div id="refine_buttons"></div>
     </div>
-    <img src="imgs/backButton.png" height="50px" width="50px" id="back_button" alt="Return to first teir" onclick="goToFirstTeir()"/>
+    <img src="imgs/backButton.png" height="50px" width="50px" id="back_button" alt="Return to first tier" onclick="goToFirstTier()"/>
 </body>
 </html>
