@@ -41,7 +41,6 @@
 
     <modules>
         <module>lucene-index</module>
-        <module>search-cl</module>
         <module>synonyms</module>
         <module>vis-webapp</module>
         <module>mc-utils</module>
