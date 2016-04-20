@@ -24,8 +24,8 @@
     <orderEntry type="library" name="d3" level="application" />
     <orderEntry type="library" name="jquery" level="application" />
     <orderEntry type="module" module-name="lucene-index" />
-    <orderEntry type="library" name="Maven: org.apache.pdfbox:pdfbox:2.0.0-SNAPSHOT" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.pdfbox:fontbox:2.0.0-SNAPSHOT" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.pdfbox:pdfbox:2.0.0" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.pdfbox:fontbox:2.0.0" level="project" />
     <orderEntry type="library" name="Maven: org.apache.lucene:lucene-analyzers-common:5.2.1" level="project" />
     <orderEntry type="library" name="Maven: org.apache.lucene:lucene-analyzers:3.6.2" level="project" />
     <orderEntry type="library" name="Maven: org.apache.lucene:lucene-queryparser:5.2.1" level="project" />
