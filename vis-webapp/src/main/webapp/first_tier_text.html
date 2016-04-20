@@ -6,108 +6,104 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
     <script src="js/searchUtils.js"></script>
+    <script src="js/localStorageManipulation.js"></script>
+    <script src="js/common.js"></script>
     <link rel="stylesheet" type="text/css" href="style/text_search.css"/>
     <script>
-        function search() {
-
-            // Save the 3 queries to local storage
-            var query1 = document.getElementById("query1").value;
-            var query2 = document.getElementById("query2").value;
-            var query3 = document.getElementById("query3").value;
-            var doc_limit = document.getElementById("doc_limit").value;
-            localStorage.setItem("query1", query1);
-            localStorage.setItem("query2", query2);
-            localStorage.setItem("query3", query3);
+        function doSearch() {
 
             document.getElementById("results").innerHTML = "";
-            $.getJSON("multi_term_search?" +
-                    "query1=" + query1 + "&" +
-                    "query2=" + query2 + "&" +
-                    "query3=" + query3 + "&" +
-                    "doc_limit=" + doc_limit,
-                    function (data) {
-                        data.forEach(function (obj) {
-                            var result = document.createElement("div");
-                            result.className = "result";
-                            document.getElementById("results").appendChild(result);
-                            var metadataDiv = document.createElement("div");
-                            metadataDiv.className = "metadata";
-                            result.appendChild(metadataDiv);
-                            appendMetadata(metadataDiv, obj.docId);
+            $.getJSON(getTextQueryString(), function (data) {
+                data.forEach(function (obj) {
+                    // The result div
+                    var result = document.createElement("div");
+                    result.className = "result";
+                    document.getElementById("results").appendChild(result);
 
-                            var linkDiv = document.createElement("div");
-                            linkDiv.className = "secondTierLink";
-                            var link = document.createElement("a");
-                            link.innerHTML = "Explore Terms";
-                            link.setAttribute("href", "second_tier_text.html?docID=" + obj.docId);
-                            link.setAttribute("target", "_blank");
-                            linkDiv.appendChild(link);
-                            result.appendChild(linkDiv);
+                    // The metadata div
+                    var metadataDiv = document.createElement("div");
+                    metadataDiv.className = "metadata";
+                    appendMetadata(metadataDiv, obj.docId);
+                    result.appendChild(metadataDiv);
 
-                            // Option to show scores in the div
-                            if (document.getElementById("analytics").checked) {
-                                var scoreDiv = document.createElement("div");
-                                scoreDiv.id = "scoreDiv";
-                                var scoreTable = document.createElement("table");
-                                scoreTable.className = "scoreTable";
-                                var firstRow = document.createElement("tr");
-                                var secondRow = document.createElement("tr");
-                                result.appendChild(scoreDiv);
-                                var overall = document.createElement("td");
-                                var average = document.createElement("td");
-                                var query1 = document.createElement("td");
-                                var query2 = document.createElement("td");
-                                var query3 = document.createElement("td");
-                                firstRow.appendChild(overall);
-                                firstRow.appendChild(average);
-                                secondRow.appendChild(query1);
-                                secondRow.appendChild(query2);
-                                secondRow.appendChild(query3);
+                    // The link div
+                    var linkDiv = document.createElement("div");
+                    linkDiv.className = "secondTierLink";
+                    var link = document.createElement("a");
+                    link.innerHTML = "Explore Terms";
+                    link.setAttribute("href", "second_tier_text.html?docID=" + obj.docId);
+                    linkDiv.appendChild(link);
+                    result.appendChild(linkDiv);
 
-                                var query1Text = obj.results[0].query;
-                                var query1Score = obj.results[0].score;
-                                var query2Text = obj.results[1].query;
-                                var query2Score = obj.results[1].score;
-                                var query3Text = obj.results[2].query;
-                                var query3Score = obj.results[2].score;
+                    // Option to show scores in the result
+                    if (document.getElementById("analytics").checked) {
+                        // Prepare the space upon which the analytics table will reside.
+                        var scoreDiv = document.createElement("div");
+                        scoreDiv.id = "scoreDiv";
+                        var scoreTable = document.createElement("table");
+                        scoreTable.className = "scoreTable";
+                        var firstRow = document.createElement("tr");
+                        var secondRow = document.createElement("tr");
 
-                                overall.innerHTML = "Overall Score: " + obj.score.toFixed(5);
-                                average.innerHTML += "Average Score:" + ((query1Score + query2Score + query3Score) / 3).toFixed(5);
-                                query1.innerHTML = query1Text + ": " + query1Score.toFixed(5);
-                                query2.innerHTML = query2Text + ": " + query2Score.toFixed(5);
-                                query3.innerHTML = query3Text + ": " + query3Score.toFixed(5);
-                                scoreTable.appendChild(firstRow);
-                                scoreTable.appendChild(secondRow);
-                                scoreDiv.appendChild(scoreTable);
-                            }
-                        })
-                    });
+                        // Account the scores of each term group; calculate the average.
+                        var aggregateScore = 0;
+                        var num_of_queries = 0;
+                        for (var index in obj.results) {
+                            var res = obj.results[index];
+                            num_of_queries++;
+                            aggregateScore += res.score;
+                            var query_score = document.createElement("td");
+                            query_score.innerHTML = res.query + ": " + res.score.toFixed(5)
+                            secondRow.appendChild(query_score);
+                        }
+
+                        // Account the overall, average scores.
+                        var overall = document.createElement("td");
+                        var average = document.createElement("td");
+                        overall.innerHTML = "Overall Score: " + obj.score.toFixed(5);
+                        average.innerHTML += "Average Score:" + (aggregateScore / num_of_queries).toFixed(5);
+
+                        // Append everything together
+                        firstRow.appendChild(overall);
+                        firstRow.appendChild(average);
+                        scoreTable.appendChild(firstRow);
+                        scoreTable.appendChild(secondRow);
+                        scoreDiv.appendChild(scoreTable);
+                        result.appendChild(scoreDiv);
+                    }
+                })
+            });
         }
 
-        $(document).ready(function() {
-            $("#query1").keyup(function (event) {
-                if (event.keyCode == 13) {
-                    $("#searchButton").click();
-                }
-            });
+        /**
+         * Transition to second_tier_text.html
+         */
+        function goToSecondTier() {
+            window.location = "second_tier_text.html";
+        }
 
-            $("#query2").keyup(function (event) {
-                if (event.keyCode == 13) {
-                    $("#searchButton").click();
-                }
-            });
+        /**
+         * On load, populate what needs populated from what we have in storage, then doSearch.
+         */
+        $(document).ready(function(){
+            var i = 1;
+            while(null != localStorage.getItem("query"+i)){
+                var query = localStorage.getItem("query"+i);
+                var input = document.createElement("input");
+                input.type = "text";
+                input.id = "query_text"+i;
+                input.className = "query";
+                input.value = query;
+                document.getElementById("search_terms").appendChild(input);
+                $("#"+input.id).keyup(function (event) {
+                    if (event.keyCode == 13) {
+                        updateQueriesAndDoSearch();
+                    }
+                });
+                i++;
+            }
 
-            $("#query3").keyup(function (event) {
-                if (event.keyCode == 13) {
-                    $("#searchButton").click();
-                }
-            });
-
-            $('#limit').keyup(function(e) {
-                if (e.keyCode == 13) {
-                    search();
-                }
-            });
+            doSearch();
         });
 
         function outputUpdate(limit) {
@@ -126,13 +122,12 @@
         </div>
         <div class="searchFields">
             <div class="searchBoxContainer">
-                <input id="query1" type="search" class="searchBox" value="Virtualization"/>
-                <input id="query2" type="search" class="searchBox" value="Visualization"/>
-                <input id="query3" type="search" class="searchBox" value="Default"/><br/><br/>
+                <div id="search_terms" class="basic"></div>
+                <br/>
             </div>
             <div class="searchRow">
-                <button onclick="search()" type="submit" class="searchButton" id="searchButton">Search</button>
-                <input id="analytics" type="checkbox"/><label for="analytics" title="Click to include analytical data"><b>Include Analytic Data</b></label>
+                <button id="search_button" onclick="updateQueriesAndDoSearch()" class="query">Search</button>
+                <input id="analytics" type="checkbox" checked=true/><label for="analytics" title="Click to include analytical data"><b>Include Analytic Data</b></label>
                 <div class="rangeSliderDiv">
                     <label for="doc_limit" id="doc_limit_label" class="rangeLabel">Max number of results</label>
                     <input id="doc_limit" type="range" class="rangeSlider" value=50 max="1000" min="1" oninput="outputUpdate(value);"/>

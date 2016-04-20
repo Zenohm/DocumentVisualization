@@ -24,8 +24,7 @@
 
 /**
  * Created by Chris on 3/24/2016.
- * This is an attempt at a complete rewrite of the code from the bottom up, so that it is more reusable and works
- * well with more dynamic data.
+ * Shared functions that are involved in manipulating the localStorage
  */
 
 /**
@@ -46,8 +45,25 @@ function loadFieldsIntoLocalStorage() {
 /**
  * Pulls the required fields out of storage and into a string that is returned.
  */
-function getQueryString() {
-    var query_string = "multi_term_search?vis";
+function getVisQueryString() {
+    return getQueryString(true);
+}
+
+/**
+ * Pulls the required fields out of storage and into a string that is returned.
+ */
+function getTextQueryString() {
+    return getQueryString(false);
+}
+
+/**
+ * Pulls the required fields out of storage and into a string that is returned.
+ */
+function getQueryString(is_vis) {
+    var query_string = "multi_term_search?";
+    if (is_vis) {
+        query_string += "vis"
+    }
     var i = 1;
     while (null != localStorage.getItem("query" + i)) {
         var query = localStorage.getItem("query" + i);
@@ -56,4 +72,12 @@ function getQueryString() {
     }
     query_string += "&doc_limit=" + localStorage.getItem("doc_limit");
     return query_string;
+}
+
+/**
+ * Grab info from the fields and conduct the search.
+ */
+function updateQueriesAndDoSearch() {
+    loadFieldsIntoLocalStorage();
+    doSearch();
 }

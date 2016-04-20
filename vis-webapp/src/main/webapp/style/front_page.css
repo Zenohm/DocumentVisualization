@@ -1,0 +1,43 @@
+html, body {
+    height: 100%;
+    width: 100%;
+    margin: 0 0 0 0;
+}
+
+#title {
+    position: absolute;
+    top: 3px;
+    left: 0; right: 0;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 42px;
+}
+
+#query-entry {
+    margin: auto;
+    position: absolute;
+    text-align: center;
+    vertical-align: center;
+    top: 0; left: 0; bottom: 0; right: 0;
+    height: 350px;
+    width: 75%;
+    border-radius: 10px;
+}
+
+#queries {
+    width: 100%;
+    height: 24px;
+    position: absolute;
+    top: 0; left: 0; bottom: 0; right: 0;
+    margin: auto;
+}
+
+.query {
+    width: 25%;
+}
+
+#buttons {
+    width: 100%;
+    position: absolute;
+    bottom: 30px;
+    left: 0; right: 0;
+}
