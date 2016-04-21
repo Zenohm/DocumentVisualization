@@ -85,8 +85,8 @@ public class Startup extends HttpServlet {
         }
 
         log.info("Running Initial Indexing Operation...");
-        if (System.getenv(Constants.RESOURCE_FOLDER_VAR) == null) {
-            log.fatal("RESOURCE Environment variable was not set.");
+        if (System.getProperty(Constants.RESOURCE_FOLDER_VAR) == null) {
+            log.fatal(Constants.RESOURCE_FOLDER_VAR + " was not defined.");
             return;
         }
 
