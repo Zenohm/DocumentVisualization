@@ -53,7 +53,7 @@ $(document).ready(function() {
 /**
  * Adds a box for another query
  */
-function addInput(text) {
+function addInput() {
     if(queryElements.length >= 9) return;
     var input = document.createElement("input");
     input.type = "text";
@@ -62,9 +62,7 @@ function addInput(text) {
     document.getElementById("queries").appendChild(input);
     $("#"+input.id).keyup(function (event) {
         if (event.keyCode == 13) {
-            if (text == 'text') {
-                proceedToTierOne();
-            }
+            proceedToTierOne();
         }
     });
     queryElements.push(input);
