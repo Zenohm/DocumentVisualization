@@ -62,7 +62,7 @@ function addInput() {
     document.getElementById("queries").appendChild(input);
     $("#"+input.id).keyup(function (event) {
         if (event.keyCode == 13) {
-            proceedToTierOne();
+            searchCallback();
         }
     });
     queryElements.push(input);
@@ -77,6 +77,7 @@ function removeInput(){
     var element = queryElements.pop();
     document.getElementById("queries").removeChild(element);
     nextQueryId--;
+    localStorage.removeItem("query" + nextQueryId);
 }
 
 

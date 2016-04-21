@@ -27,7 +27,7 @@
             border-right: solid black 3px;
         }
 
-        #search_terms{
+        #queries{
             display: flex;
             flex-flow: column wrap;
             align-items: center;
@@ -87,6 +87,9 @@
     <script>
         var onHideSidebar = null;
         var currentlyClickedDoc = null;
+        var nextQueryId = 1;
+        var queryElements = [];
+        var searchCallback = updateQueriesAndDoSearch;
 
         /**
          * Show a doc on click
@@ -136,8 +139,10 @@
                 input.id = "query_text"+i;
                 input.className = "query";
                 input.value = query;
+                queryElements.push(input);
+                nextQueryId++;
                 // Make the enter key work for each box.
-                document.getElementById("search_terms").appendChild(input);
+                document.getElementById("queries").appendChild(input);
                 $("#"+input.id).keyup(function (event) {
                     if (event.keyCode == 13) {
                         updateQueriesAndDoSearch();
@@ -170,9 +175,11 @@
 </head>
 <body class="background">
 <div id="search_bar" class="basic">
-    <div id="search_terms" class="basic"></div>
+    <div id="queries" class="basic"></div>
     <div id="buttons" class="basic">
         <button id="search_button" onclick="updateQueriesAndDoSearch()" class="query">Search</button>
+        <button id="add_query" onclick="addInput()" class="query">+ Query</button>
+        <button id="remove_query" onclick="removeInput()" class="query">- Query</button>
     </div>
     <div class="rangeSliderDiv" style="display: none">
         <label for="doc_limit" id="doc_limit_label" class="rangeLabel">Max number of results</label>
