@@ -51,7 +51,7 @@ public class StopwordsProvider {
     }
 
     public static StopwordsProvider getProvider(){
-        String DEFAULT_STOP_FILE = System.getenv(Constants.RESOURCE_FOLDER_VAR) + "/" + Constants.STOPWORDS_FILE;
+        String DEFAULT_STOP_FILE = System.getProperty(Constants.RESOURCE_FOLDER_VAR) + "/" + Constants.STOPWORDS_FILE;
         return getProvider(DEFAULT_STOP_FILE);
     }
 

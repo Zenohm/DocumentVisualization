@@ -27,7 +27,7 @@ public class CompoundRelatedTermsServlet extends GenericServlet{
     private CompoundRelatedTerms termsGenerator;
     public CompoundRelatedTermsServlet(){
         super();
-        String resourceDirectory = System.getenv(Constants.RESOURCE_FOLDER_VAR);
+        String resourceDirectory = System.getProperty(Constants.RESOURCE_FOLDER_VAR);
         String stopwordsFile = resourceDirectory + "/" + Constants.STOPWORDS_FILE;
         try{
             termsGenerator = new CompoundRelatedTerms(LuceneIndexReader.getInstance(), stopwordsFile);

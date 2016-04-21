@@ -26,7 +26,7 @@ public class SetDictionary implements Dictionary {
      * @throws FileNotFoundException
      */
     private SetDictionary() throws FileNotFoundException{
-        this(System.getenv(Constants.RESOURCE_FOLDER_VAR) + "/" + Constants.DICTIONARY_FILE);
+        this(System.getProperty(Constants.RESOURCE_FOLDER_VAR) + "/" + Constants.DICTIONARY_FILE);
     }
 
     /**

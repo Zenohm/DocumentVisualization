@@ -31,7 +31,7 @@ public class CombinedRelatedTerms {
     private SentenceRelatedTerms srt;
 
     public CombinedRelatedTerms(){
-        String resourceDirectory = System.getenv(Constants.RESOURCE_FOLDER_VAR);
+        String resourceDirectory = System.getProperty(Constants.RESOURCE_FOLDER_VAR);
         String stopwordsFile = resourceDirectory + "/" + Constants.STOPWORDS_FILE;
         instantiate(stopwordsFile);
     }

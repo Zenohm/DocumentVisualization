@@ -95,7 +95,7 @@ public class Startup extends HttpServlet {
         // startup input is RESOURCE_FOLDER_VAR which can be anywhere on the system and is specified by
         // an environment variable
         PDFIndexer indexer = new PDFIndexer(getServletContext().getRealPath(Constants.INDEX_DIRECTORY),
-                System.getenv(Constants.RESOURCE_FOLDER_VAR));
+                System.getProperty(Constants.RESOURCE_FOLDER_VAR));
 
         // Try to update the index
         // TODO: Make this configuration less ugly with a class of its own
@@ -103,7 +103,7 @@ public class Startup extends HttpServlet {
         try {
 
             Properties props = new Properties();
-            String propFilename = System.getenv(Constants.RESOURCE_FOLDER_VAR)
+            String propFilename = System.getProperty(Constants.RESOURCE_FOLDER_VAR)
                     + "/" + Constants.INDEX_CONFIG_FILE;
             InputStream in = new FileInputStream(propFilename);
             props.load(in);
