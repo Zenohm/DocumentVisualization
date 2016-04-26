@@ -15,7 +15,7 @@ public class FixedNodeGenerator {
     static double diameter = .7;
     static double radius = diameter / 2.0;
 
-    public static final String[] colors = {"red", "blue", "green"};
+    public static final String[] colors = {"red", "blue", "green", "purple", "cyan", "orange", "lightblue", "yellow", "lightgreen"};
 
     public static void generateFixedNodes(Map<String, Integer> termIndexes,
                                           ArrayList<FixedNode> fixedNodes,
