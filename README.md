@@ -1,15 +1,17 @@
-.........................................................................................
+# VisSearch: Framework for Visual Search
+Implementation for the Best Student Paper for MAICS2016: http://cslab.valpo.edu/maics2016/paper20.pdf
+Live Demonstration (Temporary): http://www.citegraph.xyz:8080/vis
 
+
+## Installation
 This document will assist you in successfully installing the docvis webapp for development.
 
-.........................................................................................
-
-PREREQUISITES:
+### PREREQUISITES:
 	You have the following: perl installed, a distribution of the repo, intelliJ IDEA, a working knowledge of computers
 
-.........................................................................................
+-----------
 
-INSTALLATION:
+### INSTALLATION:
 
 Step 1.) Install necessary perl modules.
      This includes Text::CSV, Text::Unidecode, & WWW::Mechanize.  This operation is complted easiest by using cpanm to download the necessary modules.  Download cpan, then run the following:
@@ -55,17 +57,17 @@ Step 5.) Set up server run configuration
      value: {wherever you parked the RESOURCE_FOLDER directory earlier on.}
      Accept changes.  Accept changes again.  Now select your new configuration from the drop-down run menu, and click on the green 'run' arrow.
 
-.........................................................................................
+------------
 
-POST-INSTALLATION NOTES:
+### POST-INSTALLATION NOTES:
 
-     If you see the terminal spin up the indexer and start indexing your pdfs, then
-     	CONGRATULATIONS!!!  You have successfully set up the docvis project.
-     To make future instances of the server start up more rapidy, you may add a config file titled
-     	RESOURCE_FOLDER/config/index-config.cfg
-     Where RESOURCE_FOLDER is what you specified earlier.  Add the following line to the file:
-     	INDEX_DOCS=false
+ If you see the terminal spin up the indexer and start indexing your pdfs, then
+    CONGRATULATIONS!!!  You have successfully set up the docvis project.
+ To make future instances of the server start up more rapidy, you may add a config file titled
+    RESOURCE_FOLDER/config/index-config.cfg
+ Where RESOURCE_FOLDER is what you specified earlier.  Add the following line to the file:
+    INDEX_DOCS=false
 
-     This will tell the application to skip indexing when it starts the server, making things much quicker for you in the long run.  If you ever want it to index again, simply edit the line to read 'true' instead of 'false'.
+ This will tell the application to skip indexing when it starts the server, making things much quicker for you in the long run.  If you ever want it to index again, simply edit the line to read 'true' instead of 'false'.
 
-.........................................................................................
+----------------
