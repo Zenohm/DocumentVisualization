@@ -61,22 +61,24 @@ This document will assist you in successfully installing the DocVis web applicat
 5. Set up server run configuration
    
    If you are not using IntelliJ, you will have to set up a configuration to run a tomcat server with `RESOURCE_FOLDER` defined as described earlier.
+   * **Note:** In order for all features to work as expected, you must be using IntelliJ ULTIMATE Edition rather than the Community Edition. 
    
    For IntelliJ:
-   1. Open up a project.
+   1. Open up the doc-vis project, or import it as a Java 1.8 Maven project if you haven't yet.
    2. Choose `Edit Configurations` from the *Run* menu.
    3. Select the `+` and choose `Maven`.
    4. Name it something descriptive, like "Run Tomcat"
-   5. Where it says *Command Line* enter `tomcat7:run`
-   6. Click on the `Runner` tab.
-   7. Under *Environment Variables* click on the `...` button.
-   8. Click on the `+` and add an entry for
+   5. Set the *Working directory* to the `vis-webapp` folder.
+   6. Where it says *Command line* enter `tomcat7:run`
+   7. Click on the `Runner` tab.
+   8. Look under the *Properties* section for a green `+` button off to the right side.
+   9. Click on the `+` and add an entry for
      * `name:	   RESOURCE_FOLDER`
-     * `value: {wherever you parked the RESOURCE_FOLDER directory earlier on.}`
-   9. Accept changes.
-   10. Accept changes again.
-   11. Now select your new configuration from the drop-down *Run* menu.
-   12. Click on the green 'run' arrow.
+     * `value: {wherever you parked the RESOURCE_FOLDER directory earlier on relative to the vis-webapp folder.}`
+   10. Accept changes.
+   11. Accept changes again.
+   12. Now select your new configuration from the drop-down *Run* menu.
+   13. Click on the green 'run' arrow.
 
 ------------
 
